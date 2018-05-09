@@ -1,0 +1,739 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="好久没写东西了，一直在忙着学 React native。 今天给 Android 导入百度地图 的时候遇见定位监听不回调的问题，记录一下。 电脑系统：Mac OS 10.12.4 IDE： Android Studio 2.1.2 JRE: 1.8.0_121-b13 x86_64 手机：Mi-4c Android Version:  5.1.1LMY47V 1.确定 百度key 设置正确meta">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android 百度地图定位问题">
+<meta property="og:url" content="http://yoursite.com/2018/05/03/Android_BaiduMap/index.html">
+<meta property="og:site_name" content="emmmmm">
+<meta property="og:description" content="好久没写东西了，一直在忙着学 React native。 今天给 Android 导入百度地图 的时候遇见定位监听不回调的问题，记录一下。 电脑系统：Mac OS 10.12.4 IDE： Android Studio 2.1.2 JRE: 1.8.0_121-b13 x86_64 手机：Mi-4c Android Version:  5.1.1LMY47V 1.确定 百度key 设置正确meta">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-05-03T08:49:25.176Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Android 百度地图定位问题">
+<meta name="twitter:description" content="好久没写东西了，一直在忙着学 React native。 今天给 Android 导入百度地图 的时候遇见定位监听不回调的问题，记录一下。 电脑系统：Mac OS 10.12.4 IDE： Android Studio 2.1.2 JRE: 1.8.0_121-b13 x86_64 手机：Mi-4c Android Version:  5.1.1LMY47V 1.确定 百度key 设置正确meta">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/03/Android_BaiduMap/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>Android 百度地图定位问题 | emmmmm</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">emmmmm</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/03/Android_BaiduMap/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="强新宇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="emmmmm">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Android 百度地图定位问题
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-05-03 16:49:25" itemprop="dateCreated datePublished" datetime="2018-05-03T16:49:25+08:00">2018-05-03</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>好久没写东西了，一直在忙着学 <code>React native</code>。</p>
+<p>今天给 <code>Android</code> 导入<code>百度地图</code> 的时候遇见定位监听不回调的问题，记录一下。</p>
+<p>电脑系统：Mac OS 10.12.4</p>
+<p>IDE： Android Studio 2.1.2</p>
+<p>JRE: 1.8.0_121-b13 x86_64</p>
+<p>手机：Mi-4c</p>
+<p>Android Version:  5.1.1LMY47V</p>
+<h4 id="1-确定-百度key-设置正确"><a href="#1-确定-百度key-设置正确" class="headerlink" title="1.确定 百度key 设置正确"></a>1.确定 <code>百度key</code> 设置正确</h4><p><code>meta-data</code> 要放在 <code>application</code> 里面。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;application&gt;  </span><br><span class="line">    &lt;meta-data  </span><br><span class="line">        android:name=&quot;com.baidu.lbsapi.API_KEY&quot;  </span><br><span class="line">        android:value=&quot;开发者 key&quot; /&gt;  </span><br><span class="line">&lt;/application&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="2-确定权限都添加"><a href="#2-确定权限都添加" class="headerlink" title="2.确定权限都添加"></a>2.确定权限都添加</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;/&gt;</span><br><span class="line">  &lt;uses-permission android:name=&quot;android.permission.SYSTEM_ALERT_WINDOW&quot;/&gt;</span><br><span class="line">  &lt;!-- 这个权限用于进行网络定位--&gt;</span><br><span class="line">  &lt;uses-permission android:name=&quot;android.permission.ACCESS_COARSE_LOCATION&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">  &lt;!-- 这个权限用于访问GPS定位--&gt;</span><br><span class="line">  &lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">  &lt;!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位--&gt;</span><br><span class="line">  &lt;uses-permission android:name=&quot;android.permission.ACCESS_WIFI_STATE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">  &lt;!-- 获取运营商信息，用于支持提供运营商信息相关的接口--&gt;</span><br><span class="line">  &lt;uses-permission android:name=&quot;android.permission.ACCESS_NETWORK_STATE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">  &lt;!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位--&gt;</span><br><span class="line">  &lt;uses-permission android:name=&quot;android.permission.CHANGE_WIFI_STATE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">  &lt;!-- 用于读取手机当前的状态--&gt;</span><br><span class="line">  &lt;uses-permission android:name=&quot;android.permission.READ_PHONE_STATE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">  &lt;!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据--&gt;</span><br><span class="line">  &lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">  &lt;!-- 访问网络，网络定位需要上网--&gt;</span><br><span class="line">  &lt;!-- SD卡读取权限，用户写入离线定位数据--&gt;</span><br><span class="line">  &lt;uses-permission android:name=&quot;android.permission.MOUNT_UNMOUNT_FILESYSTEMS&quot;&gt;&lt;/uses-permission&gt;</span><br></pre></td></tr></table></figure>
+<h4 id="3-需要设置-service"><a href="#3-需要设置-service" class="headerlink" title="3. 需要设置 service"></a>3. 需要设置 <code>service</code></h4><p> 也放在 <code>application</code> 里面，后面的版本号与导入的 <code>百度SDK</code> 版本号一致。</p>
+<pre><code><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;service android:name=&quot;com.baidu.location.f&quot; android:enabled=&quot;true&quot; android:process=&quot;:remote&quot;&gt;</span><br><span class="line">           &lt;intent-filter&gt;</span><br><span class="line">               &lt;action android:name=&quot;com.baidu.location.service_v4.3&quot; &gt;</span><br><span class="line">               &lt;/action&gt;</span><br><span class="line">           &lt;/intent-filter&gt;</span><br><span class="line">   &lt;/service&gt;</span><br></pre></td></tr></table></figure>
+</code></pre><h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="http://lbsyun.baidu.com/index.php?title=androidsdk" target="_blank" rel="noopener">百度官方文档</a></p>
+<p><a href="http://bbs.lbsyun.baidu.com/forum.php?mod=viewthread&amp;tid=10847" target="_blank" rel="noopener">http://bbs.lbsyun.baidu.com/forum.php?mod=viewthread&amp;tid=10847</a></p>
+<p><a href="http://bbs.csdn.net/topics/390803526" target="_blank" rel="noopener">http://bbs.csdn.net/topics/390803526</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/03/ReactNative_2/" rel="next" title="React Native (二)：StatusBar 、 NavigationBar 与 TabBar">
+                <i class="fa fa-chevron-left"></i> React Native (二)：StatusBar 、 NavigationBar 与 TabBar
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/03/ReactNative_3/" rel="prev" title="React Native (三)： 自定义视图">
+                React Native (三)： 自定义视图 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4"
+                alt="强新宇" />
+            
+              <p class="site-author-name" itemprop="name">强新宇</p>
+              <p class="site-description motion-element" itemprop="description">(｡･∀･)ﾉﾞ嗨，我是强新宇，是一名 iOS 开发者。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/qiangxinyu" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:qiangxinyu92@gmail.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/d37622b39cbc" target="_blank" title="jianshu"><i class="fa fa-fw fa-jianshu"></i>jianshu</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#1-确定-百度key-设置正确"><span class="nav-number">1.</span> <span class="nav-text">1.确定 百度key 设置正确</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2-确定权限都添加"><span class="nav-number">2.</span> <span class="nav-text">2.确定权限都添加</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3-需要设置-service"><span class="nav-number">3.</span> <span class="nav-text">3. 需要设置 service</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-number"></span> <span class="nav-text">参考</span></a></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">强新宇</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

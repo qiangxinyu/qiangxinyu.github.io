@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="项目地址 React Native App 的视图结构首先把 setup.js 的 Root 以及 布局 的代码改一下： 123456789101112131415161718class Root extends React.Component &amp;#123;    render() &amp;#123;        return (            &amp;lt;View style=&amp;#123;sty">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native (二)：StatusBar 、 NavigationBar 与 TabBar">
+<meta property="og:url" content="http://yoursite.com/2018/05/03/ReactNative_2/index.html">
+<meta property="og:site_name" content="emmmmm">
+<meta property="og:description" content="项目地址 React Native App 的视图结构首先把 setup.js 的 Root 以及 布局 的代码改一下： 123456789101112131415161718class Root extends React.Component &amp;#123;    render() &amp;#123;        return (            &amp;lt;View style=&amp;#123;sty">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/main.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/tab.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/navibar.png?raw=true">
+<meta property="og:updated_time" content="2018-05-03T08:49:25.177Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Native (二)：StatusBar 、 NavigationBar 与 TabBar">
+<meta name="twitter:description" content="项目地址 React Native App 的视图结构首先把 setup.js 的 Root 以及 布局 的代码改一下： 123456789101112131415161718class Root extends React.Component &amp;#123;    render() &amp;#123;        return (            &amp;lt;View style=&amp;#123;sty">
+<meta name="twitter:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/main.png?raw=true">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/03/ReactNative_2/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>React Native (二)：StatusBar 、 NavigationBar 与 TabBar | emmmmm</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">emmmmm</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/03/ReactNative_2/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="强新宇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="emmmmm">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React Native (二)：StatusBar 、 NavigationBar 与 TabBar
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-05-03 16:49:25" itemprop="dateCreated datePublished" datetime="2018-05-03T16:49:25+08:00">2018-05-03</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="https://github.com/qiangxinyu/ReactNativeExample/tree/master/ReactNative2" target="_blank" rel="noopener">项目地址</a></p>
+<h2 id="React-Native-App-的视图结构"><a href="#React-Native-App-的视图结构" class="headerlink" title="React Native App 的视图结构"></a>React Native App 的视图结构</h2><p>首先把 <code>setup.js</code> 的 <code>Root</code> 以及 布局 的代码改一下：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Root</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">					</span><br><span class="line">            &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">        );</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">const styles = StyleSheet.create(&#123;</span></span><br><span class="line"><span class="regexp">    container: &#123;</span></span><br><span class="line"><span class="regexp">        flex: 1,</span></span><br><span class="line"><span class="regexp">        backgroundColor: 'white',</span></span><br><span class="line"><span class="regexp">    &#125;,</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">&#125;);</span></span><br></pre></td></tr></table></figure>
+<p><code>React Native</code> 的所有界面都是在一个主视图上，这里的这个 <code>&lt;View&gt;</code> 跟 <code>iOS</code> 中的 <code>Window</code> 是同样的，这里跟 <code>Android</code> 不太一样。</p>
+<p>当然运行在 <code>iOS</code> 和 <code>Android</code> 中还是以 <code>ViewController</code> 和 <code>Activity</code> 展示的。</p>
+<h2 id="StatusBar"><a href="#StatusBar" class="headerlink" title="StatusBar"></a>StatusBar</h2><p><code>iOS</code> 和 <code>Android</code> 的 <code>StatusBar</code> 是差不多的，都是顶部那高度 20 的部分，用来显示信号、电量等系统的信息。</p>
+<p>在 <code>setup.js</code> 中加入 <code>StatusBar</code>：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    StyleSheet,</span><br><span class="line">    Text,</span><br><span class="line">    View,</span><br><span class="line">    StatusBar</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Root</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">                &lt;StatusBar </span><br><span class="line">                    barStyle=&#123;<span class="string">'light-content'</span>&#125;</span><br><span class="line">                    backgroundColor=&#123;<span class="string">'#000000'</span>&#125;</span><br><span class="line">                /&gt;</span><br><span class="line">            &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">        );</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br></pre></td></tr></table></figure>
+<p><code>StatusBar</code> 的配置可以看<a href="http://reactnative.cn/docs/0.43/statusbar.html#content" target="_blank" rel="noopener">这里</a>，注意有些属性只针对特定平台。</p>
+<p>这样可以设置整个 <code>App</code> 中 <code>StatusBar</code> 的样式，如果有某个页面 <code>A</code> 的 <code>StatusBar</code> 需要特殊处理，那么就在 <code>A</code> 页面加入 <code>StatusBar</code> 进行设置。</p>
+<h2 id="Navigator"><a href="#Navigator" class="headerlink" title="Navigator"></a>Navigator</h2><p>我们需要用 <code>Navigator</code> 来让整个 <code>App</code> 可以在页面之间跳转。</p>
+<p><code>Navigator</code> 和 <code>iOS</code> 的一样，都是对页面进行 <code>push</code> 和 <code>pop</code> ，跟 <code>Android</code> 的 <code>NavigationView</code> 不是一个东西。</p>
+<p>官方文档在<a href="http://reactnative.cn/docs/0.43/navigator.html#content" target="_blank" rel="noopener">这里</a></p>
+<p>现在在 <code>App</code> 文件夹内创建一个新的文件 <code>App.js</code> ：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">'use strict'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    StyleSheet,</span><br><span class="line">    View,</span><br><span class="line">    Text</span><br><span class="line"></span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">App</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            &lt;View style=&#123;styles.view&#125;&gt;</span><br><span class="line">		&lt;Text&gt;main&lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">            &lt;/</span>View&gt;</span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> styles = StyleSheet.create(&#123;</span><br><span class="line">    view: &#123;</span><br><span class="line">        flex: <span class="number">1</span>,</span><br><span class="line">        backgroundColor: <span class="string">'white'</span>,</span><br><span class="line">        alignItems: <span class="string">'center'</span>,</span><br><span class="line">        justifyContent: <span class="string">'center'</span></span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>然后在 <code>setup</code> 内 <code>StatusBar</code> 下面加入 <code>Navigator</code> :</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> App <span class="keyword">from</span> <span class="string">'./App'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;Navigator</span><br><span class="line">    initialRoute=&#123;&#123; <span class="attr">component</span>: App &#125;&#125;</span><br><span class="line"></span><br><span class="line">    style=&#123;&#123;<span class="attr">flex</span>:<span class="number">1</span>&#125;&#125;</span><br><span class="line">    renderScene=&#123;(route, navigator) =&gt; &#123;</span><br><span class="line">        BackAndroid.addEventListener(<span class="string">'hardwareBackPress'</span>, <span class="function"><span class="keyword">function</span>(<span class="params"></span>) </span>&#123;</span><br><span class="line">            <span class="keyword">if</span>(navigator == <span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(navigator.getCurrentRoutes().length === <span class="number">1</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            navigator.pop();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> Component = route.component;</span><br><span class="line">        <span class="keyword">return</span> &lt;Component &#123;...route.params&#125; navigator=&#123;navigator&#125;/&gt;</span><br><span class="line">        //  上面的route.params 是为了方便后续界面间传递参数用的</span><br><span class="line">    &#125;&#125;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+<p>其中 <code>initialRoute</code> 设置了 <code>component</code> ，是最底层的第一个页面。</p>
+<p>然后 <code>renderScene</code> 控制 <code>push</code> 的时候做哪些操作，这里的 <code>BackAndroid.addEventListener</code> 是监听了 <code>Android</code> 的物理返回按键。</p>
+<p>现在运行可以看见页面中间有个 <code>main</code> ：</p>
+<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/main.png?raw=true" width="300"></p>
+<p>你可能会发现为什么没 <code>NavigationBar</code> 呢，我们后面再加。</p>
+<h2 id="tab-navigator"><a href="#tab-navigator" class="headerlink" title="tab-navigator"></a>tab-navigator</h2><p>官方并没有 <code>TabBar</code> ，我们使用一个第三方 <a href="https://github.com/expo/react-native-tab-navigator" target="_blank" rel="noopener">react-native-tab-navigator</a></p>
+<p>在项目根目录执行命令</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install react-native-tab-navigator --save</span><br></pre></td></tr></table></figure>
+<p>安装完成后在 <code>App.js</code> 加入 <code>TabNavigator</code>:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">const home_key = &apos;home&apos;</span><br><span class="line">const satin_key = &apos;satin&apos;</span><br><span class="line">const setting_key = &apos;setting&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import Home from &apos;./Home/Home&apos;</span><br><span class="line">import Satin from &apos;./Satin/Satin&apos;</span><br><span class="line">import Setting from &apos;./Setting/Setting&apos;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;TabNavigator&gt;</span><br><span class="line">	&lt;TabNavigator.Item</span><br><span class="line">	    selected=&#123;this.state.selectedTab === home_key&#125;</span><br><span class="line">	    title=&quot;首页&quot;</span><br><span class="line">	    titleStyle=&#123;styles.tabText&#125;</span><br><span class="line">	    selectedTitleStyle=&#123;styles.selectedTabText&#125;</span><br><span class="line">	    renderIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/home_unselect.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    renderSelectedIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/home_select.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    onPress=&#123;() =&gt; this.setState(&#123; selectedTab: home_key &#125;)&#125;&gt;</span><br><span class="line">	</span><br><span class="line">	    &lt;Home navigator=&#123;this.props.navigator&#125;/&gt;</span><br><span class="line">	&lt;/TabNavigator.Item&gt;</span><br><span class="line">	&lt;TabNavigator.Item</span><br><span class="line">	    selected=&#123;this.state.selectedTab === satin_key&#125;</span><br><span class="line">	    title=&quot;段子&quot;</span><br><span class="line">	    titleStyle=&#123;styles.tabText&#125;</span><br><span class="line">	    selectedTitleStyle=&#123;styles.selectedTabText&#125;</span><br><span class="line">	    renderIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/activity_unselect.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    renderSelectedIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/activity_select.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    onPress=&#123;() =&gt; this.setState(&#123; selectedTab: satin_key &#125;)&#125;&gt;</span><br><span class="line">	</span><br><span class="line">	    &lt;Satin navigator=&#123;this.props.navigator&#125;/&gt;</span><br><span class="line">	&lt;/TabNavigator.Item&gt;</span><br><span class="line">	&lt;TabNavigator.Item</span><br><span class="line">	    selected=&#123;this.state.selectedTab === setting_key&#125;</span><br><span class="line">	    title=&quot;我的&quot;</span><br><span class="line">	    titleStyle=&#123;styles.tabText&#125;</span><br><span class="line">	    selectedTitleStyle=&#123;styles.selectedTabText&#125;</span><br><span class="line">	    renderIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/my_unselect.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    renderSelectedIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/my_select.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    onPress=&#123;() =&gt; this.setState(&#123; selectedTab: setting_key &#125;)&#125;&gt;</span><br><span class="line">	</span><br><span class="line">	    &lt;Setting navigator=&#123;this.props.navigator&#125;/&gt;</span><br><span class="line">	&lt;/TabNavigator.Item&gt;</span><br><span class="line">&lt;/TabNavigator&gt;</span><br></pre></td></tr></table></figure>
+<p>配置也比较易懂。</p>
+<p>另外创建 3 个文件 <code>Home.js</code> 、 <code>Satin.js</code> 和 <code>Setting.js</code> </p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    View,</span><br><span class="line">    StyleSheet</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Satin</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            &lt;View style=&#123;styles.view&#125;&gt;</span><br><span class="line"></span><br><span class="line">            &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">        )</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">const styles = StyleSheet.create(&#123;</span></span><br><span class="line"><span class="regexp">    view: &#123;</span></span><br><span class="line"><span class="regexp">        flex:1,</span></span><br><span class="line"><span class="regexp">        backgroundColor: 'orange'</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;)</span></span><br></pre></td></tr></table></figure>
+<p>可以给每个设置不同的颜色，这样点击界面切换也很明显。</p>
+<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/tab.png?raw=true" width="300"></p>
+<p>具体的代码可以看 <a href="https://github.com/qiangxinyu/ReactNativeExample/tree/master/ReactNative2" target="_blank" rel="noopener">项目</a></p>
+<h2 id="NavigationBar"><a href="#NavigationBar" class="headerlink" title="NavigationBar"></a>NavigationBar</h2><p>同意官方也没有提供 <code>NavigationBar</code>，我们需要自定义一个。</p>
+<p>然后在 <code>Home.js</code> 、  <code>Satin.js</code> 和 <code>Setting.js</code> 加入</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    View,</span><br><span class="line">    StyleSheet</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> NavigationBar <span class="keyword">from</span> <span class="string">'../Custom/NavBarCommon'</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">Home</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            &lt;View style=&#123;styles.view&#125;&gt;</span><br><span class="line">                &lt;NavigationBar</span><br><span class="line">                    title=<span class="string">"首页"</span></span><br><span class="line">                    unLeftImage=&#123;<span class="literal">true</span>&#125;</span><br><span class="line">                /&gt;</span><br><span class="line"></span><br><span class="line">            &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">        )</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">const styles = StyleSheet.create(&#123;</span></span><br><span class="line"><span class="regexp">    view: &#123;</span></span><br><span class="line"><span class="regexp">        flex:1,</span></span><br><span class="line"><span class="regexp">        backgroundColor: 'white'</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;)</span></span><br></pre></td></tr></table></figure>
+<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/navibar.png?raw=true" alt="navibar"></p>
+<p><a href="https://github.com/qiangxinyu/ReactNativeExample/tree/master/ReactNative2" target="_blank" rel="noopener">项目地址</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/03/ReactNative_1/" rel="next" title="React Native (一)：基础">
+                <i class="fa fa-chevron-left"></i> React Native (一)：基础
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/03/Android_BaiduMap/" rel="prev" title="Android 百度地图定位问题">
+                Android 百度地图定位问题 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4"
+                alt="强新宇" />
+            
+              <p class="site-author-name" itemprop="name">强新宇</p>
+              <p class="site-description motion-element" itemprop="description">(｡･∀･)ﾉﾞ嗨，我是强新宇，是一名 iOS 开发者。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/qiangxinyu" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:qiangxinyu92@gmail.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/d37622b39cbc" target="_blank" title="jianshu"><i class="fa fa-fw fa-jianshu"></i>jianshu</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#React-Native-App-的视图结构"><span class="nav-number">1.</span> <span class="nav-text">React Native App 的视图结构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#StatusBar"><span class="nav-number">2.</span> <span class="nav-text">StatusBar</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Navigator"><span class="nav-number">3.</span> <span class="nav-text">Navigator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#tab-navigator"><span class="nav-number">4.</span> <span class="nav-text">tab-navigator</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NavigationBar"><span class="nav-number">5.</span> <span class="nav-text">NavigationBar</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">强新宇</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

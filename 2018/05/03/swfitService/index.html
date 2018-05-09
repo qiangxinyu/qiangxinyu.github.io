@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="原文地址 自从苹果官方发布了一个 Swift 的 Linux 开源版本之后，服务端 Swift 终于迎来了一个令人激动的前景。我的好奇心终于无法克制，是时候尝试一下服务端 Swift 了！ 除了用过几个 Baas 以外，我没有任何后端编程经验，但幸运的是开源社区已经提供了现成的框架。我试了一下 Tanner Nelson 推荐的 Vapor 框架。它的使用非常简单，非常适合我当前的任务，在这篇文档">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用 Swift 搭建服务器">
+<meta property="og:url" content="http://yoursite.com/2018/05/03/swfitService/index.html">
+<meta property="og:site_name" content="emmmmm">
+<meta property="og:description" content="原文地址 自从苹果官方发布了一个 Swift 的 Linux 开源版本之后，服务端 Swift 终于迎来了一个令人激动的前景。我的好奇心终于无法克制，是时候尝试一下服务端 Swift 了！ 除了用过几个 Baas 以外，我没有任何后端编程经验，但幸运的是开源社区已经提供了现成的框架。我试了一下 Tanner Nelson 推荐的 Vapor 框架。它的使用非常简单，非常适合我当前的任务，在这篇文档">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService1.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService2.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService3.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService4.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService5.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService6.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService7.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService8.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService9.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService10.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService11.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService13.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService14.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService15.png?raw=true">
+<meta property="og:updated_time" content="2018-05-03T08:49:25.181Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="使用 Swift 搭建服务器">
+<meta name="twitter:description" content="原文地址 自从苹果官方发布了一个 Swift 的 Linux 开源版本之后，服务端 Swift 终于迎来了一个令人激动的前景。我的好奇心终于无法克制，是时候尝试一下服务端 Swift 了！ 除了用过几个 Baas 以外，我没有任何后端编程经验，但幸运的是开源社区已经提供了现成的框架。我试了一下 Tanner Nelson 推荐的 Vapor 框架。它的使用非常简单，非常适合我当前的任务，在这篇文档">
+<meta name="twitter:image" content="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService1.png?raw=true">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/03/swfitService/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>使用 Swift 搭建服务器 | emmmmm</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">emmmmm</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/03/swfitService/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="强新宇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="emmmmm">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">使用 Swift 搭建服务器
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-05-03 16:49:25" itemprop="dateCreated datePublished" datetime="2018-05-03T16:49:25+08:00">2018-05-03</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><a href="http://www.cocoachina.com/swift/20160318/15712.html" target="_blank" rel="noopener">原文地址</a></p>
+<p>自从苹果官方发布了一个 Swift 的 Linux 开源版本之后，服务端 Swift 终于迎来了一个令人激动的前景。我的好奇心终于无法克制，是时候尝试一下服务端 Swift 了！</p>
+<p>除了用过几个 Baas 以外，我没有任何后端编程经验，但幸运的是开源社区已经提供了现成的框架。我试了一下 <a href="https://twitter.com/tanner0101" target="_blank" rel="noopener">Tanner Nelson</a> 推荐的 <a href="https://github.com/qutheory/vapor" target="_blank" rel="noopener">Vapor</a> 框架。它的使用非常简单，非常适合我当前的任务，在这篇文档中还会使用到 Heroku。我决定使用 Heroku 的原因是我们的后端团队在使用它，它对于前端来说非常友好。</p>
+<p>写到这里的时候，为了解决 Heroku 框架运行中的几个小问题，我专门提交了一个 <a href="https://github.com/qutheory/vapor/pull/25" target="_blank" rel="noopener">pull request</a> 。如果代码还没被合并的话，请设置你的包管理器从 <a href="https://github.com/loganwright/vapor" target="_blank" rel="noopener">这里</a> 下载。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>要继续本教程，首先，你需要一个 <a href="https://signup.heroku.com/?c=70130000001x9jFAAQ" target="_blank" rel="noopener">Heroku</a> 账号 ，并安装好 <a href="https://swift.org/download/" target="_blank" rel="noopener">Swift Development Snapshot</a> 。写到这里的时候，在它的正式版中还未包含 swift 包管理器。因此为了使用这个工具，你必须下载开发版的 snapshot。</p>
+<h4 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h4><p>我们的目标是创建一个简单的 Swift 服务器并运行在 Heroku 上。这不需要在 linux 环境下进行，就像是你在使用本地服务器。你只消创建一个本地的 Xcode 项目，对项目进行一些设置，然后就可以在 <a href="https://swift.org/package-manager/" target="_blank" rel="noopener">Swift 包管理器</a> 中运行它。整过过程分为 4 个步骤：</p>
+<p>####### 将 main.swift 拷贝根目录下的 Sources 目录</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService1.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService1.png?raw=true" width="720" height="598" alt="swiftService1.png"></a></p>
+<p>####### 创建一个 Package.swift 文件</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService2.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService2.png?raw=true" width="720" height="218" alt="swiftService2.png"></a></p>
+<p>####### 将 .build 目录添加到 import paths </p>
+<p>要使用自动补全和语法加亮功能，需要将 Swift 包管理器的 build 目录提交到 import paths 中。注意，在 import paths 的 Debug 中设置的 debug 目录，而 Release 项则输入 release 目录。</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService3.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService3.png?raw=true" width="720" height="334" alt="swiftService3.png"></a></p>
+<p>####### 用 toolchain 运行 Xcode</p>
+<p>如果你使用 Xcode 7.3，你可以用 Xcode &gt; Toolchains 菜单开启一个Xcode 实例，用于打开 swift snapshot。因为我们不能在 Xcode 中进行编译，我们只能以命令行的方式进行编译。</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService4.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService4.png?raw=true" width="594" height="16" alt="swiftService4.png"></a></p>
+<h4 id="编写服务器"><a href="#编写服务器" class="headerlink" title="编写服务器"></a>编写服务器</h4><p>令我高兴的是，为了进行概念验证，我需要编写的代码其实只有寥寥数行。我启动和运行服务器的代码甚至不到 10 行。</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService5.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService5.png?raw=true" width="720" height="239" alt="swiftService5.png"></a></p>
+<p>要启动服务器，只需在终端中输入一句命令，：</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService6.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService6.png?raw=true" width="720" height="126" alt="swiftService6.png"></a></p>
+<p>好了，让我们打开浏览器。我的浏览器安装了 json 插件，你的画面或许会有不同。</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService7.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService7.png?raw=true" width="556" height="240" alt="swiftService7.png"></a></p>
+<h4 id="迁移到云上"><a href="#迁移到云上" class="headerlink" title="迁移到云上"></a>迁移到云上</h4><p>服务器在本地顺利运行起来了，但如果放到云端则更好。我迫不及待地想将 App 在云上跑起来。对于我来说这是一个全新的挑战，幸运的是，我得到了 <a href="https://twitter.com/vincenttoms" target="_blank" rel="noopener">Vincent Toms</a> 的悉心指导。</p>
+<p>Heroku 的安装是一件非常愉悦的体验，几分钟后我就创建了一个 Heroku App，接下来我就要上传我的项目了。</p>
+<p>####### 出错啦</p>
+<p>这只是今天的诸多错误中的一个。我已经预计到事情不可能一帆风顺，因此我查看了 Vapor 的文档，最终发现问题出在所谓的 <a href="https://devcenter.heroku.com/articles/buildpacks" target="_blank" rel="noopener">buildpacks</a> 上。Heorku 提供了一些标准的 buildpacks，但完全没有针对 Swift 的 buildpacks。无奈之下求救于开源社区，刚好看到 Kyle Fuller 的 <a href="https://github.com/kylef/heroku-buildpack-swift" target="_blank" rel="noopener">buildpack</a> 。集成它就简单得多了。</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService8.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService8.png?raw=true" width="720" height="85" alt="swiftService8.png"></a></p>
+<p>用这个 buildpack 启动后，App 成功加载，接下来就是访问它的 URL。</p>
+<p>####### 再次出错</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService9.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService9.png?raw=true" width="720" height="147" alt="swiftService9.png"></a></p>
+<p>事情不会那么顺利的，是吧？经过 google 一番，仔细查看了一些例子，我发现我还差一个 Procfile。浏览一下这个文件的内容，你就能明白这个文件是干什么用的了。</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService10.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService10.png?raw=true" width="664" height="170" alt="swiftService10.png"></a></p>
+<p>buildpack 创建了可执行文件，但 Heroku 并不知道。通过 Procfile，我们告诉 Heroku 去运行 SwiftServerIO 可执行文件。上传这个 Procfile。</p>
+<p>####### 仍然出错</p>
+<p>Heroku 编译的 2 分支仿佛变得无比漫长。我重新打开了浏览器，发现仍然报错。</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService11.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService11.png?raw=true" width="720" height="153" alt="swiftService11.png"></a></p>
+<p>我以为 Heroku 可能还未启动完成（实际不是），因此我又等了一小会，终于发现出错了。可执行文件生成了， process file 也就绪，一定是别的什么地方出问题了。再次 google，一直到我最终发现我需要设置 App 的规模(<a href="https://devcenter.heroku.com/articles/scaling#cli" target="_blank" rel="noopener">scale up</a>)。这要使用到 Heroku 的 toolbelt 中的一个简单命令。</p>
+<p>heroku ps:scale web=1</p>
+<p>Heroku 在免费情况下只有一个 dyno（Heroku 计费单位，10~50 个请求/秒）。但对于我们的简单服务器来说，这也够了。因此，在我们将 scale web 设置为 1 个 dyno 之后，再次用浏览器查看。</p>
+<p>成功了！</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService13.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService13.png?raw=true" width="168" height="166" alt="swiftService13.png"></a></p>
+<p>成功了！服务器启动，出现了万能的 hello world！经过一番欢呼雀跃之后，让我们真正来问一声好吧！</p>
+<p>####### 响应请求</p>
+<p>在 main.swfit 文件中添加一小段代码，让服务器在问好的同时能够因人而异。就微微偷一下懒，新加一个路由，让服务器根据输入输出不同的问候语。</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService14.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService14.png?raw=true" width="720" height="296" alt="swiftService14.png"></a></p>
+<p>一切正常，但根据一般规律，我仍然做好了出错的心理准备。提交修改，push 代码到 Heroku。</p>
+<p>####### Say Hello!</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService15.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/swfitService/swiftService15.png?raw=true" width="413" height="151" alt="swiftService15.png"></a></p>
+<p>大约一份多钟的编译之后，在浏览器中访问 URL，服务器返回了问候语。<a href="http://swift-server-io.herokuapp.com/hello/reader" target="_blank" rel="noopener">你可以在这里查看效果</a> 。</p>
+<p>接下来是什么？</p>
+<p>可以说，服务端 Swift 的今天离不开社区强大支持。对于我来说，能够从云端获取 JSON 是一个令人兴奋的开始，我已经迫不及待地想看看接下来还会发生什么。</p>
+<p>当然在此之前，我不得不和我在 <a href="http://intrepid.io/" target="_blank" rel="noopener">Intrepid Pursuits</a> 的同事们一起，继续编写一个有一个 iOS App。如果你想了解我的最新动态，请在访问我的 <a href="https://github.com/loganwright" target="_blank" rel="noopener">Github</a> 或者 <a href="https://twitter.com/logmaestro" target="_blank" rel="noopener">Twitter</a>。</p>
+<p><a href="http://www.swiftserver.io/hello/server-side-swift" target="_blank" rel="noopener">服务端 Swift</a> </p>
+<p>附言</p>
+<p>在 <a href="https://github.com/loganwright/vapor" target="_blank" rel="noopener">这里</a> 下载源代码。</p>
+<p>在 <a href="https://github.com/LoganWright/swift-server-io/tree/master/Journal" target="_blank" rel="noopener">Journal</a> 文件夹中，是 step-by-step 指南。</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/03/rightSlipBackFailure/" rel="next" title="右滑返回 失效">
+                <i class="fa fa-chevron-left"></i> 右滑返回 失效
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/03/swiftExploreAndOptimization/" rel="prev" title="Swift 性能探索和优化分析">
+                Swift 性能探索和优化分析 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4"
+                alt="强新宇" />
+            
+              <p class="site-author-name" itemprop="name">强新宇</p>
+              <p class="site-description motion-element" itemprop="description">(｡･∀･)ﾉﾞ嗨，我是强新宇，是一名 iOS 开发者。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/qiangxinyu" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:qiangxinyu92@gmail.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/d37622b39cbc" target="_blank" title="jianshu"><i class="fa fa-fw fa-jianshu"></i>jianshu</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装"><span class="nav-number">1.</span> <span class="nav-text">安装</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#开始"><span class="nav-number">1.1.</span> <span class="nav-text">开始</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#编写服务器"><span class="nav-number">1.2.</span> <span class="nav-text">编写服务器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#迁移到云上"><span class="nav-number">1.3.</span> <span class="nav-text">迁移到云上</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">强新宇</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

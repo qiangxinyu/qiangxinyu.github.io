@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="最近刚完成一个 React Native 的项目，踩了无数坑，去年折腾过几周，后来因为有两个 iOS 项目就没有再折腾，当时想要写一个主文件，分别给 Android 和 iOS 引用，但是弄了好久也不会弄，也下载了 f8app 看了，不过完全看不懂，就这样放弃了。 今年 3 月中旬正好公司有个项目只需要前端，而且公司没有 Android 开发，也想弄混合开发，于是正好我拿这个项目去练手。 从上面的">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native (一)：基础">
+<meta property="og:url" content="http://yoursite.com/2018/05/03/ReactNative_1/index.html">
+<meta property="og:site_name" content="emmmmm">
+<meta property="og:description" content="最近刚完成一个 React Native 的项目，踩了无数坑，去年折腾过几周，后来因为有两个 iOS 项目就没有再折腾，当时想要写一个主文件，分别给 Android 和 iOS 引用，但是弄了好久也不会弄，也下载了 f8app 看了，不过完全看不懂，就这样放弃了。 今年 3 月中旬正好公司有个项目只需要前端，而且公司没有 Android 开发，也想弄混合开发，于是正好我拿这个项目去练手。 从上面的">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/directory.jpeg?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/firstError.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/iterm.jpeg?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/ios.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/android.png?raw=true">
+<meta property="og:updated_time" content="2018-05-03T08:49:25.176Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Native (一)：基础">
+<meta name="twitter:description" content="最近刚完成一个 React Native 的项目，踩了无数坑，去年折腾过几周，后来因为有两个 iOS 项目就没有再折腾，当时想要写一个主文件，分别给 Android 和 iOS 引用，但是弄了好久也不会弄，也下载了 f8app 看了，不过完全看不懂，就这样放弃了。 今年 3 月中旬正好公司有个项目只需要前端，而且公司没有 Android 开发，也想弄混合开发，于是正好我拿这个项目去练手。 从上面的">
+<meta name="twitter:image" content="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/directory.jpeg?raw=true">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/03/ReactNative_1/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>React Native (一)：基础 | emmmmm</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">emmmmm</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/03/ReactNative_1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="强新宇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="emmmmm">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React Native (一)：基础
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-05-03 16:49:25" itemprop="dateCreated datePublished" datetime="2018-05-03T16:49:25+08:00">2018-05-03</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>最近刚完成一个 <code>React Native</code> 的项目，踩了无数坑，去年折腾过几周，后来因为有两个 <code>iOS</code> 项目就没有再折腾，当时想要写一个主文件，分别给 <code>Android</code> 和 <code>iOS</code> 引用，但是弄了好久也不会弄，也下载了 <a href="https://github.com/fbsamples/f8app" target="_blank" rel="noopener"><code>f8app</code></a> 看了，不过完全看不懂，就这样放弃了。</p>
+<p>今年 3 月中旬正好公司有个项目只需要前端，而且公司没有 <code>Android</code> 开发，也想弄混合开发，于是正好我拿这个项目去练手。</p>
+<p>从上面的描述也看出来我是一个 <code>iOS</code> 开发，对于有移动开发基础的人来说做 <code>React Native</code> 开发还是比较好上手的，前端的话更容易，只是刚开始入门比较费劲，也找不到个能问的人。总的下来我的建议还是如果卡在某个地方很久很烦躁不想继续学了，那么放一放，放几天或者一两周，再继续学，不要轻易放弃，入门后就轻松多了。</p>
+<h2 id="说明"><a href="#说明" class="headerlink" title="说明"></a>说明</h2><p>这系列文章主要还是针对有编程经验的开发者，起码掌握一门主流的编程语言。</p>
+<p>开发平台： Mac OS</p>
+<p>IDE: WebStorm</p>
+<p>这里我并不会很详细的一步一步的讲解，详细的教程可以看<a href="http://reactnative.cn/docs/0.43/getting-started.html" target="_blank" rel="noopener">官方教程</a>，这里主要是记录一些我在学习过程中遇到的疑难杂症，如果你碰到了或许可以帮你一把。</p>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><p>首先既然看这个文章，那么默认你已经知道什么是 <a href="http://reactnative.cn/" target="_blank" rel="noopener">React Native</a> 以及是干什么的，还有你需要会一些 <code>JavaScript</code> ，如果你还不会 <code>JavaScript</code>，那么推荐 <code>廖雪峰老师</code> 的 <a href="http://www.liaoxuefeng.com/wiki/001434446689867b27157e896e74d51a89c25cc8b43bdb3000" target="_blank" rel="noopener">JavaScript教程</a> 和 <code>阮一峰老师</code> 的 <a href="http://es6.ruanyifeng.com/#README" target="_blank" rel="noopener">ECMAScript 6 入门</a>。</p>
+<p><code>React Native</code> 的原理简单的来说就是通过 <code>JS</code> 与原生的交互，通过解析 <code>JS</code> 来调用原生视图进行展示，逻辑处理都在 <code>JS</code>， 当然也可以写原生类给 <code>JS</code> 调用。</p>
+<p>官方文档永远是必看的，对于初学者来说不会的先去官方文档找。<a href="http://reactnative.cn/" target="_blank" rel="noopener">React Native中文网</a> 对于英文不好的同学来说是首选，比如我自己。</p>
+<p>有问题也可以去 <code>React Native</code> 的 <a href="https://github.com/facebook/react-native" target="_blank" rel="noopener">GitHub地址</a> 的 <code>issues</code> 找。</p>
+<h2 id="搭建开发环境"><a href="#搭建开发环境" class="headerlink" title="搭建开发环境"></a>搭建开发环境</h2><p>这部分比较简单，按着 <a href="http://reactnative.cn/docs/0.43/getting-started.html" target="_blank" rel="noopener">官方教程</a> 搭建即可，但是在运行命令的时候可能会出各种问题，这个时候只能靠 <code>Baidu</code> 和 <code>Google</code> 了，我是一次成功的，所以也不知道会有什么问题，这里也不做过多说明了。</p>
+<p>希望没人在这一步就放弃了。</p>
+<h2 id="iOS-和-Android-调用统一资源"><a href="#iOS-和-Android-调用统一资源" class="headerlink" title="iOS 和 Android 调用统一资源"></a>iOS 和 Android 调用统一资源</h2><p>新创建的项目 <code>iOS</code> 和 <code>Android</code> 代码是分开的，分别在 <code>index.ios.js</code> 和 <code>index.android.js</code> 中，这是两个平台的入口。</p>
+<p>顶部的各种 <code>import</code> 是引入的各种资源：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React, &#123; Component &#125; <span class="keyword">from</span> <span class="string">'react'</span>;</span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">  AppRegistry,</span><br><span class="line">  StyleSheet,</span><br><span class="line">  Text,</span><br><span class="line">  View</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br></pre></td></tr></table></figure>
+<p>接下来是 <code>React</code> 的语法，创建了一些视图:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">ReactNative1</span> <span class="keyword">extends</span> <span class="title">Component</span> </span>&#123;</span><br><span class="line">  render() &#123;</span><br><span class="line">    <span class="keyword">return</span> (</span><br><span class="line">      &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">        &lt;Text style=&#123;styles.welcome&#125;&gt;</span><br><span class="line">          Welcome to React Native!</span><br><span class="line">        &lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">        &lt;Text style=&#123;styles.instructions&#125;&gt;</span></span><br><span class="line"><span class="regexp">          To get started, edit index.ios.js</span></span><br><span class="line"><span class="regexp">        &lt;/</span>Text&gt;</span><br><span class="line">        &lt;Text style=&#123;styles.instructions&#125;&gt;</span><br><span class="line">          Press Cmd+R to reload,&#123;<span class="string">'\n'</span>&#125;</span><br><span class="line">          Cmd+D or shake <span class="keyword">for</span> dev menu</span><br><span class="line">        &lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">      &lt;/</span>View&gt;</span><br><span class="line">    );</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后是布局的代码：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">const</span> styles = StyleSheet.create(&#123;</span><br><span class="line">  container: &#123;</span><br><span class="line">    flex: <span class="number">1</span>,</span><br><span class="line">    justifyContent: <span class="string">'center'</span>,</span><br><span class="line">    alignItems: <span class="string">'center'</span>,</span><br><span class="line">    backgroundColor: <span class="string">'#F5FCFF'</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  welcome: &#123;</span><br><span class="line">    fontSize: <span class="number">20</span>,</span><br><span class="line">    textAlign: <span class="string">'center'</span>,</span><br><span class="line">    margin: <span class="number">10</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">  instructions: &#123;</span><br><span class="line">    textAlign: <span class="string">'center'</span>,</span><br><span class="line">    color: <span class="string">'#333333'</span>,</span><br><span class="line">    marginBottom: <span class="number">5</span>,</span><br><span class="line">  &#125;,</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>最后是注册，每个平台只需要注册一次：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">AppRegistry.registerComponent(<span class="string">'ReactNative1'</span>, () =&gt; ReactNative1);</span><br></pre></td></tr></table></figure>
+<p>上面的那一大堆不用去管，我们就从这个方法入手，这个方法传入了 2 个参数，第一个是 <code>App</code> 的标志，这个你们应该也明白不能随便改，第二个参数是一个匿名方法，调用这个方法会返回 <code>ReactNative1</code> ，就是上面的 <code>React</code> 创建的类，那么要让 <code>iOS</code> 和 <code>Android</code> 引用同一个资源，只需要这里返回给同一个类即可。</p>
+<p>新创建一个文件夹 <code>App</code> 或者随便啥，我们写的所有 <code>JS</code> 文件都放这里，方便管理。</p>
+<p>然后在 <code>App</code> 内创建一个 <code>setup.js</code>，这时候目录看起来是这样子:</p>
+<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/directory.jpeg?raw=true" alt="目录"></p>
+<p>然后在把 <code>index.ios.js</code> 的 <code>import</code> 、 <code>React</code> 和 <code>布局</code> 部分的内容复制过来，然后加入两句代码，现在 <code>setup.js</code> 文件是这样的：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    StyleSheet,</span><br><span class="line">    Text,</span><br><span class="line">    View</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">setup</span>(<span class="params"></span>): <span class="title">ReactClass</span>&lt;</span>&#123;&#125;&gt; &#123;</span><br><span class="line"></span><br><span class="line">    <span class="comment">//这里做一些注册第三方等App初始化需要的操作</span></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> Root</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">Root</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            &lt;View style=&#123;styles.container&#125;&gt;</span><br><span class="line">                &lt;Text style=&#123;styles.welcome&#125;&gt;</span><br><span class="line">                    Welcome to React Native!</span><br><span class="line">                &lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">                &lt;Text style=&#123;styles.instructions&#125;&gt;</span></span><br><span class="line"><span class="regexp">                    To get started, edit index.android.js</span></span><br><span class="line"><span class="regexp">                &lt;/</span>Text&gt;</span><br><span class="line">                &lt;Text style=&#123;styles.instructions&#125;&gt;</span><br><span class="line">                    Double tap R on your keyboard to reload,&#123;<span class="string">'\n'</span>&#125;</span><br><span class="line">                    Shake or press menu button <span class="keyword">for</span> dev menu</span><br><span class="line">                &lt;<span class="regexp">/Text&gt;</span></span><br><span class="line"><span class="regexp">            &lt;/</span>View&gt;</span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> styles = StyleSheet.create(&#123;</span><br><span class="line">    container: &#123;</span><br><span class="line">        flex: <span class="number">1</span>,</span><br><span class="line">        justifyContent: <span class="string">'center'</span>,</span><br><span class="line">        alignItems: <span class="string">'center'</span>,</span><br><span class="line">        backgroundColor: <span class="string">'#F5FCFF'</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    welcome: &#123;</span><br><span class="line">        fontSize: <span class="number">20</span>,</span><br><span class="line">        textAlign: <span class="string">'center'</span>,</span><br><span class="line">        margin: <span class="number">10</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">    instructions: &#123;</span><br><span class="line">        textAlign: <span class="string">'center'</span>,</span><br><span class="line">        color: <span class="string">'#333333'</span>,</span><br><span class="line">        marginBottom: <span class="number">5</span>,</span><br><span class="line">    &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="built_in">module</span>.exports = setup</span><br></pre></td></tr></table></figure>
+<p>我这里是直接导入了 <code>import React from &#39;react&#39;</code> ，那么在创建 <code>React类</code> 的时候就需要 <code>extends React.Component</code> ，我是习惯这种写法，如果你觉得官方的写法比较好，那么就按着官方的写就行。</p>
+<p>然后修改 <code>index.ios.js</code> 和 <code>index.android.js</code> ,修改成一模一样：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    AppRegistry,</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> setup <span class="keyword">from</span> <span class="string">'./App/setup'</span></span><br><span class="line"></span><br><span class="line">AppRegistry.registerComponent(<span class="string">'ReactNative1'</span>, setup);</span><br></pre></td></tr></table></figure>
+<p>如果已经在运行，那么 <code>iOS模拟器</code> 按 <code>command + R</code> 刷新，<code>Android模拟器</code> 双击 <code>R</code> 刷新。</p>
+<p>如果没有在运行那么运行 <code>react-native run-ios</code> 和 <code>react-native run-android</code> 查看效果。</p>
+<p>如果运行的时候遇见这个错误：</p>
+<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/firstError.png?raw=true" alt="firstError"></p>
+<p>那么需要关闭 <code>react-native</code> 启动的服务，重新启动。</p>
+<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/iterm.jpeg?raw=true" alt="iterm"></p>
+<p>如果一切正常，那么尝试修改 <code>setup.js</code> 中 <code>Text</code> 标签中的文字，刷新 <code>iOS</code> 和 <code>Android</code> 看看效果。</p>
+<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/ios.png?raw=true" width="300/"><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative1/android.png?raw=true" width="300/"></p>
+<p>如果你坚持到了这里，那么恭喜你已经初步掌握了 <code>react native</code> 。</p>
+<p><a href="https://github.com/qiangxinyu/ReactNativeExample/tree/master/ReactNative1" target="_blank" rel="noopener">示例项目地址</a></p>
+<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a href="https://github.com/fbsamples/f8app" target="_blank" rel="noopener">f8app</a></p>
+<p><a href="http://reactnative.cn/docs/0.43/getting-started.html" target="_blank" rel="noopener">React Native中文网</a></p>
+<p><a href="https://github.com/facebook/react-native/issues/6613" target="_blank" rel="noopener">https://github.com/facebook/react-native/issues/6613</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/03/MorePullDown/" rel="next" title="多个下拉按钮的处理">
+                <i class="fa fa-chevron-left"></i> 多个下拉按钮的处理
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/03/ReactNative_2/" rel="prev" title="React Native (二)：StatusBar 、 NavigationBar 与 TabBar">
+                React Native (二)：StatusBar 、 NavigationBar 与 TabBar <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4"
+                alt="强新宇" />
+            
+              <p class="site-author-name" itemprop="name">强新宇</p>
+              <p class="site-description motion-element" itemprop="description">(｡･∀･)ﾉﾞ嗨，我是强新宇，是一名 iOS 开发者。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/qiangxinyu" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:qiangxinyu92@gmail.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/d37622b39cbc" target="_blank" title="jianshu"><i class="fa fa-fw fa-jianshu"></i>jianshu</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#说明"><span class="nav-number">1.</span> <span class="nav-text">说明</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础"><span class="nav-number">2.</span> <span class="nav-text">基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#搭建开发环境"><span class="nav-number">3.</span> <span class="nav-text">搭建开发环境</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#iOS-和-Android-调用统一资源"><span class="nav-number">4.</span> <span class="nav-text">iOS 和 Android 调用统一资源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-number">5.</span> <span class="nav-text">参考链接</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">强新宇</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

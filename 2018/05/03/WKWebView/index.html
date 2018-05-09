@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="WKWebView 是苹果在 iOS 8 中引入的新组件，目的是给出一个新的高性能的 Web View 解决方案，摆脱过去 UIWebView 的老旧笨重特别是内存占用量巨大的问题。 苹果将 UIWebViewDelegate 与 UIWebView 重构成了 14 个类和 3 个协议，引入了不少新的功能和接口，这可以在一定程度上看做苹果对其封锁 Web View 内核的行为作出的补偿：既然你们都">
+<meta property="og:type" content="article">
+<meta property="og:title" content="WKWebView">
+<meta property="og:url" content="http://yoursite.com/2018/05/03/WKWebView/index.html">
+<meta property="og:site_name" content="emmmmm">
+<meta property="og:description" content="WKWebView 是苹果在 iOS 8 中引入的新组件，目的是给出一个新的高性能的 Web View 解决方案，摆脱过去 UIWebView 的老旧笨重特别是内存占用量巨大的问题。 苹果将 UIWebViewDelegate 与 UIWebView 重构成了 14 个类和 3 个协议，引入了不少新的功能和接口，这可以在一定程度上看做苹果对其封锁 Web View 内核的行为作出的补偿：既然你们都">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_0.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_1.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_2.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_3.png?raw=true">
+<meta property="og:updated_time" content="2018-05-03T08:49:25.179Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="WKWebView">
+<meta name="twitter:description" content="WKWebView 是苹果在 iOS 8 中引入的新组件，目的是给出一个新的高性能的 Web View 解决方案，摆脱过去 UIWebView 的老旧笨重特别是内存占用量巨大的问题。 苹果将 UIWebViewDelegate 与 UIWebView 重构成了 14 个类和 3 个协议，引入了不少新的功能和接口，这可以在一定程度上看做苹果对其封锁 Web View 内核的行为作出的补偿：既然你们都">
+<meta name="twitter:image" content="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_0.png?raw=true">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/03/WKWebView/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>WKWebView | emmmmm</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">emmmmm</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/03/WKWebView/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="强新宇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="emmmmm">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">WKWebView
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-05-03 16:49:25" itemprop="dateCreated datePublished" datetime="2018-05-03T16:49:25+08:00">2018-05-03</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><code>WKWebView</code> 是苹果在 iOS 8 中引入的新组件，目的是给出一个新的高性能的 <code>Web View</code> 解决方案，摆脱过去 <code>UIWebView</code> 的老旧笨重特别是内存占用量巨大的问题。</p>
+<p>苹果将 <code>UIWebViewDelegate</code> 与 <code>UIWebView</code> 重构成了 <a href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/WebKit/ObjC_classic/index.html" target="_blank" rel="noopener">14 个类和 3 个协议</a>，引入了不少新的功能和接口，这可以在一定程度上看做苹果对其封锁 <code>Web View</code> 内核的行为作出的补偿：既然你们都说 <code>UIWebView</code> 太渣，那我就造一个不渣的给你们用呗~~ 众所周知，连 Chrome 的 iOS 版用的也是 <code>UIWebView</code> 的内核。</p>
+<p><code>WKWebView</code> 有以下几大主要进步：</p>
+<ul>
+<li>浏览器内核渲染进程提取出 App，由系统进行统一管理，这减少了相当一部分的性能损失。</li>
+<li>js 可以直接使用已经事先注入 js runtime 的 js 接口给 Native 层传值，不必再通过苦逼的 iframe 制造页面刷新再解析自定义协议的奇怪方式。</li>
+<li>支持高达 60 fps 的滚动刷新率，内置了手势探测。</li>
+</ul>
+<h6 id="开始使用-WKWebView"><a href="#开始使用-WKWebView" class="headerlink" title=" 开始使用 WKWebView "></a><font color="#1ba856"> 开始使用 WKWebView </font></h6><p>创建一个名为 BuildYourOwnHybridDevelopmentFramework 的 Single View Application 项目。在 <code>ViewController</code> 顶部引入 <code>WebKit</code>：</p>
+<p><code>import WebKit</code></p>
+<p>之后创建一个 WKWebView 类型的成员变量，并对其进行初始化，加入到页面上：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">var</span> wk: <span class="type">WKWebView</span>!</span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidLoad</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">didReceiveMemoryWarning</span><span class="params">()</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.didReceiveMemoryWarning()</span><br><span class="line">    <span class="comment">// Dispose of any resources that can be recreated.</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">override</span> <span class="function"><span class="keyword">func</span> <span class="title">viewDidAppear</span><span class="params">(animated: Bool)</span></span> &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidAppear(animated)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.wk = <span class="type">WKWebView</span>(frame: <span class="keyword">self</span>.view.frame)</span><br><span class="line">    <span class="keyword">self</span>.wk.loadRequest(<span class="type">NSURLRequest</span>(<span class="type">URL</span>: <span class="type">NSURL</span>(string: <span class="string">"http://www.baidu.com/"</span>)!))</span><br><span class="line">    <span class="keyword">self</span>.view.addSubview(<span class="keyword">self</span>.wk)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>遭遇 BUG</p>
+<p>如果你用的是 Xcode 7，这时候你应该得到了一块雪白雪白的屏幕，我们遭遇了 bug。这是因为 iOS 9 SDK 中默认不再支持访问非 HTTPS 的地址，在 <code>info.plist</code> 加入:</p>
+<figure class="highlight plist"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">key</span>&gt;</span>NSAppTransportSecurity<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">dict</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">key</span>&gt;</span>NSAllowsArbitraryLoads<span class="tag">&lt;/<span class="name">key</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">true</span>/&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dict</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>再次运行项目，搞定！</p>
+<p>查看效果</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_0.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_0.png?raw=true" width="365" height="690" alt="WKWebView_0.png"></a></p>
+<h6 id="简易错误处理-WKWebView"><a href="#简易错误处理-WKWebView" class="headerlink" title=" 简易错误处理 WKWebView "></a><font color="#1ba856"> 简易错误处理 WKWebView </font></h6><p>为了更方便地在开发中调试问题，我们需要处理一下页面加载失败的事件。</p>
+<p>加入代理：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span>, <span class="title">WKNavigationDelegate</span> </span>&#123;</span><br><span class="line">... ...</span><br></pre></td></tr></table></figure>
+<p>设置代理对象为 self：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.wk.navigationDelegate = <span class="keyword">self</span></span><br></pre></td></tr></table></figure>
+<p>处理加载失败事件</p>
+<p>我们可以使用以下方式让 View Controller 更优雅，更短小精悍：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">typealias</span> wkNavigationDelegate = <span class="type">ViewController</span></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">wkNavigationDelegate</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">webView</span><span class="params">(webView: WKWebView, didFailNavigation navigation: WKNavigation!,</span></span></span><br><span class="line"><span class="function"><span class="params">     withError error: NSError)</span></span> &#123;</span><br><span class="line">        <span class="type">NSLog</span>(error.debugDescription)</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">webView</span><span class="params">(webView: WKWebView, didFailProvisionalNavigation </span></span></span><br><span class="line"><span class="function"><span class="params">    navigation: WKNavigation!, withError error: NSError)</span></span> &#123;</span><br><span class="line">        <span class="type">NSLog</span>(error.debugDescription)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>查看效果</p>
+<p>我们把 网址从 <a href="http://www.baidu.com/" target="_blank" rel="noopener">http://www.baidu.com/</a> 改成 <a href="http://www.baidu/" target="_blank" rel="noopener">http://www.baidu/</a>，运行，得到错误：</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_1.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_1.png?raw=true" width="545" height="114" alt="WKWebView_1.png"></a></p>
+<p>搞定！</p>
+<h6 id="显示弹窗-WKWebView"><a href="#显示弹窗-WKWebView" class="headerlink" title=" 显示弹窗 WKWebView "></a><font color="#1ba856"> 显示弹窗 WKWebView </font></h6><p>在 UIWebView 里，js 的 alert() 弹窗会自动以系统弹窗的形式展示，但是 WKWebview 把这个接口也暴露给了我们，让我们自己 handle js 传来的 alert()。下面我们将自己写代码 handle 住这个事件，并展示为系统弹窗。</p>
+<p>加入代理：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">ViewController</span>: <span class="title">UIViewController</span>, <span class="title">WKNavigationDelegate</span>, <span class="title">WKUIDelegate</span> </span>&#123;</span><br><span class="line">... ...</span><br></pre></td></tr></table></figure>
+<p>设置代理对象为 self：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.wk.<span class="type">UIDelegate</span> = <span class="keyword">self</span></span><br></pre></td></tr></table></figure>
+<p>处理 alert() 事件</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> <span class="keyword">typealias</span> wkUIDelegate = <span class="type">ViewController</span></span><br><span class="line"><span class="class"><span class="keyword">extension</span> <span class="title">wkUIDelegate</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">func</span> <span class="title">webView</span><span class="params">(webView: WKWebView, runJavaScriptAlertPanelWithMessage message: String,</span></span></span><br><span class="line"><span class="function"><span class="params">     initiatedByFrame frame: WKFrameInfo, completionHandler: <span class="params">()</span></span></span> -&gt; <span class="type">Void</span>) &#123;</span><br><span class="line">        <span class="keyword">let</span> ac = <span class="type">UIAlertController</span>(title: webView.title, message: message, preferredStyle:</span><br><span class="line">         <span class="type">UIAlertControllerStyle</span>.<span class="type">Alert</span>)</span><br><span class="line">        ac.addAction(<span class="type">UIAlertAction</span>(title: <span class="string">"OK"</span>, style: <span class="type">UIAlertActionStyle</span>.<span class="type">Cancel</span>, handler:</span><br><span class="line">         &#123; (aa) -&gt; <span class="type">Void</span> <span class="keyword">in</span></span><br><span class="line">            completionHandler()</span><br><span class="line">        &#125;))</span><br><span class="line">        <span class="keyword">self</span>.presentViewController(ac, animated: <span class="literal">true</span>, completion: <span class="literal">nil</span>)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>执行 alert()</p>
+<p>把网址改为正确的 <a href="http://www.baidu.com/" target="_blank" rel="noopener">http://www.baidu.com/</a>，运行项目。然后使用 Safari 自带的 Web View 调试工具执行 alert() 函数：</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_2.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_2.png?raw=true" width="455" height="262" alt="WKWebView_2.png"></a></p>
+<p>查看效果</p>
+<p><a href="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_3.png?raw=true" target="_blank" rel="noopener"><img src="https://github.com/qiangxinyu/blogImages/blob/master/WKWebView/WKWebView_3.png?raw=true" width="546" height="410" alt="WKWebView_3.png"></a></p>
+<p>OK</p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/03/ReactNative_6/" rel="next" title="React Native (六)：加载所有分类与详情页">
+                <i class="fa fa-chevron-left"></i> React Native (六)：加载所有分类与详情页
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/03/Runtime/" rel="prev" title="Objective-C Runtime">
+                Objective-C Runtime <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4"
+                alt="强新宇" />
+            
+              <p class="site-author-name" itemprop="name">强新宇</p>
+              <p class="site-description motion-element" itemprop="description">(｡･∀･)ﾉﾞ嗨，我是强新宇，是一名 iOS 开发者。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/qiangxinyu" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:qiangxinyu92@gmail.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/d37622b39cbc" target="_blank" title="jianshu"><i class="fa fa-fw fa-jianshu"></i>jianshu</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-6"><a class="nav-link" href="#开始使用-WKWebView"><span class="nav-number">1.</span> <span class="nav-text"> 开始使用 WKWebView </span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#简易错误处理-WKWebView"><span class="nav-number">2.</span> <span class="nav-text"> 简易错误处理 WKWebView </span></a></li><li class="nav-item nav-level-6"><a class="nav-link" href="#显示弹窗-WKWebView"><span class="nav-number">3.</span> <span class="nav-text"> 显示弹窗 WKWebView </span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">强新宇</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>

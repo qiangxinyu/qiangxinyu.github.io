@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+
+
+
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=6.2.0" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=6.2.0">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=6.2.0">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=6.2.0" color="#222">
+
+
+
+
+
+
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '6.2.0',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: false,
+    fastclick: false,
+    lazyload: false,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  
+
+
+
+
+  <meta name="description" content="加载全部分类新闻我们需要做的效果是打开 App ，首先只加载第一页的数据，其他页面在第一次显示的时候加载数据。 我们需要一个状态来标明是不是第一次显示，给 state 加入 isFirstShow: true，我们在网络请求里给他赋值为 false。 在做的过程中发现一个问题，我们需要取到它的 EndKey 来作为下次请求的 StartKey ，否则可能会请求失败，给 state 加入 start">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native (六)：加载所有分类与详情页">
+<meta property="og:url" content="http://yoursite.com/2018/05/03/ReactNative_6/index.html">
+<meta property="og:site_name" content="emmmmm">
+<meta property="og:description" content="加载全部分类新闻我们需要做的效果是打开 App ，首先只加载第一页的数据，其他页面在第一次显示的时候加载数据。 我们需要一个状态来标明是不是第一次显示，给 state 加入 isFirstShow: true，我们在网络请求里给他赋值为 false。 在做的过程中发现一个问题，我们需要取到它的 EndKey 来作为下次请求的 StartKey ，否则可能会请求失败，给 state 加入 start">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-05-03T08:49:25.178Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="React Native (六)：加载所有分类与详情页">
+<meta name="twitter:description" content="加载全部分类新闻我们需要做的效果是打开 App ，首先只加载第一页的数据，其他页面在第一次显示的时候加载数据。 我们需要一个状态来标明是不是第一次显示，给 state 加入 isFirstShow: true，我们在网络请求里给他赋值为 false。 在做的过程中发现一个问题，我们需要取到它的 EndKey 来作为下次请求的 StartKey ，否则可能会请求失败，给 state 加入 start">
+
+
+
+
+
+
+  <link rel="canonical" href="http://yoursite.com/2018/05/03/ReactNative_6/"/>
+
+
+
+<script type="text/javascript" id="page.configurations">
+  CONFIG.page = {
+    sidebar: "",
+  };
+</script>
+
+  <title>React Native (六)：加载所有分类与详情页 | emmmmm</title>
+  
+
+
+
+
+
+
+
+
+
+  <noscript>
+  <style type="text/css">
+    .use-motion .motion-element,
+    .use-motion .brand,
+    .use-motion .menu-item,
+    .sidebar-inner,
+    .use-motion .post-block,
+    .use-motion .pagination,
+    .use-motion .comments,
+    .use-motion .post-header,
+    .use-motion .post-body,
+    .use-motion .collection-title { opacity: initial; }
+
+    .use-motion .logo,
+    .use-motion .site-title,
+    .use-motion .site-subtitle {
+      opacity: initial;
+      top: initial;
+    }
+
+    .use-motion {
+      .logo-line-before i { left: initial; }
+      .logo-line-after i { right: initial; }
+    }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">emmmmm</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle"></p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button aria-label="Toggle navigation bar">
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  
+    <ul id="menu" class="menu">
+      
+        
+        
+        
+          
+          <li class="menu-item menu-item-home">
+    <a href="/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-home"></i> <br />Home</a>
+  </li>
+        
+        
+        
+          
+          <li class="menu-item menu-item-archives">
+    <a href="/archives/" rel="section">
+      <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />Archives</a>
+  </li>
+
+      
+      
+    </ul>
+  
+
+  
+    
+
+  
+
+  
+</nav>
+
+
+
+  
+
+
+
+</div>
+    </header>
+
+    
+
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/05/03/ReactNative_6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="强新宇">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="emmmmm">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">React Native (六)：加载所有分类与详情页
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+
+            
+            
+            
+
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">Posted on</span>
+              
+
+              
+                
+              
+
+              <time title="Created: 2018-05-03 16:49:25" itemprop="dateCreated datePublished" datetime="2018-05-03T16:49:25+08:00">2018-05-03</time>
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="加载全部分类新闻"><a href="#加载全部分类新闻" class="headerlink" title="加载全部分类新闻"></a>加载全部分类新闻</h2><p>我们需要做的效果是打开 <code>App</code> ，首先只加载第一页的数据，其他页面在第一次显示的时候加载数据。</p>
+<p>我们需要一个状态来标明是不是第一次显示，给 <code>state</code> 加入 <code>isFirstShow: true</code>，我们在网络请求里给他赋值为 <code>false</code>。</p>
+<p>在做的过程中发现一个问题，我们需要取到它的 <code>EndKey</code> 来作为下次请求的 <code>StartKey</code> ，否则可能会请求失败，给 <code>state</code> 加入 <code>startKey: &#39;&#39;</code> ，然后在请求到数据后赋值：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"> _onRefresh(page) &#123;</span><br><span class="line">    <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">        isFirstShow: <span class="literal">false</span></span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="keyword">this</span>.props.dic) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">this</span>._begainRefresh()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (page == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">                page</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125; <span class="keyword">else</span>  &#123;</span><br><span class="line">            page = <span class="keyword">this</span>.state.page</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> url = <span class="string">'http://api.iapple123.com/newspush/list/index.html?clientid=1114283782&amp;v=1.1&amp;type='</span></span><br><span class="line">            + <span class="keyword">this</span>.props.dic.NameEN</span><br><span class="line">            + <span class="string">'&amp;startkey='</span></span><br><span class="line">            + <span class="keyword">this</span>.state.startKey</span><br><span class="line">            +<span class="string">'&amp;newkey=&amp;index='</span></span><br><span class="line">            + page</span><br><span class="line">            + <span class="string">'&amp;size='</span></span><br><span class="line">            + maxCount</span><br><span class="line">            + <span class="string">'&amp;ime=6271F554-7B2F-45DE-887E-4A336F64DEE6&amp;apptypeid=ZJZYIOS1114283782'</span></span><br><span class="line"></span><br><span class="line">        LOG(<span class="string">'url=》'</span>, url)</span><br><span class="line">        fetch(url, &#123;</span><br><span class="line">            method: <span class="string">'GET'</span>,</span><br><span class="line">            headers: &#123;</span><br><span class="line">                <span class="string">'Accept'</span>: <span class="string">'application/json'</span>,</span><br><span class="line">                <span class="string">'Content-Type'</span>: <span class="string">'application/json'</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;)</span><br><span class="line">            .then(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">                <span class="keyword">this</span>._endRefresh()</span><br><span class="line"></span><br><span class="line">                res.json()</span><br><span class="line">                    .then(<span class="function">(<span class="params">json</span>) =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> list = json.NewsList</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> swipers = []</span><br><span class="line">                        <span class="keyword">let</span> news = []</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">if</span> (page == <span class="number">1</span>) &#123;</span><br><span class="line">                            <span class="keyword">for</span> (<span class="keyword">let</span> index <span class="keyword">in</span> list) &#123;</span><br><span class="line">                                <span class="keyword">let</span> dic = list[index]</span><br><span class="line">                                index &lt; <span class="number">4</span> ? swipers.push(dic) : news.push(dic)</span><br><span class="line">                            &#125;</span><br><span class="line">                            news.splice(<span class="number">0</span>, <span class="number">0</span>, swipers)</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            news = list</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> newData = <span class="keyword">this</span>.state.data.concat(news)</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> hasMore = list.length == maxCount ? <span class="literal">true</span> : <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">                        <span class="keyword">this</span>.setState(&#123;</span><br><span class="line">                            dataSource: <span class="keyword">this</span>.state.dataSource.cloneWithRows(newData),</span><br><span class="line">                            data: newData,</span><br><span class="line">                            page: <span class="keyword">this</span>.state.page + (hasMore ? <span class="number">1</span> : <span class="number">0</span>),</span><br><span class="line">                            showFooter: <span class="keyword">this</span>.state.showFooter ? <span class="literal">true</span> : (hasMore ? <span class="literal">true</span> : <span class="literal">false</span>),</span><br><span class="line">                            hasMore,</span><br><span class="line">                            startKey: json.EndKey ? json.EndKey : <span class="keyword">this</span>.state.startKey</span><br><span class="line">                        &#125;)</span><br><span class="line">                    &#125;)</span><br><span class="line">                    .catch(<span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">                        LOG(<span class="string">'GET ERROR then =&gt;'</span>, url, e)</span><br><span class="line"></span><br><span class="line">                    &#125;)</span><br><span class="line">            &#125;)</span><br><span class="line">            .catch(<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">                <span class="keyword">this</span>._endRefresh()</span><br><span class="line">                LOG(<span class="string">'GET ERROR=&gt;'</span>, url, <span class="string">'==&gt;'</span>, error)</span><br><span class="line">            &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后返回我们的 <code>Home.js</code> ，在这里处理是否请求数据：</p>
+<p>首先给 <code>NewsList</code> 加上 <code>ref</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">lists.push(</span><br><span class="line">    &lt;NewsList</span><br><span class="line">        ref=&#123;<span class="string">'NewsList'</span> + index&#125;</span><br><span class="line">        key=&#123;index&#125;</span><br><span class="line">        style=&#123;&#123;<span class="attr">backgroundColor</span>:<span class="string">'white'</span>, <span class="attr">width</span>: width, <span class="attr">height</span>: height - <span class="number">64</span> - <span class="number">49</span> - <span class="number">30</span>&#125;&#125;</span><br><span class="line">        dic=&#123;dic&#125;</span><br><span class="line">        isRequest=&#123;index == <span class="number">0</span>&#125;</span><br><span class="line">        touchIn=&#123;(scrollEnabled) =&gt; &#123;</span><br><span class="line">            <span class="keyword">this</span>.refs.ScrollView.setNativeProps(&#123;<span class="attr">scrollEnabled</span>: !scrollEnabled&#125;)</span><br><span class="line">        &#125;&#125;</span><br><span class="line">    /&gt;</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<p>然后在点击 <code>SegmentedView</code> 和滑动 <code>ScrollView</code> 的时候来进行处理：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;SegmentedView</span><br><span class="line">    ref=<span class="string">"SegmentedView"</span></span><br><span class="line">    list=&#123;<span class="keyword">this</span>.state.list&#125;</span><br><span class="line">    style=&#123;&#123;<span class="attr">height</span>: <span class="number">30</span>&#125;&#125;</span><br><span class="line">    selectItem=&#123;(index) =&gt; &#123;</span><br><span class="line">        <span class="keyword">this</span>.refs.ScrollView.scrollTo(&#123;<span class="attr">x</span>: width * index, <span class="attr">y</span>: <span class="number">0</span>, <span class="attr">animated</span>: <span class="literal">true</span>&#125;)</span><br><span class="line">        <span class="keyword">this</span>._scrollTo(index)</span><br><span class="line">    &#125;&#125;</span><br><span class="line">/&gt;</span><br><span class="line"></span><br><span class="line">&lt;ScrollView</span><br><span class="line">    removeClippedSubviews=&#123;Platform.OS === <span class="string">'ios'</span>&#125;</span><br><span class="line">    style=&#123;styles.view&#125;</span><br><span class="line">    ref=<span class="string">"ScrollView"</span></span><br><span class="line">    horizontal=&#123;<span class="literal">true</span>&#125;</span><br><span class="line">    showsHorizontalScrollIndicator=&#123;<span class="literal">false</span>&#125;</span><br><span class="line">    pagingEnabled=&#123;<span class="literal">true</span>&#125;</span><br><span class="line">    onMomentumScrollEnd=&#123;(s) =&gt; &#123;</span><br><span class="line">        <span class="keyword">let</span> index = s.nativeEvent.contentOffset.x / width</span><br><span class="line">        <span class="keyword">this</span>.refs.SegmentedView._moveTo(index)</span><br><span class="line">        <span class="keyword">this</span>._scrollTo(index)</span><br><span class="line">    &#125;&#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+<p>如果是第一次显示，那么请求数据：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">_scrollTo(index) &#123;</span><br><span class="line">    <span class="keyword">let</span> newsList = <span class="keyword">this</span>.refs[<span class="string">'NewsList'</span> + index]</span><br><span class="line">    newsList.state.isFirstShow &amp;&amp; newsList._onRefresh()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="详情页"><a href="#详情页" class="headerlink" title="详情页"></a>详情页</h2><p>详情页进去是一个网页，我们直接写死一个网页。</p>
+<p>创建 <code>NewsDetail.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> React <span class="keyword">from</span> <span class="string">'react'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    View,</span><br><span class="line">    Text,</span><br><span class="line">    StyleSheet,</span><br><span class="line">    WebView</span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">'react-native'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> NavigationBar <span class="keyword">from</span> <span class="string">'../Custom/NavBarCommon'</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="class"><span class="keyword">class</span> <span class="title">NewsDetail</span> <span class="keyword">extends</span> <span class="title">React</span>.<span class="title">Component</span> </span>&#123;</span><br><span class="line">    render() &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            &lt;View style=&#123;styles.view&#125;&gt;</span><br><span class="line">                &lt;NavigationBar</span><br><span class="line">                    title=<span class="string">"详情页"</span></span><br><span class="line">                    navigator=&#123;<span class="keyword">this</span>.props.navigator&#125;</span><br><span class="line">                /&gt;</span><br><span class="line">                &lt;WebView</span><br><span class="line">                    style=&#123;&#123;<span class="attr">flex</span>:<span class="number">1</span>&#125;&#125;</span><br><span class="line">                    source=&#123;&#123;<span class="attr">uri</span>: <span class="string">'http://zjzywap.eastday.com/m/170425001829725.html?fr=toutiao&amp;qid=zjxw&amp;apptypeid=ZJZYIOS1114283782&amp;ime=6271F554-7B2F-45DE-887E-4A336F64DEE6'</span>&#125;&#125;</span><br><span class="line">                /&gt;</span><br><span class="line"></span><br><span class="line">            &lt;<span class="regexp">/View&gt;</span></span><br><span class="line"><span class="regexp">        )</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;</span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp"></span></span><br><span class="line"><span class="regexp">const styles = StyleSheet.create(&#123;</span></span><br><span class="line"><span class="regexp">    view: &#123;</span></span><br><span class="line"><span class="regexp">        flex:1,</span></span><br><span class="line"><span class="regexp">        backgroundColor: 'white'</span></span><br><span class="line"><span class="regexp">    &#125;</span></span><br><span class="line"><span class="regexp">&#125;)</span></span><br></pre></td></tr></table></figure>
+<p>然后我们去 <code>NewsList.js</code> 引入：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> NewsDetail <span class="keyword">from</span> <span class="string">'./NewsDetail'</span></span><br></pre></td></tr></table></figure>
+<p>然后我们需要进行 <code>push</code> :</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">_onPress() &#123;</span><br><span class="line">    <span class="keyword">this</span>.props.navigator &amp;&amp; <span class="keyword">this</span>.props.navigator.push(&#123;</span><br><span class="line">        component: NewsDetail,</span><br><span class="line">        params: &#123;</span><br><span class="line">            navigator: <span class="keyword">this</span>.props.navigator, <span class="comment">//这个并不用传入, 这里只是为了演示参数的传入</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>我们 <code>push</code> 需要用到 <code>navigator</code>， 但是的 <code>NewsList</code> 我们并没有给它传入 <code>navigator</code> ，我们需要去 <code>Home.js</code> ：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;NewsList</span><br><span class="line">    ref=&#123;<span class="string">'NewsList'</span> + index&#125;</span><br><span class="line">    key=&#123;index&#125;</span><br><span class="line">    style=&#123;&#123;<span class="attr">backgroundColor</span>:<span class="string">'white'</span>, <span class="attr">width</span>: width, <span class="attr">height</span>: height - <span class="number">64</span> - <span class="number">49</span> - <span class="number">30</span>&#125;&#125;</span><br><span class="line">    dic=&#123;dic&#125;</span><br><span class="line">    isRequest=&#123;index == <span class="number">0</span>&#125;</span><br><span class="line">    touchIn=&#123;(scrollEnabled) =&gt; &#123;</span><br><span class="line">        <span class="keyword">this</span>.refs.ScrollView.setNativeProps(&#123;<span class="attr">scrollEnabled</span>: !scrollEnabled&#125;)</span><br><span class="line">    &#125;&#125;</span><br><span class="line">    navigator=&#123;<span class="keyword">this</span>.props.navigator&#125;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+<p>然后进行调用</p>
+<p>在 <code>renderRow</code> 方法内的 <code>CarousePicture</code> 以及下面的 2 个 <code>TouchableOpacity</code> 加入属性 <code>onPress={this._onPress}</code></p>
+<p>例如这样:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;CarousePicture</span><br><span class="line">    index=&#123;<span class="number">5</span>&#125;</span><br><span class="line">    ref=<span class="string">"ScrollView"</span></span><br><span class="line">    rowData=&#123;rowData&#125;</span><br><span class="line">    style=&#123;&#123;width, <span class="attr">height</span>: <span class="number">200</span>&#125;&#125;</span><br><span class="line">    touchIn=&#123;<span class="keyword">this</span>.props.touchIn&#125;</span><br><span class="line">    onPress=&#123;<span class="keyword">this</span>._onPress&#125;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+<p>最后我们需要进入 <code>CarousePicture.js</code> 内的 <code>TouchableWithoutFeedback</code> 来调用回调函数:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> &lt;TouchableWithoutFeedback</span><br><span class="line">    style=&#123;&#123;<span class="attr">flex</span>:<span class="number">1</span>,width, <span class="attr">height</span>:<span class="number">200</span>, <span class="attr">backgroundColor</span>:<span class="string">'white'</span>&#125;&#125;</span><br><span class="line"></span><br><span class="line">    onPress=&#123;() =&gt; &#123;</span><br><span class="line">        <span class="keyword">this</span>.props.onPress &amp;&amp; <span class="keyword">this</span>.props.onPress()</span><br><span class="line">    &#125;&#125;</span><br><span class="line">    onPressIn=&#123;() =&gt; &#123;</span><br><span class="line">        <span class="keyword">this</span>.props.touchIn &amp;&amp; <span class="keyword">this</span>.props.touchIn(<span class="literal">true</span>)</span><br><span class="line">    &#125;&#125;</span><br><span class="line"></span><br><span class="line">    onPressOut=&#123;() =&gt; &#123;</span><br><span class="line">        <span class="keyword">this</span>.props.touchIn &amp;&amp; <span class="keyword">this</span>.props.touchIn(<span class="literal">false</span>)</span><br><span class="line">    &#125;&#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+<p>现在就可以 <code>push</code> 到详情页了</p>
+<p><a href="https://github.com/qiangxinyu/ReactNativeExample/tree/master/ReactNative6" target="_blank" rel="noopener">项目地址</a></p>
+
+      
+    </div>
+
+    
+
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/05/03/ReactNative_5/" rel="next" title="React Native (五)：上下拉刷新">
+                <i class="fa fa-chevron-left"></i> React Native (五)：上下拉刷新
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/05/03/WKWebView/" rel="prev" title="WKWebView">
+                WKWebView <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            Table of Contents
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            Overview
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image"
+                src="https://avatars3.githubusercontent.com/u/13347582?s=220&v=4"
+                alt="强新宇" />
+            
+              <p class="site-author-name" itemprop="name">强新宇</p>
+              <p class="site-description motion-element" itemprop="description">(｡･∀･)ﾉﾞ嗨，我是强新宇，是一名 iOS 开发者。</p>
+          </div>
+
+          
+            <nav class="site-state motion-element">
+              
+                <div class="site-state-item site-state-posts">
+                
+                  <a href="/archives/">
+                
+                    <span class="site-state-item-count">23</span>
+                    <span class="site-state-item-name">posts</span>
+                  </a>
+                </div>
+              
+
+              
+
+              
+            </nav>
+          
+
+          
+
+          
+            <div class="links-of-author motion-element">
+              
+                <span class="links-of-author-item">
+                  <a href="https://github.com/qiangxinyu" target="_blank" title="GitHub"><i class="fa fa-fw fa-github"></i>GitHub</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="mailto:qiangxinyu92@gmail.com" target="_blank" title="E-Mail"><i class="fa fa-fw fa-envelope"></i>E-Mail</a>
+                  
+                </span>
+              
+                <span class="links-of-author-item">
+                  <a href="https://www.jianshu.com/u/d37622b39cbc" target="_blank" title="jianshu"><i class="fa fa-fw fa-jianshu"></i>jianshu</a>
+                  
+                </span>
+              
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+            
+          
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#加载全部分类新闻"><span class="nav-number">1.</span> <span class="nav-text">加载全部分类新闻</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#详情页"><span class="nav-number">2.</span> <span class="nav-text">详情页</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love" id="animate">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">强新宇</span>
+
+  
+
+  
+</div>
+
+
+
+
+  <div class="powered-by">Powered by <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> v3.7.1</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">Theme &mdash; <a class="theme-link" target="_blank" href="https://github.com/theme-next/hexo-theme-next">NexT.Muse</a> v6.2.0</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=6.2.0"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=6.2.0"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=6.2.0"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=6.2.0"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=6.2.0"></script>
+
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
