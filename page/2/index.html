@@ -234,126 +234,6 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/21/MorePullDown/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2023/12/21/MorePullDown/" class="post-title-link" itemprop="url">多个下拉按钮的处理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2023-12-21 12:29:15" itemprop="dateCreated datePublished" datetime="2023-12-21T12:29:15+08:00">2023-12-21</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p> 实现的效果如下</p>
-<p><a href = "/images/MorePullDown/root.gif"> <img src = "/images/MorePullDown/root.gif" width = 360 height = 240 alt = "root.gif"/> </a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/qiangxinyu/MorePullDown">项目代码</a></p>
-<p>页面很简单，4个按钮、一张图片、一个 <code>TableView</code> 和一个半透明 <code>View</code>。</p>
-<p>开始撸代码。</p>
-<h3 id="先来写按钮"><a href="#先来写按钮" class="headerlink" title="先来写按钮"></a>先来写按钮</h3><p>按钮包含了一个 <code>UILabel</code> 和一个 <code>UIImageView</code> ,点击的时候 <code>UIImageView</code> 翻转。</p>
-<p>先看 <code>XYButton.h</code></p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="string">&lt;UIKit/UIKit.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">XYButton</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">void</span>(^ clickCityBtn_block_xyButton)(XYButton * view);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYButton</span> : <span class="title">UIView</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>)<span class="built_in">UILabel</span> * titleLabel;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>)<span class="built_in">UIImageView</span> * imageView;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)setTitle:(<span class="built_in">NSString</span> *)title;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  是否 是 显示模式  YES  显示</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>)<span class="type">BOOL</span> isShow;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>)clickCityBtn_block_xyButton clickCityBtn_block_xyButton;</span><br><span class="line">- (<span class="type">void</span>)clickCityBtn_block_xyButton:(<span class="type">void</span>(^)(XYButton * view))clickCityBtn_block_xyButton;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
-
-<p><code>block</code> 用来进行点击后的回调， <code>isShow</code> 用来标记状态。</p>
-<p>点击事件通过 <code>touchesEnded:withEvent:</code> 来处理</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)touchesEnded</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">self</span>.isShow = !<span class="keyword">self</span>.isShow;</span><br><span class="line">    [<span class="built_in">UIView</span> animateWithDuration:kHomeCityAnimate_time animations:^&#123;</span><br><span class="line">        <span class="keyword">self</span>.imageView.transform = <span class="built_in">CGAffineTransformRotate</span>(<span class="keyword">self</span>.imageView.transform, M_PI);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)touchesEnded:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> touchesEnded];</span><br><span class="line">    <span class="keyword">self</span>.clickCityBtn_block_xyButton ? <span class="keyword">self</span>.clickCityBtn_block_xyButton(<span class="keyword">self</span>) : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>按钮上面的字会有长有短，为了好看，需要计算长度进行居中：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)setTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">self</span>.titleLabel.text = title;</span><br><span class="line">    <span class="built_in">CGFloat</span> width = [title boundingRectWithSize:<span class="built_in">CGSizeMake</span>(<span class="number">222</span>, <span class="number">20</span>)</span><br><span class="line">    				 	options:<span class="built_in">NSStringDrawingUsesLineFragmentOrigin</span> </span><br><span class="line">    				     attributes:@&#123;<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">9</span>]&#125;</span><br><span class="line">    				      	context:<span class="literal">nil</span>].size.width;</span><br><span class="line">    <span class="comment">//图片的宽度是12，所以label的宽度不能超过 width - 12</span></span><br><span class="line">    width = (width &gt; <span class="keyword">self</span>.width - <span class="number">12</span>) ? (<span class="keyword">self</span>.width - <span class="number">12</span>) : width;</span><br><span class="line">    <span class="keyword">self</span>.titleLabel.width = width;</span><br><span class="line">    <span class="keyword">self</span>.titleLabel.mj_x  = <span class="keyword">self</span>.width / <span class="number">2</span> - (width + <span class="number">12</span> + <span class="number">2</span>) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">self</span>.imageView.mj_x = <span class="built_in">CGRectGetMaxX</span>(<span class="keyword">self</span>.titleLabel.frame) + <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>至此按钮已经完成</p>
-<h3 id="放4个按钮的-View"><a href="#放4个按钮的-View" class="headerlink" title="放4个按钮的 View"></a>放4个按钮的 View</h3><p>为了方便控制，4个按钮需要封装到一个 <code>View</code> 中。</p>
-<p>照例先看 <code>XYNearDriverSchoolSelectView.h</code></p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="string">&lt;UIKit/UIKit.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">XYButton</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">void</span> (^clickSelectView_block)(XYButton * btn);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYNearDriverSchoolSelectView</span> : <span class="title">UIView</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>)clickSelectView_block clickSelectView_block;</span><br><span class="line">- (<span class="type">void</span>)clickSelectView_blockWithBlock:(<span class="type">void</span>(^)(XYButton * btn))clickSelectView_block;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
-
-<p>只有一个 <code>block</code> 进行按钮被点击后的回调。</p>
-<p>截下来创建4个按钮</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSInteger</span> width = (<span class="built_in">NSInteger</span>)((<span class="keyword">self</span>.width - <span class="number">3</span>) / <span class="number">4</span>);</span><br><span class="line"><span class="built_in">NSArray</span> * titleArray = @[<span class="string">@&quot;默认排序&quot;</span>, <span class="string">@&quot;价格&quot;</span>, <span class="string">@&quot;距离&quot;</span>, <span class="string">@&quot;报名人数&quot;</span>];</span><br><span class="line">WeakSelf(weakSelf);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; titleArray.count ; i ++) &#123;</span><br><span class="line">     XYButton * btn = [[XYButton alloc] </span><br><span class="line">    		 	initWithFrame:<span class="built_in">CGRectMake</span>((width + <span class="number">1</span>) * i, <span class="number">1</span>, width, <span class="keyword">self</span>.height - <span class="number">1</span>)];</span><br><span class="line">     [btn setTitle:titleArray[i]];</span><br><span class="line">     btn.tag = <span class="number">100000</span> + i;</span><br><span class="line">     [<span class="keyword">self</span> addSubview:btn];</span><br><span class="line">     </span><br><span class="line">     [btn clickCityBtn_block_xyButton:^(XYButton *view) &#123;</span><br><span class="line">         weakSelf.clickSelectView_block ? weakSelf.clickSelectView_block(view) : <span class="number">0</span> ;</span><br><span class="line">     &#125;];</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="控制器"><a href="#控制器" class="headerlink" title="控制器"></a>控制器</h3><p> 首先看属性</p>
- <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>)XYNearDriverSchoolSelectView * selectView;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>)XYNearDriverSchoolSelectTableView * selectTableView;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  上一次点击的 Btn</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>)XYButton * oldBtn;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  处于 显示 模式的btn</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>)XYButton * showBtn;</span><br></pre></td></tr></table></figure>
-<p> 然后是 <code>ViewDidLoad</code> </p>
- <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"> - (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.view.backgroundColor = kDefaultBackgroudColor;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//这是页面的内容</span></span><br><span class="line">    <span class="built_in">UIImageView</span> * imageView = [[<span class="built_in">UIImageView</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, </span><br><span class="line">   							 <span class="built_in">CGRectGetMaxY</span>(<span class="keyword">self</span>.selectView.frame) + <span class="number">1</span>,</span><br><span class="line">     							kScreenWidth, </span><br><span class="line">    kScreenHeight -  <span class="built_in">CGRectGetMaxY</span>(<span class="keyword">self</span>.selectView.frame) - <span class="number">1</span> -kNavigationBar_Height)];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    imageView.image = kImage(<span class="string">@&quot;image&quot;</span>);</span><br><span class="line">    imageView.backgroundColor = kWhiteColor;</span><br><span class="line">    imageView.contentMode = <span class="built_in">UIViewContentModeScaleAspectFit</span>;</span><br><span class="line">    [<span class="keyword">self</span>.view addSubview:imageView];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="comment">//半透明的 View</span></span><br><span class="line">    [<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.selectTableView.backgroudView];</span><br><span class="line">    [<span class="keyword">self</span>.selectTableView.backgroudView clickView:^(<span class="built_in">UIView</span> *view) &#123;</span><br><span class="line">        [<span class="keyword">self</span>.showBtn touchesEnded:[<span class="built_in">NSSet</span> set] withEvent:<span class="literal">nil</span>];</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//TableView</span></span><br><span class="line">    [<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.selectTableView];</span><br><span class="line"></span><br><span class="line">    [<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line">    <span class="comment">// Do any additional setup after loading the view from its nib.</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//放4个按钮的 View</span></span><br><span class="line">    [<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.selectView];</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p><code>selectTableView</code> 的初始化</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (XYNearDriverSchoolSelectTableView *)selectTableView</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_selectTableView) &#123;</span><br><span class="line">        _selectTableView = [[XYNearDriverSchoolSelectTableView alloc] </span><br><span class="line">        initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, kScreenWidth, <span class="number">1</span>)];</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         *  点击cell 的回调</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        [_selectTableView didSelectRowWithBlock:^(XYNearDriverSchoolSelectTableView </span><br><span class="line">        *tableView, <span class="built_in">NSIndexPath</span> *indexPath) &#123;</span><br><span class="line">            </span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _selectTableView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<p><code>selectView</code> 的初始化</p>
-<p>不想看代码的直接看下面</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">- (XYNearDriverSchoolSelectView *)selectView</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_selectView) &#123;</span><br><span class="line">        _selectView = [[XYNearDriverSchoolSelectView alloc] initWithFrame:</span><br><span class="line">        					<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, kScreenWidth, <span class="number">30</span>)];</span><br><span class="line">        </span><br><span class="line">        WeakSelf(weakSelf);</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">NSMutableArray</span> * groupArray = @[].mutableCopy;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; <span class="number">4</span> ; i ++) &#123;</span><br><span class="line">            <span class="built_in">NSMutableArray</span> * array = @[].mutableCopy;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; (arc4random()% <span class="number">40</span>) + <span class="number">1</span>; i ++) &#123;</span><br><span class="line">                [array addObject:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@&quot;%d&quot;</span>,(arc4random()% <span class="number">40</span>)]];</span><br><span class="line">            &#125;</span><br><span class="line">            [groupArray addObject:array];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        [_selectView clickSelectView_blockWithBlock:^(XYButton *btn) &#123;</span><br><span class="line">           </span><br><span class="line">            <span class="keyword">if</span> (btn.isShow) &#123;</span><br><span class="line">                <span class="built_in">NSLog</span>(<span class="string">@&quot; -- %@&quot;</span>,btn.titleLabel.text);</span><br><span class="line">                <span class="keyword">self</span>.showBtn = btn;</span><br><span class="line">                <span class="keyword">self</span>.selectTableView.backgroudView.hidden = <span class="literal">NO</span>;</span><br><span class="line">                weakSelf.selectTableView.groupArray = groupArray[btn.tag - <span class="number">100000</span>];</span><br><span class="line">            &#125;</span><br><span class="line">           </span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">self</span>.oldBtn != btn &amp;&amp; <span class="keyword">self</span>.oldBtn.isShow) &#123;</span><br><span class="line">                [<span class="keyword">self</span>.oldBtn touchesEnded:[<span class="built_in">NSSet</span> set] withEvent:<span class="literal">nil</span>];</span><br><span class="line">                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, </span><br><span class="line">                (int64_t)(kHomeCityAnimate_time / <span class="number">2</span> * <span class="built_in">NSEC_PER_SEC</span>)), dispatch_get_main_queue(),</span><br><span class="line">                 ^&#123;</span><br><span class="line">                    [weakSelf clickSelectViewWithBth:btn];</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                [weakSelf clickSelectViewWithBth:btn];</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _selectView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>这里初始化完成 <code>selectView</code> 后，处理按钮的点击方法，4个按钮对应4个列表，我们这里只随机4组字符串:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSMutableArray</span> * groupArray = @[].mutableCopy;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; <span class="number">4</span> ; i ++) &#123;</span><br><span class="line">            <span class="built_in">NSMutableArray</span> * array = @[].mutableCopy;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; (arc4random()% <span class="number">40</span>) + <span class="number">1</span>; i ++) &#123;</span><br><span class="line">                [array addObject:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@&quot;%d&quot;</span>,(arc4random()% <span class="number">40</span>)]];</span><br><span class="line">            &#125;</span><br><span class="line">            [groupArray addObject:array];</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后开始处理点击事件：</p>
-<p>首先判断按钮的 <code>isShow</code> ,这里的获取到的 <code>isShow</code> 是更新后的，因为在按钮的 <code>touchesEnded:withEvent:</code> 先给 <code>isShow</code> 赋值，然后旋转 <code>imageView</code> 最后才进行的回调，所以 <code>isShow</code> 如果是 <code>YES</code>,那么就是处于下拉状态:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (btn.isShow) &#123;</span><br><span class="line">     <span class="built_in">NSLog</span>(<span class="string">@&quot; -- %@&quot;</span>,btn.titleLabel.text);</span><br><span class="line">     <span class="keyword">self</span>.showBtn = btn;</span><br><span class="line">     <span class="keyword">self</span>.selectTableView.backgroudView.hidden = <span class="literal">NO</span>;</span><br><span class="line">     weakSelf.selectTableView.groupArray = groupArray[btn.tag - <span class="number">100000</span>];</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<p>在这里面给 <code>self.showBtn</code> 赋值，把黑色半透明View的hidden置为 <code>NO</code>,再通过 <code>tag</code> 取到对应的数据。</p>
-<p>然后进行判断点击的是否是同一个按钮:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//如果点击的不是同一个</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.oldBtn != btn &amp;&amp; <span class="keyword">self</span>.oldBtn.isShow) &#123;</span><br><span class="line">	 [<span class="keyword">self</span>.oldBtn touchesEnded:[<span class="built_in">NSSet</span> set] withEvent:<span class="literal">nil</span>];</span><br><span class="line">	 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, </span><br><span class="line">				 (int64_t)(kHomeCityAnimate_time / <span class="number">2</span> * <span class="built_in">NSEC_PER_SEC</span>)),</span><br><span class="line">	 			 dispatch_get_main_queue(), ^&#123;</span><br><span class="line">	     [weakSelf clickSelectViewWithBth:btn];</span><br><span class="line">	 &#125;);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	 [weakSelf clickSelectViewWithBth:btn];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果点击的不是同一个按钮，那么先把 <code>oldBtn</code> 手动点击一下，让 <code>TableView</code> 缩回去，然后在 <code>kHomeCityAnimate_time / 2</code> 秒之后调用 <code>clickSelectViewWithBth:</code>,如果点击的同一个按钮，直接调用 <code>clickSelectViewWithBth:</code></p>
-<p>再来说说 <code>clickSelectViewWithBth:</code> 方法</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)clickSelectViewWithBth:(XYButton *)btn</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSInteger</span> y = <span class="built_in">CGRectGetMaxY</span>(<span class="keyword">self</span>.selectView.frame) + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (!btn.isShow) &#123;</span><br><span class="line">        y = - <span class="keyword">self</span>.selectTableView.height;</span><br><span class="line">    &#125;</span><br><span class="line">    [<span class="built_in">UIView</span> animateWithDuration:kHomeCityAnimate_time animations:^&#123;</span><br><span class="line">        <span class="keyword">self</span>.selectTableView.mj_y = y;</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.oldBtn = btn;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.selectTableView.backgroudView.hidden = !<span class="keyword">self</span>.showBtn.isShow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>依据按钮的状态来决定 <code>TableView</code> 的位置，每次完成后都把 <code>oldBtn</code> 指向该按钮,然后 </p>
-<p><code>self.selectTableView.backgroudView.hidden = !self.showBtn.isShow;</code> </p>
-<p>是为了防止点击了不同的按钮的时候，上一个按钮会把 <code>TableView</code> 往回缩，这时候黑色半透明View会消失，所以加入了一个 <code>showBtn</code> ，就是当前处于显示状态的按钮，如果处于显示状态的按钮的 <code>isShow</code> 为 <code>NO</code>，那么说明所有按钮都不在显示状态，那么黑色半透明View应该消失。</p>
-<p><font color = #cd4c56> *第一次写这样的博客，写的有点乱，时间也有限，亲们有哪里看不懂的可以留言* </font></p>
-
-
-
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/21/WKWebView/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -752,6 +632,158 @@
 <li><a target="_blank" rel="noopener" href="http://blog.csdn.net/wzzvictory/article/details/8615569">Objective-C runtime之运行时的基本特点</a></li>
 <li><a target="_blank" rel="noopener" href="http://cocoasamurai.blogspot.jp/2010/01/understanding-objective-c-runtime.html">Understanding the Objective-C Runtime</a></li>
 </ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2015/08/12/first/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2015/08/12/first/" class="post-title-link" itemprop="url">简单测试 static 和 const</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-08-12 14:37:00" itemprop="dateCreated datePublished" datetime="2015-08-12T14:37:00+08:00">2015-08-12</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <h1 id="const"><a href="#const" class="headerlink" title="const"></a>const</h1><p> 三种使用 const 的方式</p>
+<pre><code>const NSMutableString * constString = @&quot;constString&quot;.mutableCopy;
+NSMutableString const * stringConst = @&quot;stringConst&quot;.mutableCopy;
+NSMutableString * const string_const = @&quot;string_const&quot;.mutableCopy;
+</code></pre>
+<p> 给它们赋值，也就是改变指针 地址</p>
+<pre><code>constString = @&quot;newConstString&quot;.mutableCopy; //const 不管在 NSMutableString 前后是一样的东西
+stringConst = @&quot;newStringConst&quot;.mutableCopy; 
+//string_const = @&quot;newString_const&quot;.mutableCopy; //报错 const 和 指针在一起时指针不可以指向新的地址,也就是常量指针
+</code></pre>
+<p>这里没有预料中的 直接报红 也没报黄</p>
+<pre><code>[constString stringByAppendingString:@&quot;_new&quot;];
+[stringConst stringByAppendingString:@&quot;_new&quot;];
+//但是打印出来的值 是:  ---constString = newConstString -- stringConst = newStringCon 值没有被改变,也就是 值是常量
+NSLog(@&quot; ---constString = %@ -- stringConst = %@&quot;,constString,stringConst);
+
+//总结：const 在 NSMutableString 旁边，那么就是指针指向的值是常量，改变值不会报错，但是不会有效果。
+//     const 在 指针            旁边，那么改指针就是常量指针，不可以重新赋值。
+
+//如果 要 常量指针  指向 常量 那么 ：
+const NSMutableString * const const__constString = @&quot;const__constString&quot;.mutableCopy;
+//或者
+NSMutableString const  * const const_constString = @&quot;const_constString&quot;.mutableCopy;
+</code></pre>
+<h1 id="static"><a href="#static" class="headerlink" title="static"></a>static</h1><pre><code>//static 在 创建的时候 不能赋值给 一个 不是编译的常数
+//只可以 赋值 这样的
+static int a = 1;
+static char b = &#39;6&#39;;
+static char c[3] = &quot;122&quot;;
+static char * d = &quot;233&quot;;
+static NSString * e = @&quot;233&quot;;
+
+static const NSString * static_constString_new = @&quot;23333&quot;;//这样 也可以 我已经晕了
+
+//    static ViewController * mySelf = [[ViewController alloc] init]; // 这样就不行了
+//    static const ViewController * mySelf = [[ViewController alloc] init]; //nonono
+
+//    static const NSMutableString * static_constString = @&quot;2333&quot;.mutableCopy; //这样是不行的
+//    static const NSString * static_constString_new_new = [NSString new]; //这样也不行
+
+//总之 好像 就能赋值给 一个 常量
+</code></pre>
+<p>关于  static 的一点 ，它在 app 的生命周期 只执行一次，下一次如果跑到了 这里，那么这句 初始化的 代码就被直接跳过了</p>
+<pre><code>//先 测试 const 和 NSMutableString 在一起 指针指向 常量
+static const NSMutableString * static_constString = nil;
+const static NSMutableString * const_staticString = nil;
+const NSMutableString static * const__staticString = nil;  //这三种方式 猜测是一样的
+//    const NSMutableString * static const_string_static = nil; 这样干爆红了
+
+static_constString = @&quot;static_constString&quot;.mutableCopy;
+const_staticString = @&quot;const_staticString&quot;.mutableCopy;
+const__staticString = @&quot;const__staticString&quot;.mutableCopy;
+
+// 打印 结果
+//    static_constString = static_constString
+//    const_staticString = const_staticString
+//    const__staticString = const__staticString
+
+NSLog(@&quot;static_constString = %@ \n const_staticString = %@ \n const__staticString = %@&quot;,static_constString,const_staticString,const__staticString);
+
+static_constString = @&quot;static_constString_new&quot;.mutableCopy;
+const_staticString = @&quot;const_staticString_new&quot;.mutableCopy;
+const__staticString = @&quot;const__staticString_new&quot;.mutableCopy;
+
+// 打印 结果
+//    static_constString = static_constString_new
+//    const_staticString = const_staticString_new
+//    const__staticString = const__staticString_new
+NSLog(@&quot;static_constString = %@ \n const_staticString = %@ \n const__staticString = %@&quot;,static_constString,const_staticString,const__staticString);
+
+[static_constString stringByAppendingString:@&quot;++ new&quot;];
+[const_staticString stringByAppendingString:@&quot;++ new&quot;];
+[const__staticString stringByAppendingString:@&quot;++ new&quot;];
+
+// 打印 结果
+//    static_constString = static_constString_new
+//    const_staticString = const_staticString_new
+//    const__staticString = const__staticString_new
+NSLog(@&quot;static_constString = %@ \n const_staticString = %@ \n const__staticString = %@&quot;,static_constString,const_staticString,const__staticString);
+</code></pre>
+<p>结论： 加了 static 对 const 和 NSMutableString 在一起的，指针指向常量这种东西 没影响，依然可以正常赋值，并且不能改变值，但是 用了 static 后，这个指针会被 存入 静态区</p>
+<pre><code>NSMutableString static * const static_xing_constString = nil;
+static NSMutableString * const static__constString = nil;
+
+//预料之中的 警告了
+//    static_xing_constString = @&quot;static_xing_constString&quot;.mutableCopy;
+//    static__constString = @&quot;static__constString&quot;.mutableCopy;
+
+[static_xing_constString stringByAppendingString:@&quot;static_xing_constString&quot;];
+[static__constString stringByAppendingString:@&quot;static_xing_constString&quot;];
+
+//因为是 nil 所以。。。
+NSLog(@&quot;static_xing_constString = %@ \n static__constString = %@&quot;,static_xing_constString,static__constString);
+//这样 写 好像 没用了， 初始化的时候 不能赋值，完了 还不能改,一辈子 都是 nil
+</code></pre>
 
       
     </div>
