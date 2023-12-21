@@ -28,7 +28,7 @@
 <meta property="og:description" content="我是UICollectionView的忠实粉丝。这个类比起它的老哥UITableView类具有更高的可定制性。现在我用collection view的次数要比用table view还多。随着iOS9的到来，它支持简单的重排。在此之前，重排不可能有现成的方法，同时这样做也是件痛苦的工作。现在让我们来看看API，你可以在GitHub找到相应的Xcode工程。 添加简单重排的最简单的方式是用UIColl">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-08-21T02:54:00.000Z">
-<meta property="article:modified_time" content="2015-08-21T02:54:00.000Z">
+<meta property="article:modified_time" content="2023-12-21T12:54:39.564Z">
 <meta property="article:author" content="qxy">
 <meta name="twitter:card" content="summary">
 
@@ -176,6 +176,13 @@
 
               <time title="Created: 2015-08-21 10:54:00" itemprop="dateCreated datePublished" datetime="2015-08-21T10:54:00+08:00">2015-08-21</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-21 20:54:39" itemprop="dateModified" datetime="2023-12-21T20:54:39+08:00">2023-12-21</time>
+              </span>
 
           
 
@@ -193,7 +200,7 @@
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">collectionView</span>(<span class="params">collectionView</span>: <span class="type">UICollectionView</span>,</span><br><span class="line">    <span class="params">moveItemAtIndexPath</span> <span class="params">sourceIndexPath</span>: <span class="type">NSIndexPath</span>,</span><br><span class="line">    <span class="params">toIndexPath</span> <span class="params">destinationIndexPath</span>: <span class="type">NSIndexPath</span>) &#123;</span><br><span class="line">    <span class="comment">// move your data order</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>Collection view推断每个item(元素)可以被移动，因为moveItemAtIndexPath函数被重载了。</p>
-<p><a href = "/images/CollectionViewHasSimpleAgainArray/againArray_0.gif"> <img src = "/images/CollectionViewHasSimpleAgainArray/againArray_0.gif" width = 372 height = 665 alt =  "againArray_0"/> </a></p>
+<p><a href = "/img/CollectionViewHasSimpleAgainArray/againArray_0.gif"> <img src = "/img/CollectionViewHasSimpleAgainArray/againArray_0.gif" width = 372 height = 665 alt =  "againArray_0"/> </a></p>
 <p>当我们想使用一个带有collection view的简单的UIViewController时，事情变得更加复杂。我们还需要实现之前提到的UICollectionViewDataSource的方法，但我们需要重写installsStandardGestureForInteractiveMovement。别担心，这些也很容易被支持。UILongPressGestureRecognizer是一个持续的、完全支持平移的手势识别器。</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">viewDidLoad</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            longPressGesture <span class="operator">=</span> <span class="type">UILongPressGestureRecognizer</span>(target: <span class="keyword">self</span>, action: <span class="string">&quot;handleLongGesture:&quot;</span>)</span><br><span class="line">        <span class="keyword">self</span>.collectionView.addGestureRecognizer(longPressGesture)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">handleLongGesture</span>(<span class="params">gesture</span>: <span class="type">UILongPressGestureRecognizer</span>) &#123;</span><br><span class="line">        <span class="keyword">switch</span>(gesture.state) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">UIGestureRecognizerState</span>.<span class="type">Began</span>:</span><br><span class="line">            <span class="keyword">guard</span> <span class="keyword">let</span> selectedIndexPath <span class="operator">=</span> <span class="keyword">self</span>.collectionView.indexPathForItemAtPoint(gesture.locationInView(<span class="keyword">self</span>.collectionView)) <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">            collectionView.beginInteractiveMovementForItemAtIndexPath(selectedIndexPath)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">UIGestureRecognizerState</span>.<span class="type">Changed</span>:</span><br><span class="line">            collectionView.updateInteractiveMovementTargetPosition(gesture.locationInView(gesture.view<span class="operator">!</span>))</span><br><span class="line">        <span class="keyword">case</span> <span class="type">UIGestureRecognizerState</span>.<span class="type">Ended</span>:</span><br><span class="line">            collectionView.endInteractiveMovement()</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            collectionView.cancelInteractiveMovement()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
 <p>我们储存了被选择的索引路径，这个路径从 <code>longPressGesture handler</code>（长按手势处理器）中获得，这个路径还取决于它是否有任何我们允许的，跟平移手势相关的值。接下来我们根据手势状态调用一些新的 <code>collection view</code> 方法：</p>
@@ -208,16 +215,16 @@
 </li>
 </ul>
 <p>这让处理平移手势更容易理解了。</p>
-<p><a href = "/images/CollectionViewHasSimpleAgainArray/againArray_1.gif"> <img src = "/images/CollectionViewHasSimpleAgainArray/againArray_1.gif" width = 372 height = 665 alt =  "againArray_1"/> </a></p>
+<p><a href = "/img/CollectionViewHasSimpleAgainArray/againArray_1.gif"> <img src = "/img/CollectionViewHasSimpleAgainArray/againArray_1.gif" width = 372 height = 665 alt =  "againArray_1"/> </a></p>
 <p>机器反应跟标准的 <code>UICollectionViewController</code> 一样，真的很酷，但是还有更酷的–我们能对自定义的 <code>collection view layout</code>（collection集合视图布局）申请重排，下面是在 <code>waterfall layout</code>（瀑布布局）里对 <code>Interactive Movement</code> 的测试。</p>
-<p><a href = "/images/CollectionViewHasSimpleAgainArray/againArray_2.gif"> <img src = "/images/CollectionViewHasSimpleAgainArray/againArray_2.gif" width = 372 height = 665 alt =  "againArray_2"/> </a></p>
+<p><a href = "/img/CollectionViewHasSimpleAgainArray/againArray_2.gif"> <img src = "/img/CollectionViewHasSimpleAgainArray/againArray_2.gif" width = 372 height = 665 alt =  "againArray_2"/> </a></p>
 <p>嗯哼，看起来很酷，但如果我们不想在移动 <code>cell</code>（单元）的时候改变它们的大小，那该怎么做？被选择的 <code>cell</code>（单元）的大小在 <code>Interactive Movement</code> 期间应该保持原样。这是可行的。<code>UICollectionViewLayout</code> 有附加的方法来处理重排。</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">invalidationContextForInteractivelyMovingItems</span>(<span class="params">targetIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">withTargetPosition</span> <span class="params">targetPosition</span>: <span class="type">CGPoint</span>,</span><br><span class="line">    <span class="params">previousIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">previousPosition</span>: <span class="type">CGPoint</span>) -&gt; <span class="type">UICollectionViewLayoutInvalidationContext</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">invalidationContextForEndingInteractiveMovementOfItemsToFinalIndexPaths</span>(<span class="params">indexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">previousIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">movementCancelled</span>: <span class="type">Bool</span>) -&gt; <span class="type">UICollectionViewLayoutInvalidationContext</span></span><br></pre></td></tr></table></figure>
 <p> 第一个函数在元素的 <code>Interactive Movement</code> 期间被调用，它带有 <code>target</code>（目标元素）和先前的 <code>cell</code> 的<code>indexPaths</code>（索引地址）。第二个与第一个函数类似，但它只在 <code>Interactive Movement</code> 结束后才调用。通过这些知识我们能通过一点小窍门，实现我们的需求。</p>
 <figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">invalidationContextForInteractivelyMovingItems</span>(<span class="params">targetIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">withTargetPosition</span> <span class="params">targetPosition</span>: <span class="type">CGPoint</span>,</span><br><span class="line">    <span class="params">previousIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">previousPosition</span>: <span class="type">CGPoint</span>) -&gt; <span class="type">UICollectionViewLayoutInvalidationContext</span> &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> context <span class="operator">=</span> <span class="keyword">super</span>.invalidationContextForInteractivelyMovingItems(targetIndexPaths,</span><br><span class="line">        withTargetPosition: targetPosition, previousIndexPaths: previousIndexPaths,</span><br><span class="line">        previousPosition: previousPosition)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.delegate<span class="operator">?</span>.collectionView<span class="operator">!</span>(<span class="keyword">self</span>.collectionView<span class="operator">!</span>, moveItemAtIndexPath: previousIndexPaths[<span class="number">0</span>],</span><br><span class="line">        toIndexPath: targetIndexPaths[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> context</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <p>取得当前正在移动的cell的之前的和目标索引路径，然后调用 <code>UICollectionViewDataSource</code> 方法来移动这些 <code>item</code>（元素）。</p>
-<p> <a href = "/images/CollectionViewHasSimpleAgainArray/againArray_3.gif"> <img src = "/images/CollectionViewHasSimpleAgainArray/againArray_3.gif" width = 372 height = 665 alt =  "againArray_3"/> </a></p>
+<p> <a href = "/img/CollectionViewHasSimpleAgainArray/againArray_3.gif"> <img src = "/img/CollectionViewHasSimpleAgainArray/againArray_3.gif" width = 372 height = 665 alt =  "againArray_3"/> </a></p>
 <p> 毫无疑问，collection view的重排是一个出色的附加功能，UIKit前端框架工程师干得漂亮！:)</p>
 
     </div>
@@ -238,8 +245,8 @@
       <i class="fa fa-chevron-left"></i> 简单测试 static 和 const
     </a></div>
       <div class="post-nav-item">
-    <a href="/2015/11/03/iOSUseFFmpeg/" rel="next" title="">
-       <i class="fa fa-chevron-right"></i>
+    <a href="/2015/11/03/handleImageSomTip/" rel="next" title="iOS 处理图片的一些小 Tip">
+      iOS 处理图片的一些小 Tip <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -312,7 +319,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

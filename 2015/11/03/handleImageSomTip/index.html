@@ -28,7 +28,7 @@
 <meta property="og:description" content="转载自YY大神 如何把 GIF 动图保存到相册？iOS 的相册是支持保存 GIF 和 APNG 动图的，只是不能直接播放。用 [ALAssetsLibrary writeImageDataToSavedPhotosAlbum:metadata:completionBlock] 可以直接把 APNG、GIF 的数据写入相册。如果图省事直接用 UIImageWriteToSavedPhotosAlbu">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2015-11-03T13:04:00.000Z">
-<meta property="article:modified_time" content="2015-11-03T13:04:00.000Z">
+<meta property="article:modified_time" content="2023-12-21T12:54:54.213Z">
 <meta property="article:author" content="qxy">
 <meta name="twitter:card" content="summary">
 
@@ -176,6 +176,13 @@
 
               <time title="Created: 2015-11-03 21:04:00" itemprop="dateCreated datePublished" datetime="2015-11-03T21:04:00+08:00">2015-11-03</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-21 20:54:54" itemprop="dateModified" datetime="2023-12-21T20:54:54+08:00">2023-12-21</time>
+              </span>
 
           
 
@@ -207,7 +214,7 @@
 </ol>
 <h3 id="如何判断一个文件的图片类型？"><a href="#如何判断一个文件的图片类型？" class="headerlink" title="如何判断一个文件的图片类型？"></a><font color=#a2c700>如何判断一个文件的图片类型？</font></h3><p>通过读取文件或数据的头几个字节然后和对应图片格式标准进行比对。我在<a target="_blank" rel="noopener" href="https://github.com/ibireme/YYImage/blob/master/YYImage/YYImageCoder.m#L1066-L1141">这里</a>写了一个简单的函数，能很快速的判断图片格式。</p>
 <h3 id="怎样像浏览器那样边下载边显示图片？"><a href="#怎样像浏览器那样边下载边显示图片？" class="headerlink" title="怎样像浏览器那样边下载边显示图片？"></a><font color=#a2c700>怎样像浏览器那样边下载边显示图片？</font></h3><p>首先，图片本身有 3 种常见的编码方式：</p>
-<p><a href = "/images/handleImageSomTip/image_baseline.gif"><img src = "/images/handleImageSomTip/image_baseline.gif" width = 160 alt = "image_baseline.gif" /></a><a href = "/images/handleImageSomTip/image_interlaced.gif"><img src = "/images/handleImageSomTip/image_interlaced.gif" width = 160 alt = "image_interlaced.gif" /></a><a href = "/images/handleImageSomTip/image_progressive.gif"><img src = "/images/handleImageSomTip/image_progressive.gif" width = 160 alt = "image_progressive.gif" /></a></p>
+<p><a href = "/img/handleImageSomTip/image_baseline.gif"><img src = "/img/handleImageSomTip/image_baseline.gif" width = 160 alt = "image_baseline.gif" /></a><a href = "/img/handleImageSomTip/image_interlaced.gif"><img src = "/img/handleImageSomTip/image_interlaced.gif" width = 160 alt = "image_interlaced.gif" /></a><a href = "/img/handleImageSomTip/image_progressive.gif"><img src = "/img/handleImageSomTip/image_progressive.gif" width = 160 alt = "image_progressive.gif" /></a></p>
 <ol>
 <li>第一种是 baseline，即逐行扫描。默认情况下，JPEG、PNG、GIF 都是这种保存方式。</li>
 <li>第二种是 interlaced，即隔行扫描。PNG 和 GIF 在保存时可以选择这种格式。</li>
@@ -230,12 +237,12 @@
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2015/11/03/iOSUseFFmpeg/" rel="prev" title="">
-      <i class="fa fa-chevron-left"></i> 
+    <a href="/2015/08/21/CollectionViewHasSimpleAgainArray/" rel="prev" title="UICollectionViews有了简单的重排功能">
+      <i class="fa fa-chevron-left"></i> UICollectionViews有了简单的重排功能
     </a></div>
       <div class="post-nav-item">
-    <a href="/2015/11/03/AVPlayer/" rel="next" title="">
-       <i class="fa fa-chevron-right"></i>
+    <a href="/2015/11/03/AVPlayer/" rel="next" title="使用 AVPlayer 制作一个播放器">
+      使用 AVPlayer 制作一个播放器 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -309,7 +316,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

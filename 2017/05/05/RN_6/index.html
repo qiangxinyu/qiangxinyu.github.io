@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="React Native (一)：基础 React Native (二)：StatusBar 、 NavigationBar 与 TabBar React Native (三)：自定义视图 React Native (四)：加载新闻列表 React Native (五)：上下拉刷新加载 React Native (六)：加载所有分类与详情页 1.加载全部分类新闻我们需要做的效果是打开 App ，首">
+<meta property="og:type" content="article">
+<meta property="og:title" content="React Native (六)：加载所有分类与详情页">
+<meta property="og:url" content="http://example.com/2017/05/05/RN_6/index.html">
+<meta property="og:site_name" content="一艘小船">
+<meta property="og:description" content="React Native (一)：基础 React Native (二)：StatusBar 、 NavigationBar 与 TabBar React Native (三)：自定义视图 React Native (四)：加载新闻列表 React Native (五)：上下拉刷新加载 React Native (六)：加载所有分类与详情页 1.加载全部分类新闻我们需要做的效果是打开 App ，首">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2017-05-05T08:12:00.000Z">
+<meta property="article:modified_time" content="2023-12-21T13:20:19.437Z">
+<meta property="article:author" content="qxy">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2017/05/05/RN_6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>React Native (六)：加载所有分类与详情页 | 一艘小船</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">一艘小船</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">说翻就翻</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/05/05/RN_6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          React Native (六)：加载所有分类与详情页
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-05-05 16:12:00" itemprop="dateCreated datePublished" datetime="2017-05-05T16:12:00+08:00">2017-05-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-21 21:20:19" itemprop="dateModified" datetime="2023-12-21T21:20:19+08:00">2023-12-21</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p><a href="/2017/04/14/RN_1/">React Native (一)：基础</a></p>
+<p><a href="/2017/04/17/RN_2/">React Native (二)：StatusBar 、 NavigationBar 与 TabBar</a></p>
+<p><a href="/2017/04/18/RN_3/">React Native (三)：自定义视图</a></p>
+<p><a href="/2017/04/24/RN_4/">React Native (四)：加载新闻列表</a></p>
+<p><a href="/2017/05/03/RN_5/">React Native (五)：上下拉刷新加载</a></p>
+<p><a href="/2017/05/05/RN_6/">React Native (六)：加载所有分类与详情页</a></p>
+<h2 id="1-加载全部分类新闻"><a href="#1-加载全部分类新闻" class="headerlink" title="1.加载全部分类新闻"></a>1.加载全部分类新闻</h2><p>我们需要做的效果是打开 <code>App</code> ，首先只加载第一页的数据，其他页面在第一次显示的时候加载数据。</p>
+<p>我们需要一个状态来标明是不是第一次显示，给 <code>state</code> 加入 <code>isFirstShow: true</code>，我们在网络请求里给他赋值为 <code>false</code>。</p>
+<p>在做的过程中发现一个问题，我们需要取到它的 <code>EndKey</code> 来作为下次请求的 <code>StartKey</code> ，否则可能会请求失败，给 <code>state</code> 加入 <code>startKey: &#39;&#39;</code> ，然后在请求到数据后赋值：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br></pre></td><td class="code"><pre><span class="line"> <span class="title function_">_onRefresh</span>(<span class="params">page</span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="title function_">setState</span>(&#123;</span><br><span class="line">        <span class="attr">isFirstShow</span>: <span class="literal">false</span></span><br><span class="line">    &#125;)</span><br><span class="line"></span><br><span class="line">	<span class="keyword">if</span> (<span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">dic</span>) &#123;</span><br><span class="line"></span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">_begainRefresh</span>()</span><br><span class="line"></span><br><span class="line">        <span class="keyword">if</span> (page == <span class="number">1</span>) &#123;</span><br><span class="line">            <span class="variable language_">this</span>.<span class="title function_">setState</span>(&#123;</span><br><span class="line">                page</span><br><span class="line">            &#125;)</span><br><span class="line">        &#125; <span class="keyword">else</span>  &#123;</span><br><span class="line">            page = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">page</span></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> url = <span class="string">&#x27;http://api.iapple123.com/newspush/list/index.html?clientid=1114283782&amp;v=1.1&amp;type=&#x27;</span></span><br><span class="line">            + <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">dic</span>.<span class="property">NameEN</span></span><br><span class="line">            + <span class="string">&#x27;&amp;startkey=&#x27;</span></span><br><span class="line">            + <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">startKey</span></span><br><span class="line">            +<span class="string">&#x27;&amp;newkey=&amp;index=&#x27;</span></span><br><span class="line">            + page</span><br><span class="line">            + <span class="string">&#x27;&amp;size=&#x27;</span></span><br><span class="line">            + maxCount</span><br><span class="line">            + <span class="string">&#x27;&amp;ime=6271F554-7B2F-45DE-887E-4A336F64DEE6&amp;apptypeid=ZJZYIOS1114283782&#x27;</span></span><br><span class="line"></span><br><span class="line">        <span class="title function_">LOG</span>(<span class="string">&#x27;url=》&#x27;</span>, url)</span><br><span class="line">        <span class="title function_">fetch</span>(url, &#123;</span><br><span class="line">            <span class="attr">method</span>: <span class="string">&#x27;GET&#x27;</span>,</span><br><span class="line">            <span class="attr">headers</span>: &#123;</span><br><span class="line">                <span class="string">&#x27;Accept&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span>,</span><br><span class="line">                <span class="string">&#x27;Content-Type&#x27;</span>: <span class="string">&#x27;application/json&#x27;</span>,</span><br><span class="line">            &#125;,</span><br><span class="line">        &#125;)</span><br><span class="line">            .<span class="title function_">then</span>(<span class="function">(<span class="params">res</span>) =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">                <span class="variable language_">this</span>.<span class="title function_">_endRefresh</span>()</span><br><span class="line"></span><br><span class="line">                res.<span class="title function_">json</span>()</span><br><span class="line">                    .<span class="title function_">then</span>(<span class="function">(<span class="params">json</span>) =&gt;</span> &#123;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> list = json.<span class="property">NewsList</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> swipers = []</span><br><span class="line">                        <span class="keyword">let</span> news = []</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">if</span> (page == <span class="number">1</span>) &#123;</span><br><span class="line">                            <span class="keyword">for</span> (<span class="keyword">let</span> index <span class="keyword">in</span> list) &#123;</span><br><span class="line">                                <span class="keyword">let</span> dic = list[index]</span><br><span class="line">                                index &lt; <span class="number">4</span> ? swipers.<span class="title function_">push</span>(dic) : news.<span class="title function_">push</span>(dic)</span><br><span class="line">                            &#125;</span><br><span class="line">                            news.<span class="title function_">splice</span>(<span class="number">0</span>, <span class="number">0</span>, swipers)</span><br><span class="line">                        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                            news = list</span><br><span class="line">                        &#125;</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> newData = <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">data</span>.<span class="title function_">concat</span>(news)</span><br><span class="line"></span><br><span class="line">                        <span class="keyword">let</span> hasMore = list.<span class="property">length</span> == maxCount ? <span class="literal">true</span> : <span class="literal">false</span></span><br><span class="line"></span><br><span class="line">                        <span class="variable language_">this</span>.<span class="title function_">setState</span>(&#123;</span><br><span class="line">                            <span class="attr">dataSource</span>: <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">dataSource</span>.<span class="title function_">cloneWithRows</span>(newData),</span><br><span class="line">                            <span class="attr">data</span>: newData,</span><br><span class="line">                            <span class="attr">page</span>: <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">page</span> + (hasMore ? <span class="number">1</span> : <span class="number">0</span>),</span><br><span class="line">                            <span class="attr">showFooter</span>: <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">showFooter</span> ? <span class="literal">true</span> : (hasMore ? <span class="literal">true</span> : <span class="literal">false</span>),</span><br><span class="line">                            hasMore,</span><br><span class="line">                            <span class="attr">startKey</span>: json.<span class="property">EndKey</span> ? json.<span class="property">EndKey</span> : <span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">startKey</span></span><br><span class="line">                        &#125;)</span><br><span class="line">                    &#125;)</span><br><span class="line">                    .<span class="title function_">catch</span>(<span class="function">(<span class="params">e</span>) =&gt;</span> &#123;</span><br><span class="line">                        <span class="title function_">LOG</span>(<span class="string">&#x27;GET ERROR then =&gt;&#x27;</span>, url, e)</span><br><span class="line"></span><br><span class="line">                    &#125;)</span><br><span class="line">            &#125;)</span><br><span class="line">            .<span class="title function_">catch</span>(<span class="function">(<span class="params">error</span>) =&gt;</span> &#123;</span><br><span class="line">                <span class="variable language_">this</span>.<span class="title function_">_endRefresh</span>()</span><br><span class="line">                <span class="title function_">LOG</span>(<span class="string">&#x27;GET ERROR=&gt;&#x27;</span>, url, <span class="string">&#x27;==&gt;&#x27;</span>, error)</span><br><span class="line">            &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>然后返回我们的 <code>Home.js</code> ，在这里处理是否请求数据：</p>
+<p>首先给 <code>NewsList</code> 加上 <code>ref</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">lists.<span class="title function_">push</span>(</span><br><span class="line">    <span class="language-xml"><span class="tag">&lt;<span class="name">NewsList</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">ref</span>=<span class="string">&#123;</span>&#x27;<span class="attr">NewsList</span>&#x27; + <span class="attr">index</span>&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">key</span>=<span class="string">&#123;index&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">style</span>=<span class="string">&#123;&#123;backgroundColor:</span>&#x27;<span class="attr">white</span>&#x27;, <span class="attr">width:</span> <span class="attr">width</span>, <span class="attr">height:</span> <span class="attr">height</span> <span class="attr">-</span> <span class="attr">64</span> <span class="attr">-</span> <span class="attr">49</span> <span class="attr">-</span> <span class="attr">30</span>&#125;&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">dic</span>=<span class="string">&#123;dic&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">isRequest</span>=<span class="string">&#123;index</span> == <span class="string">0&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">        <span class="attr">touchIn</span>=<span class="string">&#123;(scrollEnabled)</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-xml">            this.refs.ScrollView.setNativeProps(&#123;scrollEnabled: !scrollEnabled&#125;)</span></span><br><span class="line"><span class="language-xml">        &#125;&#125;</span></span><br><span class="line"><span class="language-xml">    /&gt;</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+
+<p>然后在点击 <code>SegmentedView</code> 和滑动 <code>ScrollView</code> 的时候来进行处理：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">SegmentedView</span></span><br><span class="line">    ref=<span class="string">&quot;SegmentedView&quot;</span></span><br><span class="line">    list=&#123;<span class="variable language_">this</span>.<span class="property">state</span>.<span class="property">list</span>&#125;</span><br><span class="line">    style=&#123;&#123;<span class="attr">height</span>: <span class="number">30</span>&#125;&#125;</span><br><span class="line">    selectItem=&#123;<span class="function">(<span class="params">index</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">refs</span>.<span class="property">ScrollView</span>.<span class="title function_">scrollTo</span>(&#123;<span class="attr">x</span>: width * index, <span class="attr">y</span>: <span class="number">0</span>, <span class="attr">animated</span>: <span class="literal">true</span>&#125;)</span><br><span class="line">        <span class="variable language_">this</span>.<span class="title function_">_scrollTo</span>(index)</span><br><span class="line">    &#125;&#125;</span><br><span class="line">/&gt;</span><br><span class="line"></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">ScrollView</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">removeClippedSubviews</span>=<span class="string">&#123;Platform.OS</span> === <span class="string">&#x27;ios&#x27;</span>&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">style</span>=<span class="string">&#123;styles.view&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">ref</span>=<span class="string">&quot;ScrollView&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">horizontal</span>=<span class="string">&#123;true&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">showsHorizontalScrollIndicator</span>=<span class="string">&#123;false&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">pagingEnabled</span>=<span class="string">&#123;true&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">    <span class="attr">onMomentumScrollEnd</span>=<span class="string">&#123;(s)</span> =&gt;</span> &#123;</span></span><br><span class="line"><span class="language-xml">        let index = s.nativeEvent.contentOffset.x / width</span></span><br><span class="line"><span class="language-xml">        this.refs.SegmentedView._moveTo(index)</span></span><br><span class="line"><span class="language-xml">        this._scrollTo(index)</span></span><br><span class="line"><span class="language-xml">    &#125;&#125;</span></span><br><span class="line"><span class="language-xml">&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>如果是第一次显示，那么请求数据：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">_scrollTo</span>(<span class="params">index</span>) &#123;</span><br><span class="line">    <span class="keyword">let</span> newsList = <span class="variable language_">this</span>.<span class="property">refs</span>[<span class="string">&#x27;NewsList&#x27;</span> + index]</span><br><span class="line">    newsList.<span class="property">state</span>.<span class="property">isFirstShow</span> &amp;&amp; newsList.<span class="title function_">_onRefresh</span>()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h2 id="2-详情页"><a href="#2-详情页" class="headerlink" title="2.详情页"></a>2.详情页</h2><p>详情页进去是一个网页，我们直接写死一个网页。</p>
+<p>创建 <code>NewsDetail.js</code></p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    <span class="title class_">View</span>,</span><br><span class="line">    <span class="title class_">Text</span>,</span><br><span class="line">    <span class="title class_">StyleSheet</span>,</span><br><span class="line">    <span class="title class_">WebView</span></span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">NavigationBar</span> <span class="keyword">from</span> <span class="string">&#x27;../Custom/NavBarCommon&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> <span class="title class_">NewsDetail</span> <span class="keyword">extends</span> <span class="title class_ inherited__">React.Component</span> &#123;</span><br><span class="line">    <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            <span class="language-xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;styles.view&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">NavigationBar</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">title</span>=<span class="string">&quot;详情页&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">navigator</span>=<span class="string">&#123;this.props.navigator&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                /&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">WebView</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">style</span>=<span class="string">&#123;&#123;flex:1&#125;&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">source</span>=<span class="string">&#123;&#123;uri:</span> &#x27;<span class="attr">http:</span>//<span class="attr">zjzywap.eastday.com</span>/<span class="attr">m</span>/<span class="attr">170425001829725.html</span>?<span class="attr">fr</span>=<span class="string">toutiao&amp;qid</span>=<span class="string">zjxw&amp;apptypeid</span>=<span class="string">ZJZYIOS1114283782&amp;ime</span>=<span class="string">6271F554-7B2F-45DE-887E-4A336F64DEE6</span>&#x27;&#125;&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                /&gt;</span></span></span><br><span class="line"><span class="language-xml"></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> styles = <span class="title class_">StyleSheet</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">view</span>: &#123;</span><br><span class="line">        <span class="attr">flex</span>:<span class="number">1</span>,</span><br><span class="line">        <span class="attr">backgroundColor</span>: <span class="string">&#x27;white&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br></pre></td></tr></table></figure>
+
+
+<p>然后我们去 <code>NewsList.js</code> 引入：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">NewsDetail</span> <span class="keyword">from</span> <span class="string">&#x27;./NewsDetail&#x27;</span></span><br></pre></td></tr></table></figure>
+
+
+<p>然后我们需要进行 <code>push</code> :</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="title function_">_onPress</span>(<span class="params"></span>) &#123;</span><br><span class="line">    <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">navigator</span> &amp;&amp; <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">navigator</span>.<span class="title function_">push</span>(&#123;</span><br><span class="line">        <span class="attr">component</span>: <span class="title class_">NewsDetail</span>,</span><br><span class="line">        <span class="attr">params</span>: &#123;</span><br><span class="line">            <span class="attr">navigator</span>: <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">navigator</span>, <span class="comment">//这个并不用传入, 这里只是为了演示参数的传入</span></span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们 <code>push</code> 需要用到 <code>navigator</code>， 但是的 <code>NewsList</code> 我们并没有给它传入 <code>navigator</code> ，我们需要去 <code>Home.js</code> ：</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">NewsList</span></span><br><span class="line">    ref=&#123;<span class="string">&#x27;NewsList&#x27;</span> + index&#125;</span><br><span class="line">    key=&#123;index&#125;</span><br><span class="line">    style=&#123;&#123;<span class="attr">backgroundColor</span>:<span class="string">&#x27;white&#x27;</span>, <span class="attr">width</span>: width, <span class="attr">height</span>: height - <span class="number">64</span> - <span class="number">49</span> - <span class="number">30</span>&#125;&#125;</span><br><span class="line">    dic=&#123;dic&#125;</span><br><span class="line">    isRequest=&#123;index == <span class="number">0</span>&#125;</span><br><span class="line">    touchIn=&#123;<span class="function">(<span class="params">scrollEnabled</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">refs</span>.<span class="property">ScrollView</span>.<span class="title function_">setNativeProps</span>(&#123;<span class="attr">scrollEnabled</span>: !scrollEnabled&#125;)</span><br><span class="line">    &#125;&#125;</span><br><span class="line">    navigator=&#123;<span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">navigator</span>&#125;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>然后进行调用</p>
+<p>在 <code>renderRow</code> 方法内的 <code>CarousePicture</code> 以及下面的 2 个 <code>TouchableOpacity</code> 加入属性 <code>onPress=&#123;this._onPress&#125;</code></p>
+<p>例如这样:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;<span class="title class_">CarousePicture</span></span><br><span class="line">    index=&#123;<span class="number">5</span>&#125;</span><br><span class="line">    ref=<span class="string">&quot;ScrollView&quot;</span></span><br><span class="line">    rowData=&#123;rowData&#125;</span><br><span class="line">    style=&#123;&#123;width, <span class="attr">height</span>: <span class="number">200</span>&#125;&#125;</span><br><span class="line">    touchIn=&#123;<span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">touchIn</span>&#125;</span><br><span class="line">    onPress=&#123;<span class="variable language_">this</span>.<span class="property">_onPress</span>&#125;</span><br><span class="line">/&gt;</span><br></pre></td></tr></table></figure>
+
+<p>最后我们需要进入 <code>CarousePicture.js</code> 内的 <code>TouchableWithoutFeedback</code> 来调用回调函数:</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"> &lt;<span class="title class_">TouchableWithoutFeedback</span></span><br><span class="line">    style=&#123;&#123;<span class="attr">flex</span>:<span class="number">1</span>,width, <span class="attr">height</span>:<span class="number">200</span>, <span class="attr">backgroundColor</span>:<span class="string">&#x27;white&#x27;</span>&#125;&#125;</span><br><span class="line"></span><br><span class="line">    onPress=&#123;<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">onPress</span> &amp;&amp; <span class="variable language_">this</span>.<span class="property">props</span>.<span class="title function_">onPress</span>()</span><br><span class="line">    &#125;&#125;</span><br><span class="line">    onPressIn=&#123;<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">touchIn</span> &amp;&amp; <span class="variable language_">this</span>.<span class="property">props</span>.<span class="title function_">touchIn</span>(<span class="literal">true</span>)</span><br><span class="line">    &#125;&#125;</span><br><span class="line"></span><br><span class="line">    onPressOut=&#123;<span class="function">() =&gt;</span> &#123;</span><br><span class="line">        <span class="variable language_">this</span>.<span class="property">props</span>.<span class="property">touchIn</span> &amp;&amp; <span class="variable language_">this</span>.<span class="property">props</span>.<span class="title function_">touchIn</span>(<span class="literal">false</span>)</span><br><span class="line">    &#125;&#125;</span><br><span class="line">&gt;</span><br></pre></td></tr></table></figure>
+
+<p>现在就可以 <code>push</code> 到详情页了</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/qiangxinyu/ReactNativeExample/tree/master/ReactNative6">项目地址</a></p>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/05/03/RN_5/" rel="prev" title="React Native (五)：上下拉刷新加载">
+      <i class="fa fa-chevron-left"></i> React Native (五)：上下拉刷新加载
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E5%8A%A0%E8%BD%BD%E5%85%A8%E9%83%A8%E5%88%86%E7%B1%BB%E6%96%B0%E9%97%BB"><span class="nav-number">1.</span> <span class="nav-text">1.加载全部分类新闻</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E8%AF%A6%E6%83%85%E9%A1%B5"><span class="nav-number">2.</span> <span class="nav-text">2.详情页</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">qxy</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qxy</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

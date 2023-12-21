@@ -20,23 +20,23 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta name="description" content="title:iOS 配置FFmpeg框架FFmpeg是一个自由软件，可以运行音频和视频多种格式的录影、转换、流功能，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。 环境与工具Mac OS X EI Capitan 10.11.4Xcode7.3.1终端 1.安装 yasm*OS X 下载 Source .tar.g">
+  <meta name="description" content="FFmpeg是一个自由软件，可以运行音频和视频多种格式的录影、转换、流功能，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。 环境与工具Mac OS X EI Capitan 10.11.4Xcode7.3.1终端 1.安装 yasm*OS X 下载 Source .tar.gz 即可 * 下载完成后，打开终端，cd">
 <meta property="og:type" content="article">
-<meta property="og:title" content="一艘小船">
-<meta property="og:url" content="http://example.com/2015/11/03/iOSUseFFmpeg/index.html">
+<meta property="og:title" content="iOS 配置FFmpeg框架">
+<meta property="og:url" content="http://example.com/2016/10/28/iOSUseFFmpeg/index.html">
 <meta property="og:site_name" content="一艘小船">
-<meta property="og:description" content="title:iOS 配置FFmpeg框架FFmpeg是一个自由软件，可以运行音频和视频多种格式的录影、转换、流功能，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。 环境与工具Mac OS X EI Capitan 10.11.4Xcode7.3.1终端 1.安装 yasm*OS X 下载 Source .tar.g">
+<meta property="og:description" content="FFmpeg是一个自由软件，可以运行音频和视频多种格式的录影、转换、流功能，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。 环境与工具Mac OS X EI Capitan 10.11.4Xcode7.3.1终端 1.安装 yasm*OS X 下载 Source .tar.gz 即可 * 下载完成后，打开终端，cd">
 <meta property="og:locale" content="en_US">
-<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_list.png?raw=true">
-<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_header.png?raw=true">
-<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_library.png?raw=true">
-<meta property="article:published_time" content="2015-11-03T13:04:00.000Z">
-<meta property="article:modified_time" content="2016-05-12T02:44:00.000Z">
+<meta property="og:image" content="http://example.com/img/SettingFFmpeg/SettingFFmpeg_list.png?raw=true">
+<meta property="og:image" content="http://example.com/img/SettingFFmpeg/SettingFFmpeg_header.png?raw=true">
+<meta property="og:image" content="http://example.com/img/SettingFFmpeg/SettingFFmpeg_library.png?raw=true">
+<meta property="article:published_time" content="2016-10-28T08:21:00.000Z">
+<meta property="article:modified_time" content="2016-10-28T08:21:00.000Z">
 <meta property="article:author" content="qxy">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_list.png?raw=true">
+<meta name="twitter:image" content="http://example.com/img/SettingFFmpeg/SettingFFmpeg_list.png?raw=true">
 
-<link rel="canonical" href="http://example.com/2015/11/03/iOSUseFFmpeg/">
+<link rel="canonical" href="http://example.com/2016/10/28/iOSUseFFmpeg/">
 
 
 <script id="page-configurations">
@@ -49,7 +49,7 @@
   };
 </script>
 
-  <title> | 一艘小船</title>
+  <title>iOS 配置FFmpeg框架 | 一艘小船</title>
   
 
 
@@ -155,7 +155,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2015/11/03/iOSUseFFmpeg/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2016/10/28/iOSUseFFmpeg/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -168,7 +168,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          
+          iOS 配置FFmpeg框架
         </h1>
 
         <div class="post-meta">
@@ -178,15 +178,8 @@
               </span>
               <span class="post-meta-item-text">Posted on</span>
 
-              <time title="Created: 2015-11-03 21:04:00" itemprop="dateCreated datePublished" datetime="2015-11-03T21:04:00+08:00">2015-11-03</time>
+              <time title="Created: 2016-10-28 16:21:00" itemprop="dateCreated datePublished" datetime="2016-10-28T16:21:00+08:00">2016-10-28</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2016-05-12 10:44:00" itemprop="dateModified" datetime="2016-05-12T10:44:00+08:00">2016-05-12</time>
-              </span>
 
           
 
@@ -199,7 +192,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <h2 id="title-iOS-配置FFmpeg框架"><a href="#title-iOS-配置FFmpeg框架" class="headerlink" title="title:iOS 配置FFmpeg框架"></a>title:iOS 配置FFmpeg框架</h2><p><strong>FFmpeg</strong>是一个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%87%AA%E7%94%B1%E8%BB%9F%E9%AB%94">自由软件</a>，可以运行音频和视频多种格式的<a target="_blank" rel="noopener" href="http://ffmpeg.org/ffmpeg.html">录影、转换、流功能</a>，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。</p>
+        <p><strong>FFmpeg</strong>是一个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%87%AA%E7%94%B1%E8%BB%9F%E9%AB%94">自由软件</a>，可以运行音频和视频多种格式的<a target="_blank" rel="noopener" href="http://ffmpeg.org/ffmpeg.html">录影、转换、流功能</a>，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。</p>
 <h2 id="环境与工具"><a href="#环境与工具" class="headerlink" title="环境与工具"></a>环境与工具</h2><p><strong>Mac OS X EI Capitan 10.11.4</strong><br><strong>Xcode7.3.1</strong><br><strong>终端</strong></p>
 <h3 id="1-安装-yasm"><a href="#1-安装-yasm" class="headerlink" title="1.安装 yasm"></a>1.安装 <a target="_blank" rel="noopener" href="http://yasm.tortall.net/releases/Release1.3.0.html">yasm</a></h3><p>*OS X 下载 Source .tar.gz 即可 *</p>
 <p>下载完成后，打开终端，cd 进目录</p>
@@ -223,15 +216,15 @@ Run yasm --license for licensing overview and summary.
 <pre><code>$ ./build-ffmpeg.sh
 </code></pre>
 <p>脚本则会自动从github中把ffmpeg源码下到本地并开始编译。 编译结束后，文件目录如下：</p>
-<p><img src="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_list.png?raw=true" alt="SettingFFmpeg"></p>
+<p><img src="/img/SettingFFmpeg/SettingFFmpeg_list.png?raw=true" alt="SettingFFmpeg"></p>
 <p>ffmpeg-3.0是源码， FFmpeg-iOS是编译出来的库，里面是我们需要的.a 静态库，一共有7个。 终端输入</p>
 <pre><code>$ lipo -info libavcodec.a 
 Architectures in the fat file: libavcodec.a are: armv7 i386 x86_64 arm64 
 </code></pre>
 <p>可以看出来静态库支持 <code>armv7</code>  <code>i386</code>  <code>x86_64</code>  <code>arm64 </code> 构架</p>
 <h3 id="4-把-FFmpeg-iOS-导入工程。"><a href="#4-把-FFmpeg-iOS-导入工程。" class="headerlink" title="4.把 FFmpeg-iOS 导入工程。"></a>4.把 FFmpeg-iOS 导入工程。</h3><p>然后在 <code>Build Settings</code> 中找到 <code>Search Paths</code> ，设置 <code>Header Search Pahts</code> 和 <code>Library Search Paths</code> 如下。不然会报 <code>include“libavformat/avformat.h” file not found </code> 错误。</p>
-<p><img src="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_header.png?raw=true" alt="SettingFFmpeg_header"></p>
-<p><img src="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_library.png?raw=true" alt="SettingFFmpeg_library"></p>
+<p><img src="/img/SettingFFmpeg/SettingFFmpeg_header.png?raw=true" alt="SettingFFmpeg_header"></p>
+<p><img src="/img/SettingFFmpeg/SettingFFmpeg_library.png?raw=true" alt="SettingFFmpeg_library"></p>
 <h3 id="5-在工程中导入其他库文件。"><a href="#5-在工程中导入其他库文件。" class="headerlink" title="5.在工程中导入其他库文件。"></a>5.在工程中导入其他库文件。</h3><p><code>libz.tbd</code> 、<code>ibbz2.tbd</code> 、 <code>libiconv.tbd</code>,在 3.0以后需要添加另外2个框架 <code>VideoToolbox.framework</code> 和 <code>CoreMedia.framework</code></p>
 <h3 id="5-编译"><a href="#5-编译" class="headerlink" title="5.编译"></a>5.编译</h3><p>因为这些库是C++，所以需要把一个文件后缀改为 .mm，这样Xcode就会自动打开C++混编，一般会把  <code>AppDelegate.m</code> 改为 <code>AppDelegate.mm</code> </p>
 <p>然后随便找个 文件，导入 <code>avcodec.h</code></p>
@@ -274,12 +267,12 @@ Architectures in the fat file: libavcodec.a are: armv7 i386 x86_64 arm64 
         
     <div class="post-nav">
       <div class="post-nav-item">
-    <a href="/2015/08/21/CollectionViewHasSimpleAgainArray/" rel="prev" title="UICollectionViews有了简单的重排功能">
-      <i class="fa fa-chevron-left"></i> UICollectionViews有了简单的重排功能
+    <a href="/2016/10/16/WKWebView/" rel="prev" title="WKWebView">
+      <i class="fa fa-chevron-left"></i> WKWebView
     </a></div>
       <div class="post-nav-item">
-    <a href="/2015/11/03/handleImageSomTip/" rel="next" title="iOS 处理图片的一些小 Tip">
-      iOS 处理图片的一些小 Tip <i class="fa fa-chevron-right"></i>
+    <a href="/2016/12/21/swfitService/" rel="next" title="使用 Swift 搭建服务器">
+      使用 Swift 搭建服务器 <i class="fa fa-chevron-right"></i>
     </a></div>
     </div>
       </footer>
@@ -339,7 +332,7 @@ Architectures in the fat file: libavcodec.a are: armv7 i386 x86_64 arm64 
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
-          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#title-iOS-%E9%85%8D%E7%BD%AEFFmpeg%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">title:iOS 配置FFmpeg框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E4%B8%8E%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text">环境与工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-yasm"><span class="nav-number">2.1.</span> <span class="nav-text">1.安装 yasm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%8B%E8%BD%BD-gas-preprocessor-pl"><span class="nav-number">2.2.</span> <span class="nav-text">2.下载 gas-preprocessor.pl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%8B%E8%BD%BD%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text">3.下载脚本文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8A%8A-FFmpeg-iOS-%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B%E3%80%82"><span class="nav-number">2.4.</span> <span class="nav-text">4.把 FFmpeg-iOS 导入工程。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%9C%A8%E5%B7%A5%E7%A8%8B%E4%B8%AD%E5%AF%BC%E5%85%A5%E5%85%B6%E4%BB%96%E5%BA%93%E6%96%87%E4%BB%B6%E3%80%82"><span class="nav-number">2.5.</span> <span class="nav-text">5.在工程中导入其他库文件。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%BC%96%E8%AF%91"><span class="nav-number">2.6.</span> <span class="nav-text">5.编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.7.</span> <span class="nav-text">6.可能出现的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.8.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E4%B8%8E%E5%B7%A5%E5%85%B7"><span class="nav-number">1.</span> <span class="nav-text">环境与工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-yasm"><span class="nav-number">1.1.</span> <span class="nav-text">1.安装 yasm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%8B%E8%BD%BD-gas-preprocessor-pl"><span class="nav-number">1.2.</span> <span class="nav-text">2.下载 gas-preprocessor.pl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%8B%E8%BD%BD%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6"><span class="nav-number">1.3.</span> <span class="nav-text">3.下载脚本文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8A%8A-FFmpeg-iOS-%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B%E3%80%82"><span class="nav-number">1.4.</span> <span class="nav-text">4.把 FFmpeg-iOS 导入工程。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%9C%A8%E5%B7%A5%E7%A8%8B%E4%B8%AD%E5%AF%BC%E5%85%A5%E5%85%B6%E4%BB%96%E5%BA%93%E6%96%87%E4%BB%B6%E3%80%82"><span class="nav-number">1.5.</span> <span class="nav-text">5.在工程中导入其他库文件。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%BC%96%E8%AF%91"><span class="nav-number">1.6.</span> <span class="nav-text">5.编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">1.7.</span> <span class="nav-text">6.可能出现的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.8.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
       </div>
       <!--/noindex-->
 
@@ -353,7 +346,7 @@ Architectures in the fat file: libavcodec.a are: armv7 i386 x86_64 arm64 
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

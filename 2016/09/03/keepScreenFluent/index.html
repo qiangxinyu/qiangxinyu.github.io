@@ -28,7 +28,7 @@
 <meta property="og:description" content="转载自YY大神 演示项目在开始技术讨论前，你可以先下载我写的 Demo 跑到真机上体验一下：Demo。 Demo 里包含一个微博的 Feed 列表、发布视图，还包含一个 Twitter 的 Feed 列表。为了公平起见，所有界面和交互我都从官方应用原封不动的抄了过来，数据也都是从官方应用抓取的。你也可以自己抓取数据替换掉 Demo 中的数据，方便进行对比。尽管官方应用背后的功能更多更为复杂，但不至">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2016-09-03T03:43:00.000Z">
-<meta property="article:modified_time" content="2016-09-03T03:43:00.000Z">
+<meta property="article:modified_time" content="2023-12-21T12:48:32.544Z">
 <meta property="article:author" content="qxy">
 <meta name="twitter:card" content="summary">
 
@@ -176,6 +176,13 @@
 
               <time title="Created: 2016-09-03 11:43:00" itemprop="dateCreated datePublished" datetime="2016-09-03T11:43:00+08:00">2016-09-03</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-21 20:48:32" itemprop="dateModified" datetime="2023-12-21T20:48:32+08:00">2023-12-21</time>
+              </span>
 
           
 
@@ -190,19 +197,31 @@
       
         <p>转载自<a target="_blank" rel="noopener" href="http://blog.ibireme.com/2015/11/12/smooth_user_interfaces_for_ios/">YY大神</a></p>
 <h2 id="演示项目"><a href="#演示项目" class="headerlink" title="演示项目"></a>演示项目</h2><p>在开始技术讨论前，你可以先下载我写的 Demo 跑到真机上体验一下：<a target="_blank" rel="noopener" href="https://github.com/ibireme/YYKit">Demo</a>。 Demo 里包含一个微博的 Feed 列表、发布视图，还包含一个 Twitter 的 Feed 列表。为了公平起见，所有界面和交互我都从官方应用原封不动的抄了过来，数据也都是从官方应用抓取的。你也可以自己抓取数据替换掉 Demo 中的数据，方便进行对比。尽管官方应用背后的功能更多更为复杂，但不至于会带来太大的交互性能差异。</p>
-<p><a href="/images/keepScreenFluent/weibo1.png"><img src = "/images/keepScreenFluent/weibo1.png" width = 125 height = 222 alt = "weibo" /></a> <a href="/images/keepScreenFluent/weibo2.png"><img src = "/images/keepScreenFluent/weibo2.png" width = 125 height = 222 alt = "weibo1" /></a> <a href="/images/keepScreenFluent/twitter1.png"><img src = "/images/keepScreenFluent/twitter1.png" width = 125 height = 222 alt = "twitter1" /></a></p>
+<div style="display: flex">
+    <a style="flex: 1" href="/img/keepScreenFluent/weibo1.png">
+        <img src = "/img/keepScreenFluent/weibo1.png"  />
+    </a>
+    <a style="flex: 1" href="/img/keepScreenFluent/weibo2.png">
+        <img src = "/img/keepScreenFluent/weibo2.png"  />
+    </a>
+    <a style="flex: 1" href="/img/keepScreenFluent/twitter1.png">
+        <img src = "/img/keepScreenFluent/twitter1.png"  />
+    </a>
+</div>
+
+
 <p>这个 Demo 最低可以运行在 iOS 6 上，所以你可以把它跑到老设备上体验一下。在我的测试中，即使在 iPhone 4S 或者 iPad 3 上，Demo 列表在快速滑动时仍然能保持 50~60 FPS 的流畅交互，而其他诸如微博、朋友圈等应用的列表视图在滑动时已经有很严重的卡顿了。</p>
 <p>微博的 Demo 有大约四千行代码，Twitter 的只有两千行左右代码，第三方库只用到了 YYKit，文件数量比较少，方便查看。好了，下面是正文。</p>
-<h2 id="屏幕显示图像的原理"><a href="#屏幕显示图像的原理" class="headerlink" title="屏幕显示图像的原理"></a>屏幕显示图像的原理</h2><p><a href="/images/keepScreenFluent/ios_screen_scan.png"><img src = "/images/keepScreenFluent/ios_screen_scan.png" width = 321 height = 239 alt = "ios_screen_scan" /></a></p>
+<h2 id="屏幕显示图像的原理"><a href="#屏幕显示图像的原理" class="headerlink" title="屏幕显示图像的原理"></a>屏幕显示图像的原理</h2><p><a href="/img/keepScreenFluent/ios_screen_scan.png"><img src = "/img/keepScreenFluent/ios_screen_scan.png" width = 321 height = 239 alt = "ios_screen_scan" /></a></p>
 <p>首先从过去的 CRT 显示器原理说起。CRT 的电子枪按照上面方式，从上到下一行行扫描，扫描完成后显示器就呈现一帧画面，随后电子枪回到初始位置继续下一次扫描。为了把显示器的显示过程和系统的视频控制器进行同步，显示器（或者其他硬件）会用硬件时钟产生一系列的定时信号。当电子枪换到新的一行，准备进行扫描时，显示器会发出一个水平同步信号（horizonal synchronization），简称 HSync；而当一帧画面绘制完成后，电子枪回复到原位，准备画下一帧前，显示器会发出一个垂直同步信号（vertical synchronization），简称 VSync。显示器通常以固定频率进行刷新，这个刷新率就是 VSync 信号产生的频率。尽管现在的设备大都是液晶显示屏了，但原理仍然没有变。</p>
-<p><a href="/images/keepScreenFluent/ios_screen_display.png"><img src = "/images/keepScreenFluent/ios_screen_display.png" width = 546 height = 251 alt = "ios_screen_display" /></a></p>
+<p><a href="/img/keepScreenFluent/ios_screen_display.png"><img src = "/img/keepScreenFluent/ios_screen_display.png" width = 546 height = 251 alt = "ios_screen_display" /></a></p>
 <p>通常来说，计算机系统中 CPU、GPU、显示器是以上面这种方式协同工作的。CPU 计算好显示内容提交到 GPU，GPU 渲染完成后将渲染结果放入帧缓冲区，随后视频控制器会按照 VSync 信号逐行读取帧缓冲区的数据，经过可能的数模转换传递给显示器显示。</p>
 <p>在最简单的情况下，帧缓冲区只有一个，这时帧缓冲区的读取和刷新都都会有比较大的效率问题。为了解决效率问题，显示系统通常会引入两个缓冲区，即双缓冲机制。在这种情况下，GPU 会预先渲染好一帧放入一个缓冲区内，让视频控制器读取，当下一帧渲染好后，GPU 会直接把视频控制器的指针指向第二个缓冲器。如此一来效率会有很大的提升。</p>
 <p>双缓冲虽然能解决效率问题，但会引入一个新的问题。当视频控制器还未读取完成时，即屏幕内容刚显示一半时，GPU 将新的一帧内容提交到帧缓冲区并把两个缓冲区进行交换后，视频控制器就会把新的一帧数据的下半段显示到屏幕上，造成画面撕裂现象，如下图：</p>
-<p><a href="/images/keepScreenFluent/ios_vsync_off.jpg"><img src = "/images/keepScreenFluent/ios_vsync_off.jpg" width = 724 height = 427 alt = "ios_vsync_off" /></a></p>
+<p><a href="/img/keepScreenFluent/ios_vsync_off.jpg"><img src = "/img/keepScreenFluent/ios_vsync_off.jpg" width = 724 height = 427 alt = "ios_vsync_off" /></a></p>
 <p>为了解决这个问题，GPU 通常有一个机制叫做垂直同步（简写也是 V-Sync），当开启垂直同步后，GPU 会等待显示器的 VSync 信号发出后，才进行新的一帧渲染和缓冲区更新。这样能解决画面撕裂现象，也增加了画面流畅度，但需要消费更多的计算资源，也会带来部分延迟。</p>
 <p>那么目前主流的移动设备是什么情况呢？从网上查到的资料可以知道，iOS 设备会始终使用双缓存，并开启垂直同步。而安卓设备直到 4.1 版本，Google 才开始引入这种机制，目前安卓系统是三缓存+垂直同步。</p>
-<h2 id="卡顿产生的原因和解决方案"><a href="#卡顿产生的原因和解决方案" class="headerlink" title="卡顿产生的原因和解决方案"></a>卡顿产生的原因和解决方案</h2><p><a href="/images/keepScreenFluent/ios_frame_drop.png"><img src = "/images/keepScreenFluent/ios_frame_drop.png" width = 712 height = 184 alt = "ios_frame_drop" /></a></p>
+<h2 id="卡顿产生的原因和解决方案"><a href="#卡顿产生的原因和解决方案" class="headerlink" title="卡顿产生的原因和解决方案"></a>卡顿产生的原因和解决方案</h2><p><a href="/img/keepScreenFluent/ios_frame_drop.png"><img src = "/img/keepScreenFluent/ios_frame_drop.png" width = 712 height = 184 alt = "ios_frame_drop" /></a></p>
 <p>在 VSync 信号到来后，系统图形服务会通过 CADisplayLink 等机制通知 App，App 主线程开始在 CPU 中计算显示内容，比如视图的创建、布局计算、图片解码、文本绘制等。随后 CPU 会将计算好的内容提交到 GPU 去，由 GPU 进行变换、合成、渲染。随后 GPU 会把渲染结果提交到帧缓冲区去，等待下一次 VSync 信号到来时显示到屏幕上。由于垂直同步的机制，如果在一个 VSync 时间内，CPU 或者 GPU 没有完成内容提交，则那一帧就会被丢弃，等待下一次机会再显示，而这时显示屏会保留之前的内容不变。这就是界面卡顿的原因。</p>
 <p>从上面的图中可以看到，CPU 和 GPU 不论哪个阻碍了显示流程，都会造成掉帧现象。所以开发时，也需要分别对 CPU 和 GPU 压力进行评估和优化。</p>
 <h3 id="CPU-资源消耗原因和解决方案"><a href="#CPU-资源消耗原因和解决方案" class="headerlink" title="CPU 资源消耗原因和解决方案"></a>CPU 资源消耗原因和解决方案</h3><h4 id="对象创建"><a href="#对象创建" class="headerlink" title="对象创建"></a>对象创建</h4><p>对象的创建会分配内存、调整属性、甚至还有读取文件等操作，比较消耗 CPU 资源。尽量用轻量的对象代替重量的对象，可以对性能有所优化。比如 CALayer 比 UIView 要轻量许多，那么不需要响应触摸事件的控件，用 CALayer 显示会更加合适。如果对象不涉及 UI 操作，则尽量放到后台线程去创建，但可惜的是包含有 CALayer 的控件，都只能在主线程创建和操作。通过 Storyboard 创建视图对象时，其资源消耗会比直接通过代码创建对象要大非常多，在性能敏感的界面里，Storyboard 并不是一个好的技术选择。</p>
@@ -227,31 +246,31 @@
 <h4 id="视图的混合-Composing"><a href="#视图的混合-Composing" class="headerlink" title="视图的混合 (Composing)"></a>视图的混合 (Composing)</h4><p>当多个视图（或者说 CALayer）重叠在一起显示时，GPU 会首先把他们混合到一起。如果视图结构过于复杂，混合的过程也会消耗很多 GPU 资源。为了减轻这种情况的 GPU 消耗，应用应当尽量减少视图数量和层次，并在不透明的视图里标明 opaque 属性以避免无用的 Alpha 通道合成。当然，这也可以用上面的方法，把多个视图预先渲染为一张图片来显示。</p>
 <h4 id="图形的生成。"><a href="#图形的生成。" class="headerlink" title="图形的生成。"></a>图形的生成。</h4><p>CALayer 的 border、圆角、阴影、遮罩（mask），CASharpLayer 的矢量图形显示，通常会触发离屏渲染（offscreen rendering），而离屏渲染通常发生在 GPU 中。当一个列表视图中出现大量圆角的 CALayer，并且快速滑动时，可以观察到 GPU 资源已经占满，而 CPU 资源消耗很少。这时界面仍然能正常滑动，但平均帧数会降到很低。为了避免这种情况，可以尝试开启 CALayer.shouldRasterize 属性，但这会把原本离屏渲染的操作转嫁到 CPU 上去。对于只需要圆角的某些场合，也可以用一张已经绘制好的圆角图片覆盖到原本视图上面来模拟相同的视觉效果。最彻底的解决办法，就是把需要显示的图形在后台线程绘制为图片，避免使用圆角、阴影、遮罩等属性。</p>
 <h2 id="AsyncDisplayKit"><a href="#AsyncDisplayKit" class="headerlink" title="AsyncDisplayKit"></a>AsyncDisplayKit</h2><p>AsyncDisplayKit 是 Facebook 开源的一个用于保持 iOS 界面流畅的库，我从中学到了很多东西，所以下面我会花较大的篇幅来对其进行介绍和分析。</p>
-<h4 id="ASDK-的由来"><a href="#ASDK-的由来" class="headerlink" title="ASDK 的由来"></a>ASDK 的由来</h4><p><a href="/images/keepScreenFluent/scott_goodson.png"><img src = "/images/keepScreenFluent/scott_goodson.png" width = 300 height = 300 alt = "scott_goodson" /></a></p>
+<h4 id="ASDK-的由来"><a href="#ASDK-的由来" class="headerlink" title="ASDK 的由来"></a>ASDK 的由来</h4><p><a href="/img/keepScreenFluent/scott_goodson.png"><img src = "/img/keepScreenFluent/scott_goodson.png" width = 300 height = 300 alt = "scott_goodson" /></a></p>
 <p>ASDK 的作者是 Scott Goodson (<a target="_blank" rel="noopener" href="https://www.linkedin.com/in/iosengineer">Linkedin</a>)，<br>他曾经在苹果工作，负责 iOS 的一些内置应用的开发，比如股票、计算器、地图、钟表、设置、Safari 等，当然他也参与了 UIKit framework 的开发。后来他加入 Facebook 后，负责 Paper 的开发，创建并开源了 AsyncDisplayKit。目前他在 Pinterest 和 Instagram 负责 iOS 开发和用户体验的提升等工作。</p>
-<p><a href="/images/keepScreenFluent/asdk_history.png"><img src = "/images/keepScreenFluent/asdk_history.png" width = 484 height = 160 alt = "asdk_history" /></a></p>
+<p><a href="/img/keepScreenFluent/asdk_history.png"><img src = "/img/keepScreenFluent/asdk_history.png" width = 484 height = 160 alt = "asdk_history" /></a></p>
 <p>ASDK 自 2014 年 6 月开源，10 月发布 1.0 版。目前 ASDK 即将要发布 2.0 版。<br>V2.0 增加了更多布局相关的代码，ComponentKit 团队为此贡献很多。<br>现在 Github 的 master 分支上的版本是 V1.9.1，已经包含了 V2.0 的全部内容。</p>
 <h4 id="ASDK-的资料"><a href="#ASDK-的资料" class="headerlink" title="ASDK 的资料"></a>ASDK 的资料</h4><p>想要了解 ASDK 的原理和细节，最好从下面几个视频开始：<br>2014.10.15 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=-IPMNWqA638">NSLondon - Scott Goodson - Behind AsyncDisplayKit</a><br>2015.03.02 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=ZPL4Nse76oY">MCE 2015 - Scott Goodson - Effortless Responsiveness with AsyncDisplayKit</a><br>2015.10.25 <a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=RY_X7l1g79Q">AsyncDisplayKit 2.0: Intelligent User Interfaces - NSSpain 2015</a><br>前两个视频内容大同小异，都是介绍 ASDK 的基本原理，附带介绍 POP 等其他项目。<br>后一个视频增加了 ASDK 2.0 的新特性的介绍。</p>
 <p>除此之外，还可以到 Github Issues 里看一下 ASDK 相关的讨论，下面是几个比较重要的内容：<br><a target="_blank" rel="noopener" href="https://github.com/facebook/AsyncDisplayKit/issues/42">关于 Runloop Dispatch</a><br><a target="_blank" rel="noopener" href="https://github.com/facebook/AsyncDisplayKit/issues/70">关于 ComponentKit 和 ASDK 的区别</a><br><a target="_blank" rel="noopener" href="https://github.com/facebook/AsyncDisplayKit/issues/132">为什么不支持 Storyboard 和 Autolayout</a><br><a target="_blank" rel="noopener" href="https://github.com/facebook/AsyncDisplayKit/issues/204">如何评测界面的流畅度</a></p>
 <p>之后，还可以到 Google Groups 来查看和讨论更多内容：<br><a target="_blank" rel="noopener" href="https://groups.google.com/forum/#!forum/asyncdisplaykit">https://groups.google.com/forum/#!forum&#x2F;asyncdisplaykit</a></p>
-<h4 id="ASDK-的基本原理"><a href="#ASDK-的基本原理" class="headerlink" title="ASDK 的基本原理"></a>ASDK 的基本原理</h4><p><a href="/images/keepScreenFluent/asdk_design.png"><img src = "/images/keepScreenFluent/asdk_design.png" width = 496 height = 255 alt = "asdk_design" /></a></p>
+<h4 id="ASDK-的基本原理"><a href="#ASDK-的基本原理" class="headerlink" title="ASDK 的基本原理"></a>ASDK 的基本原理</h4><p><a href="/img/keepScreenFluent/asdk_design.png"><img src = "/img/keepScreenFluent/asdk_design.png" width = 496 height = 255 alt = "asdk_design" /></a></p>
 <p>ASDK 认为，阻塞主线程的任务，主要分为上面这三大类。文本和布局的计算、渲染、解码、绘制都可以通过各种方式异步执行，但 UIKit 和 Core Animation 相关操作必需在主线程进行。ASDK 的目标，就是尽量把这些任务从主线程挪走，而挪不走的，就尽量优化性能。</p>
 <p>为了达成这一目标，ASDK 尝试对 UIKit 组件进行封装：</p>
-<p><a href="/images/keepScreenFluent/asdk_layer_backed_view.png"><img src = "/images/keepScreenFluent/asdk_layer_backed_view.png" width = 363 height = 162 alt = "asdk_layer_backed_view" /></a></p>
+<p><a href="/img/keepScreenFluent/asdk_layer_backed_view.png"><img src = "/img/keepScreenFluent/asdk_layer_backed_view.png" width = 363 height = 162 alt = "asdk_layer_backed_view" /></a></p>
 <p>这是常见的 UIView 和 CALayer 的关系：View 持有 Layer 用于显示，View 中大部分显示属性实际是从 Layer 映射而来；Layer 的 delegate 在这里是 View，当其属性改变、动画产生时，View 能够得到通知。UIView 和 CALayer 不是线程安全的，并且只能在主线程创建、访问和销毁。</p>
-<p><a href="/images/keepScreenFluent/asdk_view_backed_node.png"><img src = "/images/keepScreenFluent/asdk_view_backed_node.png" width = 605 height = 167 alt = "asdk_view_backed_node" /></a></p>
+<p><a href="/img/keepScreenFluent/asdk_view_backed_node.png"><img src = "/img/keepScreenFluent/asdk_view_backed_node.png" width = 605 height = 167 alt = "asdk_view_backed_node" /></a></p>
 <p>ASDK 为此创建了 ASDisplayNode 类，包装了常见的视图属性（比如 frame&#x2F;bounds&#x2F;alpha&#x2F;transform&#x2F;backgroundColor&#x2F;superNode&#x2F;subNodes 等），然后它用 UIView-&gt;CALayer 相同的方式，实现了 ASNode-&gt;UIView 这样一个关系。</p>
-<p><a href="/images/keepScreenFluent/asdk_layer_backed_node.png"><img src = "/images/keepScreenFluent/asdk_layer_backed_node.png" width = 605 height = 167 alt = "asdk_layer_backed_node" /></a></p>
+<p><a href="/img/keepScreenFluent/asdk_layer_backed_node.png"><img src = "/img/keepScreenFluent/asdk_layer_backed_node.png" width = 605 height = 167 alt = "asdk_layer_backed_node" /></a></p>
 <p>当不需要响应触摸事件时，ASDisplayNode 可以被设置为 layer backed，即 ASDisplayNode 充当了原来 UIView 的功能，节省了更多资源。</p>
 <p>与 UIView 和 CALayer 不同，ASDisplayNode 是线程安全的，它可以在后台线程创建和修改。Node 刚创建时，并不会在内部新建 UIView 和 CALayer，直到第一次在主线程访问 view 或 layer 属性时，它才会在内部生成对应的对象。当它的属性（比如frame&#x2F;transform）改变后，它并不会立刻同步到其持有的 view 或 layer 去，而是把被改变的属性保存到内部的一个中间变量，稍后在需要时，再通过某个机制一次性设置到内部的 view 或 layer。</p>
 <p>通过模拟和封装 UIView&#x2F;CALayer，开发者可以把代码中的 UIView 替换为 ASNode，很大的降低了开发和学习成本，同时能获得 ASDK 底层大量的性能优化。为了方便使用， ASDK 把大量常用控件都封装成了 ASNode 的子类，比如 Button、Control、Cell、Image、ImageView、Text、TableView、CollectionView 等。利用这些控件，开发者可以尽量避免直接使用 UIKit 相关控件，以获得更完整的性能提升。</p>
-<h4 id="ASDK-的图层预合成"><a href="#ASDK-的图层预合成" class="headerlink" title="ASDK 的图层预合成"></a>ASDK 的图层预合成</h4><p><a href="/images/keepScreenFluent/asdk_comoose_1.png"><img src = "/images/keepScreenFluent/asdk_comoose_1.png" width = 195 height = 195 alt = "asdk_comoose_1" /></a> <a href="/images/keepScreenFluent/asdk_compose_2.png"><img src = "/images/keepScreenFluent/asdk_compose_2.png" width = 195 height = 195 alt = "asdk_compose_2" /></a></p>
+<h4 id="ASDK-的图层预合成"><a href="#ASDK-的图层预合成" class="headerlink" title="ASDK 的图层预合成"></a>ASDK 的图层预合成</h4><p><a href="/img/keepScreenFluent/asdk_comoose_1.png"><img src = "/img/keepScreenFluent/asdk_comoose_1.png" width = 195 height = 195 alt = "asdk_comoose_1" /></a> <a href="/img/keepScreenFluent/asdk_compose_2.png"><img src = "/img/keepScreenFluent/asdk_compose_2.png" width = 195 height = 195 alt = "asdk_compose_2" /></a></p>
 <p>有时一个 layer 会包含很多 sub-layer，而这些 sub-layer 并不需要响应触摸事件，也不需要进行动画和位置调整。ASDK 为此实现了一个被称为 pre-composing 的技术，可以把这些 sub-layer 合成渲染为一张图片。开发时，ASNode 已经替代了 UIView 和 CALayer；直接使用各种 Node 控件并设置为 layer backed 后，ASNode 甚至可以通过预合成来避免创建内部的 UIView 和 CALayer。</p>
 <p>通过这种方式，把一个大的层级，通过一个大的绘制方法绘制到一张图上，性能会获得很大提升。CPU 避免了创建 UIKit 对象的资源消耗，GPU 避免了多张 texture 合成和渲染的消耗，更少的 bitmap 也意味着更少的内存占用。</p>
-<h4 id="ASDK-异步并发操作"><a href="#ASDK-异步并发操作" class="headerlink" title="ASDK 异步并发操作"></a>ASDK 异步并发操作</h4><p><a href="/images/keepScreenFluent/asdk_a9_chip.jpg"><img src = "/images/keepScreenFluent/asdk_a9_chip.jpg" width = 314 height = 177 alt = "asdk_a9_chip" /></a></p>
+<h4 id="ASDK-异步并发操作"><a href="#ASDK-异步并发操作" class="headerlink" title="ASDK 异步并发操作"></a>ASDK 异步并发操作</h4><p><a href="/img/keepScreenFluent/asdk_a9_chip.jpg"><img src = "/img/keepScreenFluent/asdk_a9_chip.jpg" width = 314 height = 177 alt = "asdk_a9_chip" /></a></p>
 <p>自 iPhone 4S 起，iDevice 已经都是双核 CPU 了，现在的 iPad 甚至已经更新到 3 核了。充分利用多核的优势、并发执行任务对保持界面流畅有很大作用。ASDK 把布局计算、文本排版、图片&#x2F;文本&#x2F;图形渲染等操作都封装成较小的任务，并利用 GCD 异步并发执行。如果开发者使用了 ASNode 相关的控件，那么这些并发操作会自动在后台进行，无需进行过多配置。</p>
 <h4 id="Runloop-任务分发"><a href="#Runloop-任务分发" class="headerlink" title="Runloop 任务分发"></a>Runloop 任务分发</h4><p>Runloop work distribution 是 ASDK 比较核心的一个技术，ASDK 的介绍视频和文档中都没有详细展开介绍，所以这里我会多做一些分析。如果你对 Runloop 还不太了解，可以看一下我之前的文章 <a target="_blank" rel="noopener" href="http://blog.ibireme.com/2015/05/18/runloop/">深入理解RunLoop</a>，里面对 ASDK 也有所提及。</p>
-<p><a href="/images/keepScreenFluent/ios_vsync_runloop.png"><img src = "/images/keepScreenFluent/ios_vsync_runloop.png" width = 564 height = 234 alt = "ios_vsync_runloop" /></a></p>
+<p><a href="/img/keepScreenFluent/ios_vsync_runloop.png"><img src = "/img/keepScreenFluent/ios_vsync_runloop.png" width = 564 height = 234 alt = "ios_vsync_runloop" /></a></p>
 <p>iOS 的显示系统是由 VSync 信号驱动的，VSync 信号由硬件时钟生成，每秒钟发出 60 次（这个值取决设备硬件，比如 iPhone 真机上通常是 59.97）。iOS 图形服务接收到 VSync 信号后，会通过 IPC 通知到 App 内。App 的 Runloop 在启动后会注册对应的 CFRunLoopSource 通过 mach_port 接收传过来的时钟信号通知，随后 Source 的回调会驱动整个 App 的动画与显示。</p>
 <p>Core Animation 在 RunLoop 中注册了一个 Observer，监听了 BeforeWaiting 和 Exit 事件。这个 Observer 的优先级是 2000000，低于常见的其他 Observer。当一个触摸事件到来时，RunLoop 被唤醒，App 中的代码会执行一些操作，比如创建和调整视图层级、设置 UIView 的 frame、修改 CALayer 的透明度、为视图添加一个动画；这些操作最终都会被 CALayer 捕获，并通过 CATransaction 提交到一个中间状态去（CATransaction 的文档略有提到这些内容，但并不完整）。当上面所有操作结束后，RunLoop 即将进入休眠（或者退出）时，关注该事件的 Observer 都会得到通知。这时 CA 注册的那个 Observer 就会在回调中，把所有的中间状态合并提交到 GPU 去显示；如果此处有动画，CA 会通过 DisplayLink 等机制多次触发相关流程。</p>
 <p>ASDK 在此处模拟了 Core Animation 的这个机制：所有针对 ASNode 的修改和提交，总有些任务是必需放入主线程执行的。当出现这种任务时，ASNode 会把任务用 ASAsyncTransaction(Group) 封装并提交到一个全局的容器去。ASDK 也在 RunLoop 中注册了一个 Observer，监视的事件和 CA 一样，但优先级比 CA 要低。当 RunLoop 进入休眠前、CA 处理完事件后，ASDK 就会执行该 loop 内提交的所有任务。具体代码见这个文件：<a target="_blank" rel="noopener" href="https://github.com/facebook/AsyncDisplayKit/blob/master/AsyncDisplayKit%2FDetails%2FTransactions%2F_ASAsyncTransactionGroup.m">ASAsyncTransactionGroup</a>。</p>
@@ -266,7 +285,7 @@
 <p>当 TableView 快速滑动时，会有大量异步绘制任务提交到后台线程去执行。但是有时滑动速度过快时，绘制任务还没有完成就可能已经被取消了。如果这时仍然继续绘制，就会造成大量的 CPU 资源浪费，甚至阻塞线程并造成后续的绘制任务迟迟无法完成。我的做法是尽量快速、提前判断当前绘制任务是否已经被取消；在绘制每一行文本前，我都会调用 isCancelled() 来进行判断，保证被取消的任务能及时退出，不至于影响后续操作。</p>
 <p>目前有些第三方微博客户端（比如 VVebo、墨客等），使用了一种方式来避免高速滑动时 Cell 的绘制过程，相关实现见这个项目：<a target="_blank" rel="noopener" href="https://github.com/johnil/VVeboTableViewDemo">VVeboTableViewDemo</a>。它的原理是，当滑动时，松开手指后，立刻计算出滑动停止时 Cell 的位置，并预先绘制那个位置附近的几个 Cell，而忽略当前滑动中的 Cell。这个方法比较有技巧性，并且对于滑动性能来说提升也很大，唯一的缺点就是快速滑动中会出现大量空白内容。如果你不想实现比较麻烦的异步绘制但又想保证滑动的流畅性，这个技巧是个不错的选择。</p>
 <h4 id="全局并发控制"><a href="#全局并发控制" class="headerlink" title="全局并发控制"></a>全局并发控制</h4><p>当我用 concurrent queue 来执行大量绘制任务时，偶尔会遇到这种问题：</p>
-<p><a href="/images/keepScreenFluent/ios_dispatch_blocked_1.png"><img src = "/images/keepScreenFluent/ios_dispatch_blocked_1.png" width = 189 height = 350 alt = "ios_dispatch_blocked_1" /></a><a href="/images/keepScreenFluent/ios_dispatch_blocked_2.png"><img src = "/images/keepScreenFluent/ios_dispatch_blocked_2.png" width = 189 height = 250 alt = "ios_dispatch_blocked_2" /></a></p>
+<p><a href="/img/keepScreenFluent/ios_dispatch_blocked_1.png"><img src = "/img/keepScreenFluent/ios_dispatch_blocked_1.png" width = 189 height = 350 alt = "ios_dispatch_blocked_1" /></a><a href="/img/keepScreenFluent/ios_dispatch_blocked_2.png"><img src = "/img/keepScreenFluent/ios_dispatch_blocked_2.png" width = 189 height = 250 alt = "ios_dispatch_blocked_2" /></a></p>
 <p>大量的任务提交到后台队列时，某些任务会因为某些原因（此处是 CGFont 锁）被锁住导致线程休眠，或者被阻塞，concurrent queue 随后会创建新的线程来执行其他任务。当这种情况变多时，或者 App 中使用了大量 concurrent queue 来执行较多任务时，App 在同一时刻就会存在几十个线程同时运行、创建、销毁。CPU 是用时间片轮转来实现线程并发的，尽管 concurrent queue 能控制线程的优先级，但当大量线程同时创建运行销毁时，这些操作仍然会挤占掉主线程的 CPU 资源。ASDK 有个 Feed 列表的 Demo：<a target="_blank" rel="noopener" href="https://github.com/facebook/AsyncDisplayKit/tree/master/examples/SocialAppLayout">SocialAppLayout</a>，当列表内 Cell 过多，并且非常快速的滑动时，界面仍然会出现少量卡顿，我谨慎的猜测可能与这个问题有关。</p>
 <p>使用 concurrent queue 时不可避免会遇到这种问题，但使用 serial queue 又不能充分利用多核 CPU 的资源。我写了一个简单的工具 <a target="_blank" rel="noopener" href="https://github.com/ibireme/YYDispatchQueuePool">YYDispatchQueuePool</a>，为不同优先级创建和 CPU 数量相同的 serial queue，每次从 pool 中获取 queue 时，会轮询返回其中一个 queue。我把 App 内所有异步操作，包括图像解码、对象释放、异步绘制等，都按优先级不同放入了全局的 serial queue 中执行，这样尽量避免了过多线程导致的性能问题。</p>
 <h4 id="更高效的异步图片加载"><a href="#更高效的异步图片加载" class="headerlink" title="更高效的异步图片加载"></a>更高效的异步图片加载</h4><p>SDWebImage 在这个 Demo 里仍然会产生少量性能问题，并且有些地方不能满足我的需求，所以我自己实现了一个性能更高的图片加载库。在显示简单的单张图片时，利用 UIView.layer.contents 就足够了，没必要使用 UIImageView 带来额外的资源消耗，为此我在 CALayer 上添加了 setImageWithURL 等方法。除此之外，我还把图片解码等操作通过 YYDispatchQueuePool 进行管理，控制了 App 总线程数量。</p>
@@ -373,7 +392,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-count">24</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
