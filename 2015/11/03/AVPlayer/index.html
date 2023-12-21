@@ -20,28 +20,35 @@
     var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
   </script>
 
-  <meta property="og:type" content="website">
+  <meta name="description" content="title:使用 AVPlayer 制作一个播放器AVPlayer 是一个强大的视频播放器，可以播放多种格式的视频，缺点是没有控制界面，需要自己去实现。 效果图 项目地址 先看下它的结构 首先初始化播放器，设置播放URL。 123self.avPlayerView &#x3D; [[XYAVPlayerView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidt">
+<meta property="og:type" content="article">
 <meta property="og:title" content="一艘小船">
-<meta property="og:url" content="http://example.com/page/2/index.html">
+<meta property="og:url" content="http://example.com/2015/11/03/AVPlayer/index.html">
 <meta property="og:site_name" content="一艘小船">
+<meta property="og:description" content="title:使用 AVPlayer 制作一个播放器AVPlayer 是一个强大的视频播放器，可以播放多种格式的视频，缺点是没有控制界面，需要自己去实现。 效果图 项目地址 先看下它的结构 首先初始化播放器，设置播放URL。 123self.avPlayerView &#x3D; [[XYAVPlayerView alloc] initWithFrame:CGRectMake(0, 0, ScreenWidt">
 <meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/images/AVPlayer/avplayer.gif?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/AVPlayer/Overview.png?raw=true">
+<meta property="article:published_time" content="2015-11-03T13:04:00.000Z">
+<meta property="article:modified_time" content="2016-08-23T03:20:00.000Z">
 <meta property="article:author" content="qxy">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/images/AVPlayer/avplayer.gif?raw=true">
 
-<link rel="canonical" href="http://example.com/page/2/">
+<link rel="canonical" href="http://example.com/2015/11/03/AVPlayer/">
 
 
 <script id="page-configurations">
   // https://hexo.io/docs/variables.html
   CONFIG.page = {
     sidebar: "",
-    isHome : true,
-    isPost : false,
+    isHome : false,
+    isPost : true,
     lang   : 'en'
   };
 </script>
 
-  <title>一艘小船</title>
+  <title> | 一艘小船</title>
   
 
 
@@ -140,97 +147,10 @@
         <div class="content-wrap">
           
 
-          <div class="content index posts-expand">
+          <div class="content post posts-expand">
             
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2016/03/11/useMarkdownSomeTip/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/03/11/useMarkdownSomeTip/" class="post-title-link" itemprop="url">使用 markdown 的小tip</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2016-03-11 17:42:00" itemprop="dateCreated datePublished" datetime="2016-03-11T17:42:00+08:00">2016-03-11</time>
-            </span>
-
-          
-
-        </div>
-      </header>
 
     
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="非常重要的一点"><a href="#非常重要的一点" class="headerlink" title="非常重要的一点"></a>非常重要的一点</h1><p > <font color = red size = 5> 文件夹 和 文件 的名字千万不要有汉字，24小时的血与泪告诉你们，千万不要有汉字，我就是因为有个空文件夹，名字叫 新建文件夹 因为是空的 我也没管它，结果 hexo 部署不上去了啊 ,在网上怎么都找不到解决的办法。 </font> </p>
-
-
-<h3 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h3><p>设置了字体的颜色，必须在这段 添加上 p 标签， 否则 markdown 无法生成 p 标签，会影响到下面的布局。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">font</span> <span class="attr">color</span>=<span class="string">#a2c700</span>&gt;</span> JPEG <span class="tag">&lt;/<span class="name">font</span>&gt;</span>  </span><br><span class="line">	是目前最常见的图片格式，它诞生于 1992 年，是一个很古老的格式。它只支持有损压缩，</span><br><span class="line">	其压缩算法可以精确控制压缩比，以图像质量换得存储空间。由于它太过常见，</span><br><span class="line">	以至于许多移动设备的 CPU 都支持针对它的硬编码与硬解码。</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="使用图片"><a href="#使用图片" class="headerlink" title="使用图片"></a>使用图片</h3><p>要让图片可以点击，需要添加 html 的 a 标签</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span> = <span class="string">&quot;/images/handleImageSomTip/image_baseline.gif&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span> = <span class="string">&quot;/images/handleImageSomTip/image_baseline.gif&quot;</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">width</span> = <span class="string">160</span> <span class="attr">height</span> = <span class="string">160</span> <span class="attr">alt</span> = <span class="string">&quot;image_baseline.gif&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="生成目录"><a href="#生成目录" class="headerlink" title="生成目录"></a>生成目录</h3><p>在内容前面加上这段代码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;link rel=<span class="string">&quot;stylesheet&quot;</span> href=<span class="string">&quot;http://yandex.st/highlightjs/6.2/styles/googlecode.min.css&quot;</span>&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;http://code.jquery.com/jquery-1.7.2.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;http://yandex.st/highlightjs/6.2/highlight.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span>hljs.initHighlightingOnLoad();<span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"> $(<span class="variable language_">document</span>).<span class="title function_">ready</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      $(<span class="string">&quot;h2,h3,h4,h5,h6&quot;</span>).<span class="title function_">each</span>(<span class="keyword">function</span>(<span class="params">i,item</span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">var</span> tag = $(item).<span class="title function_">get</span>(<span class="number">0</span>).<span class="property">localName</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        $(item).<span class="title function_">attr</span>(<span class="string">&quot;id&quot;</span>,<span class="string">&quot;wow&quot;</span>+i);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        $(<span class="string">&quot;#category&quot;</span>).<span class="title function_">append</span>(<span class="string">&#x27;&lt;a class=&quot;new&#x27;</span>+tag+<span class="string">&#x27;&quot; href=&quot;#wow&#x27;</span>+i+<span class="string">&#x27;&quot;&gt;&#x27;</span>+$(<span class="variable language_">this</span>).<span class="title function_">text</span>()+<span class="string">&#x27;&lt;/a&gt;&lt;/br&gt;</span></span></span><span class="string">&#x27;);</span></span><br><span class="line"><span class="string">        $(&quot;.newh2&quot;).css(&quot;margin-left&quot;,0);</span></span><br><span class="line"><span class="string">        $(&quot;.newh3&quot;).css(&quot;margin-left&quot;,20);</span></span><br><span class="line"><span class="string">        $(&quot;.newh4&quot;).css(&quot;margin-left&quot;,40);</span></span><br><span class="line"><span class="string">        $(&quot;.newh5&quot;).css(&quot;margin-left&quot;,60);</span></span><br><span class="line"><span class="string">        $(&quot;.newh6&quot;).css(&quot;margin-left&quot;,80);</span></span><br><span class="line"><span class="string">      &#125;);</span></span><br><span class="line"><span class="string"> &#125;);</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br><span class="line"><span class="string">&lt;div id=&quot;category&quot;&gt;&lt;/div&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="添加评论区"><a href="#添加评论区" class="headerlink" title="添加评论区"></a>添加评论区</h3><p>我使用了 <code>Disqus</code> ,在国内速度会慢一点，但是为了逼格，我还是用了它，国内可以用 <a target="_blank" rel="noopener" href="http://duoshuo.com/">多说</a>。</p>
-<p>废话不多说，首先得去 <a target="_blank" rel="noopener" href="https://disqus.com/">Disqus</a>Disqus] 注册一个账号,有一个邮箱就行，收到邮件后验证一下 </p>
-<p><a href = "/images/userMarkdownSomeTip/signUpDisqus.png"><img src = "/images/userMarkdownSomeTip/signUpDisqus.png" width = 394 height = 537 alt = "signUpDisqus.png"/></a></p>
-<p>登陆进来以后再右上角找到设置,点击 <code>Add Disqus To Site</code> </p>
-<p><a href = "/images/userMarkdownSomeTip/addDisqusToSite.png"><img src = "/images/userMarkdownSomeTip/addDisqusToSite.png" width = 305 height = 315 alt = "addDisqusToSite.png"/></a></p>
-<p>进入后点击 <code>Start Using Engage</code> ,然后设置 <code>Site</code> </p>
-<p><a href = "/images/userMarkdownSomeTip/setUpDisqusNewSite.png"><img src = "/images/userMarkdownSomeTip/setUpDisqusNewSite.png" width = 804 height = 524 alt = "setUpDisqusNewSite.png"/></a></p>
-<p><code>siteName</code> 就填你的 <code>github.io</code> 地址，下面的URL会自动生成，选择一个类别，点击 Next，然后会有两个按钮 <code>My site is part of a larger organization (我的网站是一个更大的组织的一部分)</code> 和 <code>My site is just a personal site (我的网站只是个人网站)</code>, 然后填写2个问题，就进入了管理页面，</p>
-<p><a href = "/images/userMarkdownSomeTip/siteManager.png"><img src = "/images/userMarkdownSomeTip/siteManager.png" width = 1090 height = 250 alt = "siteManager.png"/></a></p>
-<p>点击 <code>General</code> </p>
-<p><a href = "/images/userMarkdownSomeTip/settingGeneral.png"><img src = "/images/userMarkdownSomeTip/settingGeneral.png" width = 815 height = 834 alt = "settingGeneral.png"/></a></p>
-<p><code>Shortname</code> 一会要用到，<code>Website Name</code> 会在评论区的顶部显示， <code>Website URL</code> 你博客的网址，必须填对。其他的设置不填也可以。</p>
-<p>我使用的是 <code>hexo</code> 搭建的博客，进入到博客根目录，找到 <code>_config.yml</code> 文件，在里面添加</p>
-<pre><code># Disque
-disqus_shortname: 刚才的那个 Shortname
-</code></pre>
-<p>如果有这个字段，直接修改值就可以了。 </p>
-<p>然后就可以提交到 github 刷新页面，评论框就出来啦。	</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
@@ -246,10 +166,9 @@ disqus_shortname: 刚才的那个 Shortname
       <meta itemprop="name" content="一艘小船">
     </span>
       <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
+        <h1 class="post-title" itemprop="name headline">
           
-            <a href="/2015/11/03/AVPlayer/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
+        </h1>
 
         <div class="post-meta">
             <span class="post-meta-item">
@@ -279,7 +198,7 @@ disqus_shortname: 刚才的那个 Shortname
     <div class="post-body" itemprop="articleBody">
 
       
-          <h2 id="title-使用-AVPlayer-制作一个播放器"><a href="#title-使用-AVPlayer-制作一个播放器" class="headerlink" title="title:使用 AVPlayer 制作一个播放器"></a>title:使用 AVPlayer 制作一个播放器</h2><p><code>AVPlayer</code> 是一个强大的视频播放器，可以播放多种格式的视频，缺点是没有控制界面，需要自己去实现。</p>
+        <h2 id="title-使用-AVPlayer-制作一个播放器"><a href="#title-使用-AVPlayer-制作一个播放器" class="headerlink" title="title:使用 AVPlayer 制作一个播放器"></a>title:使用 AVPlayer 制作一个播放器</h2><p><code>AVPlayer</code> 是一个强大的视频播放器，可以播放多种格式的视频，缺点是没有控制界面，需要自己去实现。</p>
 <p>效果图<br><img src="/images/AVPlayer/avplayer.gif?raw=true" alt="AVPlayer"></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/qiangxinyu/AVPlayer">项目地址</a></p>
 <p>先看下它的结构</p>
@@ -329,473 +248,34 @@ disqus_shortname: 刚才的那个 Shortname
 
 <p>到这里一个简单的视频播放器就做完了。</p>
 
-      
     </div>
 
     
     
     
+
       <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2015/11/03/handleImageSomTip/">
+        
 
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
 
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2015/11/03/handleImageSomTip/" class="post-title-link" itemprop="url">iOS 处理图片的一些小 Tip</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2015-11-03 21:04:00" itemprop="dateCreated datePublished" datetime="2015-11-03T21:04:00+08:00">2015-11-03</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>转载自<a target="_blank" rel="noopener" href="http://blog.ibireme.com/2015/11/02/ios_image_tips/">YY大神</a></p>
-<h3 id="如何把-GIF-动图保存到相册？"><a href="#如何把-GIF-动图保存到相册？" class="headerlink" title="如何把 GIF 动图保存到相册？"></a><font color=#a2c700>如何把 GIF 动图保存到相册？</font></h3><p>iOS 的相册是支持保存 GIF 和 APNG 动图的，只是不能直接播放。用 [ALAssetsLibrary writeImageDataToSavedPhotosAlbum:metadata:completionBlock] 可以直接把 APNG、GIF 的数据写入相册。如果图省事直接用 UIImageWriteToSavedPhotosAlbum() 写相册，那么图像会被强制转码为 PNG。</p>
-<h3 id="将-UIImage-保存到磁盘，用什么方式最好？"><a href="#将-UIImage-保存到磁盘，用什么方式最好？" class="headerlink" title="将 UIImage 保存到磁盘，用什么方式最好？"></a><font color=#a2c700>将 UIImage 保存到磁盘，用什么方式最好？</font></h3><p>目前来说，保存 UIImage 有三种方式：1.直接用 NSKeyedArchiver 把 UIImage 序列化保存，2.用 UIImagePNGRepresentation() 先把图片转为 PNG 保存，3.用 UIImageJPEGRepresentation() 把图片压缩成 JPEG 保存。</p>
-<p>实际上，NSKeyedArchiver 是调用了 UIImagePNGRepresentation 进行序列化的，用它来保存图片是消耗最大的。苹果对 JPEG 有硬编码和硬解码，保存成 JPEG 会大大缩减编码解码时间，也能减小文件体积。所以如果图片不包含透明像素时，UIImageJPEGRepresentation(0.9) 是最佳的图片保存方式，其次是 UIImagePNGRepresentation()。</p>
-<h3 id="UIImage-缓存是怎么回事？"><a href="#UIImage-缓存是怎么回事？" class="headerlink" title="UIImage 缓存是怎么回事？"></a><font color=#a2c700>UIImage 缓存是怎么回事？</font></h3><p>通过 imageNamed 创建 UIImage 时，系统实际上只是在 Bundle 内查找到文件名，然后把这个文件名放到 UIImage 里返回，并没有进行实际的文件读取和解码。当 UIImage 第一次显示到屏幕上时，其内部的解码方法才会被调用，同时解码结果会保存到一个全局缓存去。据我观察，在图片解码后，App 第一次退到后台和收到内存警告时，该图片的缓存才会被清空，其他情况下缓存会一直存在。</p>
-<h3 id="我要是用-imageWithData-能不能避免缓存呢？"><a href="#我要是用-imageWithData-能不能避免缓存呢？" class="headerlink" title="我要是用 imageWithData 能不能避免缓存呢？"></a><font color=#a2c700>我要是用 imageWithData 能不能避免缓存呢？</font></h3><p>不能。通过数据创建 UIImage 时，UIImage 底层是调用 ImageIO 的 CGImageSourceCreateWithData() 方法。该方法有个参数叫 ShouldCache，在 64 位的设备上，这个参数是默认开启的。这个图片也是同样在第一次显示到屏幕时才会被解码，随后解码数据被缓存到 CGImage 内部。与 imageNamed 创建的图片不同，如果这个图片被释放掉，其内部的解码数据也会被立刻释放。</p>
-<h3 id="怎么能避免缓存呢？"><a href="#怎么能避免缓存呢？" class="headerlink" title="怎么能避免缓存呢？"></a><font color=#a2c700>怎么能避免缓存呢？</font></h3><ol>
-<li>手动调用 CGImageSourceCreateWithData() 来创建图片，并把 ShouldCache 和 ShouldCacheImmediately 关掉。这么做会导致每次图片显示到屏幕时，解码方法都会被调用，造成很大的 CPU 占用。</li>
-<li>把图片用 CGContextDrawImage() 绘制到画布上，然后把画布的数据取出来当作图片。这也是常见的网络图片库的做法。</li>
-</ol>
-<h3 id="我能直接取到图片解码后的数据，而不是通过画布取到吗？"><a href="#我能直接取到图片解码后的数据，而不是通过画布取到吗？" class="headerlink" title="我能直接取到图片解码后的数据，而不是通过画布取到吗？"></a><font color=#a2c700>我能直接取到图片解码后的数据，而不是通过画布取到吗？</font></h3><ol>
-<li>CGImageSourceCreateWithData(data) 创建 ImageSource。</li>
-<li>CGImageSourceCreateImageAtIndex(source) 创建一个未解码的 CGImage。</li>
-<li>CGImageGetDataProvider(image) 获取这个图片的数据源。</li>
-<li>CGDataProviderCopyData(provider) 从数据源获取直接解码的数据。</li>
-<li>ImageIO 解码发生在最后一步，这样获得的数据是没有经过颜色类型转换的原生数据（比如灰度图像）。</li>
-</ol>
-<h3 id="如何判断一个文件的图片类型？"><a href="#如何判断一个文件的图片类型？" class="headerlink" title="如何判断一个文件的图片类型？"></a><font color=#a2c700>如何判断一个文件的图片类型？</font></h3><p>通过读取文件或数据的头几个字节然后和对应图片格式标准进行比对。我在<a target="_blank" rel="noopener" href="https://github.com/ibireme/YYImage/blob/master/YYImage/YYImageCoder.m#L1066-L1141">这里</a>写了一个简单的函数，能很快速的判断图片格式。</p>
-<h3 id="怎样像浏览器那样边下载边显示图片？"><a href="#怎样像浏览器那样边下载边显示图片？" class="headerlink" title="怎样像浏览器那样边下载边显示图片？"></a><font color=#a2c700>怎样像浏览器那样边下载边显示图片？</font></h3><p>首先，图片本身有 3 种常见的编码方式：</p>
-<p><a href = "/images/handleImageSomTip/image_baseline.gif"><img src = "/images/handleImageSomTip/image_baseline.gif" width = 160 alt = "image_baseline.gif" /></a><a href = "/images/handleImageSomTip/image_interlaced.gif"><img src = "/images/handleImageSomTip/image_interlaced.gif" width = 160 alt = "image_interlaced.gif" /></a><a href = "/images/handleImageSomTip/image_progressive.gif"><img src = "/images/handleImageSomTip/image_progressive.gif" width = 160 alt = "image_progressive.gif" /></a></p>
-<ol>
-<li>第一种是 baseline，即逐行扫描。默认情况下，JPEG、PNG、GIF 都是这种保存方式。</li>
-<li>第二种是 interlaced，即隔行扫描。PNG 和 GIF 在保存时可以选择这种格式。</li>
-<li>第三种是 progressive，即渐进式。JPEG 在保存时可以选择这种方式。</li>
-</ol>
-<p>在下载图片时，首先用 CGImageSourceCreateIncremental(NULL) 创建一个空的图片源，随后在获得新数据时调用<br>CGImageSourceUpdateData(data, false) 来更新图片源，最后在用 CGImageSourceCreateImageAtIndex() 创建图片来显示。</p>
-<p>你可以用 <a target="_blank" rel="noopener" href="https://github.com/pinterest/PINRemoteImage">PINRemoteImage</a> 或者我写的 <a target="_blank" rel="noopener" href="https://github.com/ibireme/YYWebImage">YYWebImage</a> 来实现这个效果。SDWebImage 并没有用 Incremental 方式解码，所以显示效果很差。</p>
-
-      
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/11/03/handleImageSomTip/" rel="prev" title="iOS 处理图片的一些小 Tip">
+      <i class="fa fa-chevron-left"></i> iOS 处理图片的一些小 Tip
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2016/03/11/useMarkdownSomeTip/" rel="next" title="使用 markdown 的小tip">
+      使用 markdown 的小tip <i class="fa fa-chevron-right"></i>
+    </a></div>
     </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
       </footer>
+    
   </article>
   
   
   
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2015/11/03/iOSUseFFmpeg/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2015/11/03/iOSUseFFmpeg/" class="post-title-link" itemprop="url">Untitled</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2015-11-03 21:04:00" itemprop="dateCreated datePublished" datetime="2015-11-03T21:04:00+08:00">2015-11-03</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2016-05-12 10:44:00" itemprop="dateModified" datetime="2016-05-12T10:44:00+08:00">2016-05-12</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h2 id="title-iOS-配置FFmpeg框架"><a href="#title-iOS-配置FFmpeg框架" class="headerlink" title="title:iOS 配置FFmpeg框架"></a>title:iOS 配置FFmpeg框架</h2><p><strong>FFmpeg</strong>是一个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%87%AA%E7%94%B1%E8%BB%9F%E9%AB%94">自由软件</a>，可以运行音频和视频多种格式的<a target="_blank" rel="noopener" href="http://ffmpeg.org/ffmpeg.html">录影、转换、流功能</a>，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。</p>
-<h2 id="环境与工具"><a href="#环境与工具" class="headerlink" title="环境与工具"></a>环境与工具</h2><p><strong>Mac OS X EI Capitan 10.11.4</strong><br><strong>Xcode7.3.1</strong><br><strong>终端</strong></p>
-<h3 id="1-安装-yasm"><a href="#1-安装-yasm" class="headerlink" title="1.安装 yasm"></a>1.安装 <a target="_blank" rel="noopener" href="http://yasm.tortall.net/releases/Release1.3.0.html">yasm</a></h3><p>*OS X 下载 Source .tar.gz 即可 *</p>
-<p>下载完成后，打开终端，cd 进目录</p>
-<pre><code>$ ./configure
-$ make
-$ make install
-</code></pre>
-<p>安装完成后验证，显示如下表明安装成功</p>
-<pre><code>$ yasm --version
-yasm 1.3.0
-Compiled on May 12 2016.
-Copyright (c) 2001-2014 Peter Johnson and other Yasm developers.
-Run yasm --license for licensing overview and summary.
-</code></pre>
-<h3 id="2-下载-gas-preprocessor-pl"><a href="#2-下载-gas-preprocessor-pl" class="headerlink" title="2.下载 gas-preprocessor.pl"></a>2.下载 <a target="_blank" rel="noopener" href="https://github.com/libav/gas-preprocessor">gas-preprocessor.pl</a></h3><p>复制 <code>gas-preprocessor.pl</code> 到 <code>/usr/local/bin</code> 下 <strong>(网上很多教程都让放在 <code>/usr/bin</code> 下，但是现在OS X的 <code>usr/bin</code> 目录不可写，所以放在 <code>/usr/local/bin</code> )</strong></p>
-<p>修改文件权限 </p>
-<pre><code>$ chmod 777 /usr/local/bin/gas-preprocessor.pl
-</code></pre>
-<h3 id="3-下载脚本文件"><a href="#3-下载脚本文件" class="headerlink" title="3.下载脚本文件"></a>3.下载<a target="_blank" rel="noopener" href="https://github.com/kewlbear/FFmpeg-iOS-build-script">脚本文件</a></h3><p>这个脚本可以一次编译，就生成适合各个框架的静态库。</p>
-<p>解压后 cd 进目录 ，执行</p>
-<pre><code>$ ./build-ffmpeg.sh
-</code></pre>
-<p>脚本则会自动从github中把ffmpeg源码下到本地并开始编译。 编译结束后，文件目录如下：</p>
-<p><img src="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_list.png?raw=true" alt="SettingFFmpeg"></p>
-<p>ffmpeg-3.0是源码， FFmpeg-iOS是编译出来的库，里面是我们需要的.a 静态库，一共有7个。 终端输入</p>
-<pre><code>$ lipo -info libavcodec.a 
-Architectures in the fat file: libavcodec.a are: armv7 i386 x86_64 arm64 
-</code></pre>
-<p>可以看出来静态库支持 <code>armv7</code>  <code>i386</code>  <code>x86_64</code>  <code>arm64 </code> 构架</p>
-<h3 id="4-把-FFmpeg-iOS-导入工程。"><a href="#4-把-FFmpeg-iOS-导入工程。" class="headerlink" title="4.把 FFmpeg-iOS 导入工程。"></a>4.把 FFmpeg-iOS 导入工程。</h3><p>然后在 <code>Build Settings</code> 中找到 <code>Search Paths</code> ，设置 <code>Header Search Pahts</code> 和 <code>Library Search Paths</code> 如下。不然会报 <code>include“libavformat/avformat.h” file not found </code> 错误。</p>
-<p><img src="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_header.png?raw=true" alt="SettingFFmpeg_header"></p>
-<p><img src="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_library.png?raw=true" alt="SettingFFmpeg_library"></p>
-<h3 id="5-在工程中导入其他库文件。"><a href="#5-在工程中导入其他库文件。" class="headerlink" title="5.在工程中导入其他库文件。"></a>5.在工程中导入其他库文件。</h3><p><code>libz.tbd</code> 、<code>ibbz2.tbd</code> 、 <code>libiconv.tbd</code>,在 3.0以后需要添加另外2个框架 <code>VideoToolbox.framework</code> 和 <code>CoreMedia.framework</code></p>
-<h3 id="5-编译"><a href="#5-编译" class="headerlink" title="5.编译"></a>5.编译</h3><p>因为这些库是C++，所以需要把一个文件后缀改为 .mm，这样Xcode就会自动打开C++混编，一般会把  <code>AppDelegate.m</code> 改为 <code>AppDelegate.mm</code> </p>
-<p>然后随便找个 文件，导入 <code>avcodec.h</code></p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;avcodec.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line">   [<span class="variable language_">super</span> viewDidLoad];    </span><br><span class="line">   avcodec_register_all();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>可以运行起来说明配置成功。</p>
-<p>这里放一个<a target="_blank" rel="noopener" href="https://github.com/qiangxinyu/XYFFmpeg">Demo</a></p>
-<h3 id="6-可能出现的问题"><a href="#6-可能出现的问题" class="headerlink" title="6.可能出现的问题"></a>6.可能出现的问题</h3><ul>
-<li><p>执行 .sh 文件不成功</p>
-<p>$ .&#x2F;build-ffmpeg.sh<br>-bash: .&#x2F;build-ffmpeg.sh: No such file or directory</p>
-</li>
-</ul>
-<p>这种类型的错误是找不到 <code>build-ffmpeg.sh</code> 文件，先看看路径对不对，然后再看下里面有没有这个文件，在安装 <code>yasm</code> 的时候我第一次是在 <code>github</code> 上下载的一个，里面没有 <code>.sh</code> 文件，导致无法执行。</p>
-<ul>
-<li><p>Xcode编译报错</p>
-<p> Undefined symbols for architecture x86_64: (或者armv7之类的)<br> …<br> ld: symbol(s) not found for architecture x86_64<br> clang: error: linker command failed with exit code 1 (use -v to see invocation)</p>
-</li>
-</ul>
-<p>这种一般都是因为缺少依赖，检查一下上述那3个库和2个框架是否正确添加。</p>
-<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
-<li><a target="_blank" rel="noopener" href="http://cnbin.github.io/blog/2015/05/19/iospei-zhi-ffmpegkuang-jia/">http://cnbin.github.io/blog/2015/05/19/iospei-zhi-ffmpegkuang-jia/</a></li>
-<li><a target="_blank" rel="noopener" href="http://bbs.iosre.com/t/10-11-usr-bin-class-dump/1936/5">http://bbs.iosre.com/t/10-11-usr-bin-class-dump/1936/5</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/147c03553e63">http://www.jianshu.com/p/147c03553e63
-</a></li>
-<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/liyufeng2013/p/4286684.html">http://www.cnblogs.com/liyufeng2013/p/4286684.html
-</a></li>
-</ul>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2015/08/21/CollectionViewHasSimpleAgainArray/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2015/08/21/CollectionViewHasSimpleAgainArray/" class="post-title-link" itemprop="url">UICollectionViews有了简单的重排功能</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2015-08-21 10:54:00" itemprop="dateCreated datePublished" datetime="2015-08-21T10:54:00+08:00">2015-08-21</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>我是UICollectionView的忠实粉丝。这个类比起它的老哥UITableView类具有更高的可定制性。现在我用collection view的次数要比用table view还多。随着iOS9的到来，它支持简单的重排。在此之前，重排不可能有现成的方法，同时这样做也是件痛苦的工作。现在让我们来看看API，你可以在<a target="_blank" rel="noopener" href="https://github.com/nshintio/uicollectionview-reordering">GitHub</a>找到相应的Xcode工程。</p>
-<p>添加简单重排的最简单的方式是用UICollectionViewController。它现在有了一个新的属性叫installsStandardGestureForInteractiveMovement（为交互式移动工作设置标准手势），这个属性的添加使得我们可以用标准手势来对cell单元进行重新排序。该属性默认值为true，这意味着我们只需要重载一个方法就可以让它正常工作。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">collectionView</span>(<span class="params">collectionView</span>: <span class="type">UICollectionView</span>,</span><br><span class="line">    <span class="params">moveItemAtIndexPath</span> <span class="params">sourceIndexPath</span>: <span class="type">NSIndexPath</span>,</span><br><span class="line">    <span class="params">toIndexPath</span> <span class="params">destinationIndexPath</span>: <span class="type">NSIndexPath</span>) &#123;</span><br><span class="line">    <span class="comment">// move your data order</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>Collection view推断每个item(元素)可以被移动，因为moveItemAtIndexPath函数被重载了。</p>
-<p><a href = "/images/CollectionViewHasSimpleAgainArray/againArray_0.gif"> <img src = "/images/CollectionViewHasSimpleAgainArray/againArray_0.gif" width = 372 height = 665 alt =  "againArray_0"/> </a></p>
-<p>当我们想使用一个带有collection view的简单的UIViewController时，事情变得更加复杂。我们还需要实现之前提到的UICollectionViewDataSource的方法，但我们需要重写installsStandardGestureForInteractiveMovement。别担心，这些也很容易被支持。UILongPressGestureRecognizer是一个持续的、完全支持平移的手势识别器。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">viewDidLoad</span>() &#123;</span><br><span class="line">    <span class="keyword">super</span>.viewDidLoad()</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            longPressGesture <span class="operator">=</span> <span class="type">UILongPressGestureRecognizer</span>(target: <span class="keyword">self</span>, action: <span class="string">&quot;handleLongGesture:&quot;</span>)</span><br><span class="line">        <span class="keyword">self</span>.collectionView.addGestureRecognizer(longPressGesture)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">func</span> <span class="title function_">handleLongGesture</span>(<span class="params">gesture</span>: <span class="type">UILongPressGestureRecognizer</span>) &#123;</span><br><span class="line">        <span class="keyword">switch</span>(gesture.state) &#123;</span><br><span class="line">        <span class="keyword">case</span> <span class="type">UIGestureRecognizerState</span>.<span class="type">Began</span>:</span><br><span class="line">            <span class="keyword">guard</span> <span class="keyword">let</span> selectedIndexPath <span class="operator">=</span> <span class="keyword">self</span>.collectionView.indexPathForItemAtPoint(gesture.locationInView(<span class="keyword">self</span>.collectionView)) <span class="keyword">else</span> &#123;</span><br><span class="line">                <span class="keyword">break</span></span><br><span class="line">            &#125;</span><br><span class="line">            collectionView.beginInteractiveMovementForItemAtIndexPath(selectedIndexPath)</span><br><span class="line">        <span class="keyword">case</span> <span class="type">UIGestureRecognizerState</span>.<span class="type">Changed</span>:</span><br><span class="line">            collectionView.updateInteractiveMovementTargetPosition(gesture.locationInView(gesture.view<span class="operator">!</span>))</span><br><span class="line">        <span class="keyword">case</span> <span class="type">UIGestureRecognizerState</span>.<span class="type">Ended</span>:</span><br><span class="line">            collectionView.endInteractiveMovement()</span><br><span class="line">        <span class="keyword">default</span>:</span><br><span class="line">            collectionView.cancelInteractiveMovement()</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
-<p>我们储存了被选择的索引路径，这个路径从 <code>longPressGesture handler</code>（长按手势处理器）中获得，这个路径还取决于它是否有任何我们允许的，跟平移手势相关的值。接下来我们根据手势状态调用一些新的 <code>collection view</code> 方法：</p>
-<ul>
-<li><p><code>beginInteractiveMovementForItemAtIndexPath(indexPath: NSIndexPath)?</code> 开始在特定的索引路径上对<code>cell</code>（单元）进行 <code>Interactive Movement</code>（交互式移动工作）。</p>
-</li>
-<li><p><code>updateInteractiveMovementTargetPosition(targetPosition: CGPoint)?</code> 在手势作用期间更新交互移动的目标位置。】</p>
-</li>
-<li><p><code>endInteractiveMovement()?</code> 在完成手势动作后，结束交互式移动</p>
-</li>
-<li><p><code>cancelInteractiveMovement()?</code> 取消 <code>Interactive Movement</code>。</p>
-</li>
-</ul>
-<p>这让处理平移手势更容易理解了。</p>
-<p><a href = "/images/CollectionViewHasSimpleAgainArray/againArray_1.gif"> <img src = "/images/CollectionViewHasSimpleAgainArray/againArray_1.gif" width = 372 height = 665 alt =  "againArray_1"/> </a></p>
-<p>机器反应跟标准的 <code>UICollectionViewController</code> 一样，真的很酷，但是还有更酷的–我们能对自定义的 <code>collection view layout</code>（collection集合视图布局）申请重排，下面是在 <code>waterfall layout</code>（瀑布布局）里对 <code>Interactive Movement</code> 的测试。</p>
-<p><a href = "/images/CollectionViewHasSimpleAgainArray/againArray_2.gif"> <img src = "/images/CollectionViewHasSimpleAgainArray/againArray_2.gif" width = 372 height = 665 alt =  "againArray_2"/> </a></p>
-<p>嗯哼，看起来很酷，但如果我们不想在移动 <code>cell</code>（单元）的时候改变它们的大小，那该怎么做？被选择的 <code>cell</code>（单元）的大小在 <code>Interactive Movement</code> 期间应该保持原样。这是可行的。<code>UICollectionViewLayout</code> 有附加的方法来处理重排。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">invalidationContextForInteractivelyMovingItems</span>(<span class="params">targetIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">withTargetPosition</span> <span class="params">targetPosition</span>: <span class="type">CGPoint</span>,</span><br><span class="line">    <span class="params">previousIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">previousPosition</span>: <span class="type">CGPoint</span>) -&gt; <span class="type">UICollectionViewLayoutInvalidationContext</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">func</span> <span class="title function_">invalidationContextForEndingInteractiveMovementOfItemsToFinalIndexPaths</span>(<span class="params">indexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">previousIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">movementCancelled</span>: <span class="type">Bool</span>) -&gt; <span class="type">UICollectionViewLayoutInvalidationContext</span></span><br></pre></td></tr></table></figure>
-<p> 第一个函数在元素的 <code>Interactive Movement</code> 期间被调用，它带有 <code>target</code>（目标元素）和先前的 <code>cell</code> 的<code>indexPaths</code>（索引地址）。第二个与第一个函数类似，但它只在 <code>Interactive Movement</code> 结束后才调用。通过这些知识我们能通过一点小窍门，实现我们的需求。</p>
-<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">internal</span> <span class="keyword">override</span> <span class="keyword">func</span> <span class="title function_">invalidationContextForInteractivelyMovingItems</span>(<span class="params">targetIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">withTargetPosition</span> <span class="params">targetPosition</span>: <span class="type">CGPoint</span>,</span><br><span class="line">    <span class="params">previousIndexPaths</span>: [<span class="type">NSIndexPath</span>],</span><br><span class="line">    <span class="params">previousPosition</span>: <span class="type">CGPoint</span>) -&gt; <span class="type">UICollectionViewLayoutInvalidationContext</span> &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">var</span> context <span class="operator">=</span> <span class="keyword">super</span>.invalidationContextForInteractivelyMovingItems(targetIndexPaths,</span><br><span class="line">        withTargetPosition: targetPosition, previousIndexPaths: previousIndexPaths,</span><br><span class="line">        previousPosition: previousPosition)</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">self</span>.delegate<span class="operator">?</span>.collectionView<span class="operator">!</span>(<span class="keyword">self</span>.collectionView<span class="operator">!</span>, moveItemAtIndexPath: previousIndexPaths[<span class="number">0</span>],</span><br><span class="line">        toIndexPath: targetIndexPaths[<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> context</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>取得当前正在移动的cell的之前的和目标索引路径，然后调用 <code>UICollectionViewDataSource</code> 方法来移动这些 <code>item</code>（元素）。</p>
-<p> <a href = "/images/CollectionViewHasSimpleAgainArray/againArray_3.gif"> <img src = "/images/CollectionViewHasSimpleAgainArray/againArray_3.gif" width = 372 height = 665 alt =  "againArray_3"/> </a></p>
-<p> 毫无疑问，collection view的重排是一个出色的附加功能，UIKit前端框架工程师干得漂亮！:)</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2015/08/12/first/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2015/08/12/first/" class="post-title-link" itemprop="url">简单测试 static 和 const</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2015-08-12 14:37:00" itemprop="dateCreated datePublished" datetime="2015-08-12T14:37:00+08:00">2015-08-12</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="const"><a href="#const" class="headerlink" title="const"></a>const</h1><p> 三种使用 const 的方式</p>
-<pre><code>const NSMutableString * constString = @&quot;constString&quot;.mutableCopy;
-NSMutableString const * stringConst = @&quot;stringConst&quot;.mutableCopy;
-NSMutableString * const string_const = @&quot;string_const&quot;.mutableCopy;
-</code></pre>
-<p> 给它们赋值，也就是改变指针 地址</p>
-<pre><code>constString = @&quot;newConstString&quot;.mutableCopy; //const 不管在 NSMutableString 前后是一样的东西
-stringConst = @&quot;newStringConst&quot;.mutableCopy; 
-//string_const = @&quot;newString_const&quot;.mutableCopy; //报错 const 和 指针在一起时指针不可以指向新的地址,也就是常量指针
-</code></pre>
-<p>这里没有预料中的 直接报红 也没报黄</p>
-<pre><code>[constString stringByAppendingString:@&quot;_new&quot;];
-[stringConst stringByAppendingString:@&quot;_new&quot;];
-//但是打印出来的值 是:  ---constString = newConstString -- stringConst = newStringCon 值没有被改变,也就是 值是常量
-NSLog(@&quot; ---constString = %@ -- stringConst = %@&quot;,constString,stringConst);
-
-//总结：const 在 NSMutableString 旁边，那么就是指针指向的值是常量，改变值不会报错，但是不会有效果。
-//     const 在 指针            旁边，那么改指针就是常量指针，不可以重新赋值。
-
-//如果 要 常量指针  指向 常量 那么 ：
-const NSMutableString * const const__constString = @&quot;const__constString&quot;.mutableCopy;
-//或者
-NSMutableString const  * const const_constString = @&quot;const_constString&quot;.mutableCopy;
-</code></pre>
-<h1 id="static"><a href="#static" class="headerlink" title="static"></a>static</h1><pre><code>//static 在 创建的时候 不能赋值给 一个 不是编译的常数
-//只可以 赋值 这样的
-static int a = 1;
-static char b = &#39;6&#39;;
-static char c[3] = &quot;122&quot;;
-static char * d = &quot;233&quot;;
-static NSString * e = @&quot;233&quot;;
-
-static const NSString * static_constString_new = @&quot;23333&quot;;//这样 也可以 我已经晕了
-
-//    static ViewController * mySelf = [[ViewController alloc] init]; // 这样就不行了
-//    static const ViewController * mySelf = [[ViewController alloc] init]; //nonono
-
-//    static const NSMutableString * static_constString = @&quot;2333&quot;.mutableCopy; //这样是不行的
-//    static const NSString * static_constString_new_new = [NSString new]; //这样也不行
-
-//总之 好像 就能赋值给 一个 常量
-</code></pre>
-<p>关于  static 的一点 ，它在 app 的生命周期 只执行一次，下一次如果跑到了 这里，那么这句 初始化的 代码就被直接跳过了</p>
-<pre><code>//先 测试 const 和 NSMutableString 在一起 指针指向 常量
-static const NSMutableString * static_constString = nil;
-const static NSMutableString * const_staticString = nil;
-const NSMutableString static * const__staticString = nil;  //这三种方式 猜测是一样的
-//    const NSMutableString * static const_string_static = nil; 这样干爆红了
-
-static_constString = @&quot;static_constString&quot;.mutableCopy;
-const_staticString = @&quot;const_staticString&quot;.mutableCopy;
-const__staticString = @&quot;const__staticString&quot;.mutableCopy;
-
-// 打印 结果
-//    static_constString = static_constString
-//    const_staticString = const_staticString
-//    const__staticString = const__staticString
-
-NSLog(@&quot;static_constString = %@ \n const_staticString = %@ \n const__staticString = %@&quot;,static_constString,const_staticString,const__staticString);
-
-static_constString = @&quot;static_constString_new&quot;.mutableCopy;
-const_staticString = @&quot;const_staticString_new&quot;.mutableCopy;
-const__staticString = @&quot;const__staticString_new&quot;.mutableCopy;
-
-// 打印 结果
-//    static_constString = static_constString_new
-//    const_staticString = const_staticString_new
-//    const__staticString = const__staticString_new
-NSLog(@&quot;static_constString = %@ \n const_staticString = %@ \n const__staticString = %@&quot;,static_constString,const_staticString,const__staticString);
-
-[static_constString stringByAppendingString:@&quot;++ new&quot;];
-[const_staticString stringByAppendingString:@&quot;++ new&quot;];
-[const__staticString stringByAppendingString:@&quot;++ new&quot;];
-
-// 打印 结果
-//    static_constString = static_constString_new
-//    const_staticString = const_staticString_new
-//    const__staticString = const__staticString_new
-NSLog(@&quot;static_constString = %@ \n const_staticString = %@ \n const__staticString = %@&quot;,static_constString,const_staticString,const__staticString);
-</code></pre>
-<p>结论： 加了 static 对 const 和 NSMutableString 在一起的，指针指向常量这种东西 没影响，依然可以正常赋值，并且不能改变值，但是 用了 static 后，这个指针会被 存入 静态区</p>
-<pre><code>NSMutableString static * const static_xing_constString = nil;
-static NSMutableString * const static__constString = nil;
-
-//预料之中的 警告了
-//    static_xing_constString = @&quot;static_xing_constString&quot;.mutableCopy;
-//    static__constString = @&quot;static__constString&quot;.mutableCopy;
-
-[static_xing_constString stringByAppendingString:@&quot;static_xing_constString&quot;];
-[static__constString stringByAppendingString:@&quot;static_xing_constString&quot;];
-
-//因为是 nil 所以。。。
-NSLog(@&quot;static_xing_constString = %@ \n static__constString = %@&quot;,static_xing_constString,static__constString);
-//这样 写 好像 没用了， 初始化的时候 不能赋值，完了 还不能改,一辈子 都是 nil
-</code></pre>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-
-  
-  <nav class="pagination">
-    <a class="extend prev" rel="prev" href="/"><i class="fa fa-angle-left" aria-label="Previous page"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span>
-  </nav>
 
 
 
@@ -847,6 +327,7 @@ NSLog(@&quot;static_xing_constString = %@ \n static__constString = %@&quot;,stat
 
       <!--noindex-->
       <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#title-%E4%BD%BF%E7%94%A8-AVPlayer-%E5%88%B6%E4%BD%9C%E4%B8%80%E4%B8%AA%E6%92%AD%E6%94%BE%E5%99%A8"><span class="nav-number">1.</span> <span class="nav-text">title:使用 AVPlayer 制作一个播放器</span></a></li></ol></div>
       </div>
       <!--/noindex-->
 

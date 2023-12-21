@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="title:iOS 配置FFmpeg框架FFmpeg是一个自由软件，可以运行音频和视频多种格式的录影、转换、流功能，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。 环境与工具Mac OS X EI Capitan 10.11.4Xcode7.3.1终端 1.安装 yasm*OS X 下载 Source .tar.g">
+<meta property="og:type" content="article">
+<meta property="og:title" content="一艘小船">
+<meta property="og:url" content="http://example.com/2015/11/03/iOSUseFFmpeg/index.html">
+<meta property="og:site_name" content="一艘小船">
+<meta property="og:description" content="title:iOS 配置FFmpeg框架FFmpeg是一个自由软件，可以运行音频和视频多种格式的录影、转换、流功能，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。 环境与工具Mac OS X EI Capitan 10.11.4Xcode7.3.1终端 1.安装 yasm*OS X 下载 Source .tar.g">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_list.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_header.png?raw=true">
+<meta property="og:image" content="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_library.png?raw=true">
+<meta property="article:published_time" content="2015-11-03T13:04:00.000Z">
+<meta property="article:modified_time" content="2016-05-12T02:44:00.000Z">
+<meta property="article:author" content="qxy">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_list.png?raw=true">
+
+<link rel="canonical" href="http://example.com/2015/11/03/iOSUseFFmpeg/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title> | 一艘小船</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">一艘小船</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">说翻就翻</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2015/11/03/iOSUseFFmpeg/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2015-11-03 21:04:00" itemprop="dateCreated datePublished" datetime="2015-11-03T21:04:00+08:00">2015-11-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2016-05-12 10:44:00" itemprop="dateModified" datetime="2016-05-12T10:44:00+08:00">2016-05-12</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h2 id="title-iOS-配置FFmpeg框架"><a href="#title-iOS-配置FFmpeg框架" class="headerlink" title="title:iOS 配置FFmpeg框架"></a>title:iOS 配置FFmpeg框架</h2><p><strong>FFmpeg</strong>是一个<a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%87%AA%E7%94%B1%E8%BB%9F%E9%AB%94">自由软件</a>，可以运行音频和视频多种格式的<a target="_blank" rel="noopener" href="http://ffmpeg.org/ffmpeg.html">录影、转换、流功能</a>，包含了libavcodec——这是一个用于多个项目中音频和视频的解码器库，以及libavformat——一个音频与视频格式转换库。</p>
+<h2 id="环境与工具"><a href="#环境与工具" class="headerlink" title="环境与工具"></a>环境与工具</h2><p><strong>Mac OS X EI Capitan 10.11.4</strong><br><strong>Xcode7.3.1</strong><br><strong>终端</strong></p>
+<h3 id="1-安装-yasm"><a href="#1-安装-yasm" class="headerlink" title="1.安装 yasm"></a>1.安装 <a target="_blank" rel="noopener" href="http://yasm.tortall.net/releases/Release1.3.0.html">yasm</a></h3><p>*OS X 下载 Source .tar.gz 即可 *</p>
+<p>下载完成后，打开终端，cd 进目录</p>
+<pre><code>$ ./configure
+$ make
+$ make install
+</code></pre>
+<p>安装完成后验证，显示如下表明安装成功</p>
+<pre><code>$ yasm --version
+yasm 1.3.0
+Compiled on May 12 2016.
+Copyright (c) 2001-2014 Peter Johnson and other Yasm developers.
+Run yasm --license for licensing overview and summary.
+</code></pre>
+<h3 id="2-下载-gas-preprocessor-pl"><a href="#2-下载-gas-preprocessor-pl" class="headerlink" title="2.下载 gas-preprocessor.pl"></a>2.下载 <a target="_blank" rel="noopener" href="https://github.com/libav/gas-preprocessor">gas-preprocessor.pl</a></h3><p>复制 <code>gas-preprocessor.pl</code> 到 <code>/usr/local/bin</code> 下 <strong>(网上很多教程都让放在 <code>/usr/bin</code> 下，但是现在OS X的 <code>usr/bin</code> 目录不可写，所以放在 <code>/usr/local/bin</code> )</strong></p>
+<p>修改文件权限 </p>
+<pre><code>$ chmod 777 /usr/local/bin/gas-preprocessor.pl
+</code></pre>
+<h3 id="3-下载脚本文件"><a href="#3-下载脚本文件" class="headerlink" title="3.下载脚本文件"></a>3.下载<a target="_blank" rel="noopener" href="https://github.com/kewlbear/FFmpeg-iOS-build-script">脚本文件</a></h3><p>这个脚本可以一次编译，就生成适合各个框架的静态库。</p>
+<p>解压后 cd 进目录 ，执行</p>
+<pre><code>$ ./build-ffmpeg.sh
+</code></pre>
+<p>脚本则会自动从github中把ffmpeg源码下到本地并开始编译。 编译结束后，文件目录如下：</p>
+<p><img src="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_list.png?raw=true" alt="SettingFFmpeg"></p>
+<p>ffmpeg-3.0是源码， FFmpeg-iOS是编译出来的库，里面是我们需要的.a 静态库，一共有7个。 终端输入</p>
+<pre><code>$ lipo -info libavcodec.a 
+Architectures in the fat file: libavcodec.a are: armv7 i386 x86_64 arm64 
+</code></pre>
+<p>可以看出来静态库支持 <code>armv7</code>  <code>i386</code>  <code>x86_64</code>  <code>arm64 </code> 构架</p>
+<h3 id="4-把-FFmpeg-iOS-导入工程。"><a href="#4-把-FFmpeg-iOS-导入工程。" class="headerlink" title="4.把 FFmpeg-iOS 导入工程。"></a>4.把 FFmpeg-iOS 导入工程。</h3><p>然后在 <code>Build Settings</code> 中找到 <code>Search Paths</code> ，设置 <code>Header Search Pahts</code> 和 <code>Library Search Paths</code> 如下。不然会报 <code>include“libavformat/avformat.h” file not found </code> 错误。</p>
+<p><img src="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_header.png?raw=true" alt="SettingFFmpeg_header"></p>
+<p><img src="https://github.com/qiangxinyu/blogImages/blob/master/SettingFFmpeg/SettingFFmpeg_library.png?raw=true" alt="SettingFFmpeg_library"></p>
+<h3 id="5-在工程中导入其他库文件。"><a href="#5-在工程中导入其他库文件。" class="headerlink" title="5.在工程中导入其他库文件。"></a>5.在工程中导入其他库文件。</h3><p><code>libz.tbd</code> 、<code>ibbz2.tbd</code> 、 <code>libiconv.tbd</code>,在 3.0以后需要添加另外2个框架 <code>VideoToolbox.framework</code> 和 <code>CoreMedia.framework</code></p>
+<h3 id="5-编译"><a href="#5-编译" class="headerlink" title="5.编译"></a>5.编译</h3><p>因为这些库是C++，所以需要把一个文件后缀改为 .mm，这样Xcode就会自动打开C++混编，一般会把  <code>AppDelegate.m</code> 改为 <code>AppDelegate.mm</code> </p>
+<p>然后随便找个 文件，导入 <code>avcodec.h</code></p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&quot;avcodec.h&quot;</span></span></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line">   [<span class="variable language_">super</span> viewDidLoad];    </span><br><span class="line">   avcodec_register_all();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>可以运行起来说明配置成功。</p>
+<p>这里放一个<a target="_blank" rel="noopener" href="https://github.com/qiangxinyu/XYFFmpeg">Demo</a></p>
+<h3 id="6-可能出现的问题"><a href="#6-可能出现的问题" class="headerlink" title="6.可能出现的问题"></a>6.可能出现的问题</h3><ul>
+<li><p>执行 .sh 文件不成功</p>
+<p>$ .&#x2F;build-ffmpeg.sh<br>-bash: .&#x2F;build-ffmpeg.sh: No such file or directory</p>
+</li>
+</ul>
+<p>这种类型的错误是找不到 <code>build-ffmpeg.sh</code> 文件，先看看路径对不对，然后再看下里面有没有这个文件，在安装 <code>yasm</code> 的时候我第一次是在 <code>github</code> 上下载的一个，里面没有 <code>.sh</code> 文件，导致无法执行。</p>
+<ul>
+<li><p>Xcode编译报错</p>
+<p> Undefined symbols for architecture x86_64: (或者armv7之类的)<br> …<br> ld: symbol(s) not found for architecture x86_64<br> clang: error: linker command failed with exit code 1 (use -v to see invocation)</p>
+</li>
+</ul>
+<p>这种一般都是因为缺少依赖，检查一下上述那3个库和2个框架是否正确添加。</p>
+<h3 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h3><ul>
+<li><a target="_blank" rel="noopener" href="http://cnbin.github.io/blog/2015/05/19/iospei-zhi-ffmpegkuang-jia/">http://cnbin.github.io/blog/2015/05/19/iospei-zhi-ffmpegkuang-jia/</a></li>
+<li><a target="_blank" rel="noopener" href="http://bbs.iosre.com/t/10-11-usr-bin-class-dump/1936/5">http://bbs.iosre.com/t/10-11-usr-bin-class-dump/1936/5</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.jianshu.com/p/147c03553e63">http://www.jianshu.com/p/147c03553e63
+</a></li>
+<li><a target="_blank" rel="noopener" href="http://www.cnblogs.com/liyufeng2013/p/4286684.html">http://www.cnblogs.com/liyufeng2013/p/4286684.html
+</a></li>
+</ul>
+
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2015/08/21/CollectionViewHasSimpleAgainArray/" rel="prev" title="UICollectionViews有了简单的重排功能">
+      <i class="fa fa-chevron-left"></i> UICollectionViews有了简单的重排功能
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2015/11/03/handleImageSomTip/" rel="next" title="iOS 处理图片的一些小 Tip">
+      iOS 处理图片的一些小 Tip <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#title-iOS-%E9%85%8D%E7%BD%AEFFmpeg%E6%A1%86%E6%9E%B6"><span class="nav-number">1.</span> <span class="nav-text">title:iOS 配置FFmpeg框架</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83%E4%B8%8E%E5%B7%A5%E5%85%B7"><span class="nav-number">2.</span> <span class="nav-text">环境与工具</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E5%AE%89%E8%A3%85-yasm"><span class="nav-number">2.1.</span> <span class="nav-text">1.安装 yasm</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E4%B8%8B%E8%BD%BD-gas-preprocessor-pl"><span class="nav-number">2.2.</span> <span class="nav-text">2.下载 gas-preprocessor.pl</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E4%B8%8B%E8%BD%BD%E8%84%9A%E6%9C%AC%E6%96%87%E4%BB%B6"><span class="nav-number">2.3.</span> <span class="nav-text">3.下载脚本文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E6%8A%8A-FFmpeg-iOS-%E5%AF%BC%E5%85%A5%E5%B7%A5%E7%A8%8B%E3%80%82"><span class="nav-number">2.4.</span> <span class="nav-text">4.把 FFmpeg-iOS 导入工程。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E5%9C%A8%E5%B7%A5%E7%A8%8B%E4%B8%AD%E5%AF%BC%E5%85%A5%E5%85%B6%E4%BB%96%E5%BA%93%E6%96%87%E4%BB%B6%E3%80%82"><span class="nav-number">2.5.</span> <span class="nav-text">5.在工程中导入其他库文件。</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E7%BC%96%E8%AF%91"><span class="nav-number">2.6.</span> <span class="nav-text">5.编译</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%8F%AF%E8%83%BD%E5%87%BA%E7%8E%B0%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">2.7.</span> <span class="nav-text">6.可能出现的问题</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">2.8.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">qxy</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qxy</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
