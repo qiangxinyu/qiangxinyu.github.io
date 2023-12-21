@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="iOS开发中如何检测当前运行商类型(移动、联通、电信) OS开发中，有时需要检测设备运营商类型，如移动、联通或者电信，本文以检测联通为例。 123456789101112131415161718- (BOOL)checkIsUnicom&#123;    CTTelephonyNetworkInfo *info &#x3D; [[CTTelephonyNetworkInfo alloc] init];">
+<meta property="og:type" content="article">
+<meta property="og:title" content="iOS开发中的一些小Tip">
+<meta property="og:url" content="http://example.com/2023/12/21/iOSCodeSomeTip/index.html">
+<meta property="og:site_name" content="一艘小船">
+<meta property="og:description" content="iOS开发中如何检测当前运行商类型(移动、联通、电信) OS开发中，有时需要检测设备运营商类型，如移动、联通或者电信，本文以检测联通为例。 123456789101112131415161718- (BOOL)checkIsUnicom&#123;    CTTelephonyNetworkInfo *info &#x3D; [[CTTelephonyNetworkInfo alloc] init];">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2023-12-21T04:29:15.351Z">
+<meta property="article:modified_time" content="2023-12-21T04:29:15.351Z">
+<meta property="article:author" content="qxy">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2023/12/21/iOSCodeSomeTip/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>iOS开发中的一些小Tip | 一艘小船</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">一艘小船</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">说翻就翻</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/12/21/iOSCodeSomeTip/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          iOS开发中的一些小Tip
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2023-12-21 12:29:15" itemprop="dateCreated datePublished" datetime="2023-12-21T12:29:15+08:00">2023-12-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <h3 id="iOS开发中如何检测当前运行商类型-移动、联通、电信"><a href="#iOS开发中如何检测当前运行商类型-移动、联通、电信" class="headerlink" title="iOS开发中如何检测当前运行商类型(移动、联通、电信) "></a><font color = #a2c700>iOS开发中如何检测当前运行商类型(移动、联通、电信) </font></h3><p>OS开发中，有时需要检测设备运营商类型，如移动、联通或者电信，本文以检测联通为例。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">BOOL</span>)checkIsUnicom</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">CTTelephonyNetworkInfo</span> *info = [[<span class="built_in">CTTelephonyNetworkInfo</span> alloc] init];</span><br><span class="line">    <span class="built_in">CTCarrier</span> *carrier = info.subscriberCellularProvider;</span><br><span class="line">    <span class="built_in">NSString</span> *carrierName = carrier.carrierName;</span><br><span class="line">    <span class="built_in">NSString</span> *mobileCountryCode = carrier.mobileCountryCode;</span><br><span class="line">    <span class="built_in">NSString</span> *mobileNetworkCode = carrier.mobileNetworkCode;</span><br><span class="line">    [info release];</span><br><span class="line">    <span class="keyword">if</span> (!mobileNetworkCode) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NO</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> ([mobileCountryCode intValue]==<span class="number">460</span>) &#123; <span class="comment">//国内</span></span><br><span class="line">        <span class="keyword">return</span> [carrierName rangeOfString:<span class="string">@&quot;联通&quot;</span>].length&gt;<span class="number">0</span> ||</span><br><span class="line">         [mobileNetworkCode isEqualToString:<span class="string">@&quot;01&quot;</span>]   ||</span><br><span class="line">         [mobileNetworkCode isEqualToString:<span class="string">@&quot;06&quot;</span>];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> [<span class="keyword">self</span> statusBarCheckIsUnicom];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>运行商对应的NetworkCode</p>
+<p><a href = "/images/iOSCodeSomeTip/iOSSomeTip_1.png"> <img src = "/images/iOSCodeSomeTip/iOSSomeTip_1.png" width = 567 height = 269 alt = "iOSSomeTip_1"/></a></p>
+<p>正常情况下，以上代码可满足正常需求，但是对于美版或者日版卡贴iPhone，检测到的CTCarrier并非sim卡信息，此时就需要通过StatusBar实时检测当前网络运行商</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">BOOL</span>)statusBarCheckIsUnicom</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSArray</span> *subviews = [[[[<span class="built_in">UIApplication</span> sharedApplication] valueForKey:<span class="string">@&quot;statusBar&quot;</span>]</span><br><span class="line">     valueForKey:<span class="string">@&quot;foregroundView&quot;</span>] subviews];</span><br><span class="line">    <span class="built_in">UIView</span> *serviceView = <span class="literal">nil</span>;</span><br><span class="line">    Class serviceClass = <span class="built_in">NSClassFromString</span>([<span class="built_in">NSString</span> stringWithFormat:<span class="string">@&quot;UIStat%@Serv%@%@&quot;</span>, </span><br><span class="line">    <span class="string">@&quot;usBar&quot;</span>, <span class="string">@&quot;ice&quot;</span>, <span class="string">@&quot;ItemView&quot;</span>]);</span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">UIView</span> *subview <span class="keyword">in</span> subviews) &#123;</span><br><span class="line">        <span class="keyword">if</span>([subview isKindOfClass:[serviceClass <span class="keyword">class</span>]]) &#123;</span><br><span class="line">            serviceView = subview;</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">if</span> (serviceView) &#123;</span><br><span class="line">        <span class="built_in">NSString</span> *carrierName = [serviceView valueForKey:[<span class="string">@&quot;service&quot;</span> </span><br><span class="line">        stringByAppendingString:<span class="string">@&quot;String&quot;</span>]];</span><br><span class="line">        <span class="keyword">return</span> [carrierName rangeOfString:<span class="string">@&quot;联通&quot;</span>].length&gt;<span class="number">0</span>;</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">NO</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="iOS9-进行第三方跳转"><a href="#iOS9-进行第三方跳转" class="headerlink" title=" iOS9 进行第三方跳转 "></a><font color = #a2c700> iOS9 进行第三方跳转 </font></h3><p>需要在plist 加入：</p>
+<pre><code>&lt;key&gt;LSApplicationQueriesSchemes&lt;/key&gt;
+    &lt;array&gt;
+    &lt;string&gt;wechat&lt;/string&gt;
+    &lt;string&gt;local&lt;/string&gt;
+    &lt;string&gt;weixin&lt;/string&gt;
+    &lt;string&gt;sinaweibohd&lt;/string&gt;
+    &lt;string&gt;sinaweibo&lt;/string&gt;
+    &lt;string&gt;sinaweibosso&lt;/string&gt;
+    &lt;string&gt;weibosdk&lt;/string&gt;
+    &lt;string&gt;alisdkdemo&lt;/string&gt;
+    &lt;string&gt;weibosdk2.5&lt;/string&gt;
+    &lt;string&gt;mqqapi&lt;/string&gt;
+    &lt;string&gt;mqqbrowser&lt;/string&gt;
+    &lt;string&gt;mqq&lt;/string&gt;
+    &lt;string&gt;mqqOpensdkSSoLogin&lt;/string&gt;
+    &lt;string&gt;mqqconnect&lt;/string&gt;
+    &lt;string&gt;mqqopensdkdataline&lt;/string&gt;
+    &lt;string&gt;mqqopensdkgrouptribeshare&lt;/string&gt;
+    &lt;string&gt;mqqopensdkfriend&lt;/string&gt;
+    &lt;string&gt;mqqopensdkapi&lt;/string&gt;
+    &lt;string&gt;mqqopensdkapiV2&lt;/string&gt;
+    &lt;string&gt;mqqopensdkapiV3&lt;/string&gt;
+    &lt;string&gt;mqzoneopensdk&lt;/string&gt;
+    &lt;string&gt;wtloginmqq&lt;/string&gt;
+    &lt;string&gt;wtloginmqq2&lt;/string&gt;
+    &lt;string&gt;mqqwpa&lt;/string&gt;
+    &lt;string&gt;safepay&lt;/string&gt;
+    &lt;string&gt;mqzone&lt;/string&gt;
+    &lt;string&gt;mqqapiwallet&lt;/string&gt;
+    &lt;string&gt;mqzonev2&lt;/string&gt;
+    &lt;string&gt;mqzoneshare&lt;/string&gt;
+    &lt;string&gt;wtloginqzone&lt;/string&gt;
+    &lt;string&gt;mqzonewx&lt;/string&gt;
+    &lt;string&gt;mqzoneopensdkapiV2&lt;/string&gt;
+    &lt;string&gt;mqzoneopensdkapi19&lt;/string&gt;
+    &lt;string&gt;mqzoneopensdkapi&lt;/string&gt;
+    &lt;string&gt;mqzoneopensdk&lt;/string&gt;
+    &lt;string&gt;renrenios&lt;/string&gt;
+    &lt;string&gt;renrenapi&lt;/string&gt;
+    &lt;string&gt;renren&lt;/string&gt;
+    &lt;string&gt;renreniphone&lt;/string&gt;
+    &lt;string&gt;yixin&lt;/string&gt;
+    &lt;string&gt;instagram&lt;/string&gt;
+    &lt;string&gt;whatsapp&lt;/string&gt;
+    &lt;string&gt;line&lt;/string&gt;
+    &lt;string&gt;fbapi&lt;/string&gt;
+    &lt;string&gt;fb-messenger-api&lt;/string&gt;
+    &lt;string&gt;fbauth2&lt;/string&gt;
+    &lt;string&gt;fbshareextension&lt;/string&gt;
+    &lt;string&gt;alipay&lt;/string&gt;
+    &lt;string&gt;cydia&lt;/string&gt;
+    &lt;string&gt;safepay&lt;/string&gt;
+    &lt;/array&gt;
+</code></pre>
+<h3 id="判断设备的型号"><a href="#判断设备的型号" class="headerlink" title=" 判断设备的型号 "></a><font color = #a2c700> 判断设备的型号 </font></h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="string">&lt;sys/utsname.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//获得设备型号</span></span><br><span class="line">+ (<span class="built_in">NSString</span> *)getCurrentDeviceModel</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">struct</span> utsname systemInfo;</span><br><span class="line">    uname(&amp;systemInfo);</span><br><span class="line">    <span class="built_in">NSString</span> *platform = [<span class="built_in">NSString</span> stringWithCString:systemInfo.machine</span><br><span class="line">                                              encoding:<span class="built_in">NSUTF8StringEncoding</span>];</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone1,1&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 2G (A1203)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone1,2&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 3G (A1241/A1324)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone2,1&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 3GS (A1303/A1325)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone3,1&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 4 (A1332)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone3,2&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 4 (A1332)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone3,3&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 4 (A1349)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone4,1&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 4S (A1387/A1431)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone5,1&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 5 (A1428)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone5,2&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 5 (A1429/A1442)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone5,3&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 5c (A1456/A1532)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone5,4&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 5c (A1507/A1516/A1526/A1529)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone6,1&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 5s (A1453/A1533)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone6,2&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 5s (A1457/A1518/A1528/A1530)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone7,1&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 6 Plus (A1522/A1524)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone7,2&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 6 (A1549/A1586)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone8,1&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 6s (A1633/A1688/A1691/A1700)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPhone8,2&quot;</span>]) <span class="keyword">return</span> <span class="string">@&quot;iPhone 6s Plus (A1634/A1687/A1690/A1699)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPod1,1&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPod Touch 1G (A1213)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPod2,1&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPod Touch 2G (A1288)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPod3,1&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPod Touch 3G (A1318)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPod4,1&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPod Touch 4G (A1367)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPod5,1&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPod Touch 5G (A1421/A1509)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad1,1&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 1G (A1219/A1337)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad2,1&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 2 (A1395)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad2,2&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 2 (A1396)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad2,3&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 2 (A1397)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad2,4&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 2 (A1395+New Chip)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad2,5&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad Mini 1G (A1432)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad2,6&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad Mini 1G (A1454)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad2,7&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad Mini 1G (A1455)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad3,1&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 3 (A1416)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad3,2&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 3 (A1403)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad3,3&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 3 (A1430)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad3,4&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 4 (A1458)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad3,5&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 4 (A1459)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad3,6&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad 4 (A1460)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad4,1&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad Air (A1474)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad4,2&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad Air (A1475)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad4,3&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad Air (A1476)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad4,4&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad Mini 2G (A1489)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad4,5&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad Mini 2G (A1490)&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;iPad4,6&quot;</span>])   <span class="keyword">return</span> <span class="string">@&quot;iPad Mini 2G (A1491)&quot;</span>;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;i386&quot;</span>])      <span class="keyword">return</span> <span class="string">@&quot;iPhone Simulator&quot;</span>;</span><br><span class="line">    <span class="keyword">if</span> ([platform isEqualToString:<span class="string">@&quot;x86_64&quot;</span>])    <span class="keyword">return</span> <span class="string">@&quot;iPhone Simulator&quot;</span>;</span><br><span class="line">    <span class="keyword">return</span> platform;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="隐藏返回按钮的文字"><a href="#隐藏返回按钮的文字" class="headerlink" title=" 隐藏返回按钮的文字 "></a><font color = #a2c700> 隐藏返回按钮的文字 </font></h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">[[<span class="built_in">UIBarButtonItem</span> appearance] setBackButtonTitlePositionAdjustment:<span class="built_in">UIOffsetMake</span>(<span class="number">0</span>, <span class="number">-60</span>)</span><br><span class="line">                                                         forBarMetrics:<span class="built_in">UIBarMetricsDefault</span>];   ```</span><br><span class="line">                                                         </span><br><span class="line">  </span><br><span class="line">  </span><br><span class="line">### &lt;font color = #a2c700&gt; 判断 pickerView 是否正在滑动 &lt;/font&gt;</span><br><span class="line"></span><br><span class="line">```objectivec</span><br><span class="line">- (<span class="type">BOOL</span>)isScrolling:(<span class="built_in">UIView</span> *)view</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ([view isKindOfClass:<span class="built_in">UIScrollView</span>.class]) &#123;</span><br><span class="line">        <span class="built_in">UIScrollView</span> * scrollView = (<span class="built_in">UIScrollView</span> *)view;</span><br><span class="line">        <span class="keyword">if</span> (scrollView.dragging || scrollView.decelerating) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">for</span> (<span class="built_in">UIView</span> * aView <span class="keyword">in</span> view.subviews) &#123;</span><br><span class="line">        <span class="keyword">if</span> ([<span class="keyword">self</span> isScrolling:aView]) &#123;</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">NO</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="ios8系统-点击设置隐私定位功能直接崩溃的问题"><a href="#ios8系统-点击设置隐私定位功能直接崩溃的问题" class="headerlink" title=" ios8系统 点击设置隐私定位功能直接崩溃的问题 "></a><font color = #a2c700> ios8系统 点击设置隐私定位功能直接崩溃的问题 </font></h3><p><a href = "/images/iOSCodeSomeTip/iOSSomeTip_2.png"> <img src = "/images/iOSCodeSomeTip/iOSSomeTip_2.png" width = 626 height = 285 alt = "iOSSomeTip_2"/> </a>                                                         </p>
+<h3 id="改变webView上的图片大小"><a href="#改变webView上的图片大小" class="headerlink" title=" 改变webView上的图片大小 "></a><font color = #a2c700> 改变webView上的图片大小 </font></h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSString</span> * js = [<span class="built_in">NSString</span> stringWithFormat: <span class="string">@&quot;var script = document.createElement(&#x27;script&#x27;);&quot;</span></span><br><span class="line">                     <span class="string">&quot;script.type = &#x27;text/javascript&#x27;;&quot;</span></span><br><span class="line">                     <span class="string">&quot;script.text = \&quot;function ResizeImages() &#123; &quot;</span></span><br><span class="line">                     <span class="string">&quot;var myimg,oldwidth;&quot;</span></span><br><span class="line">                     <span class="string">&quot;var maxwidth=%f;&quot;</span> <span class="comment">//缩放系数</span></span><br><span class="line">                     <span class="string">&quot;for(i=0;i &lt;document.images.length;i++)&#123;&quot;</span></span><br><span class="line">                     <span class="string">&quot;myimg = document.images[i];&quot;</span></span><br><span class="line">                     <span class="string">&quot;if(myimg.width &gt; maxwidth)&#123;&quot;</span></span><br><span class="line">                     <span class="string">&quot;oldwidth = myimg.width;&quot;</span></span><br><span class="line">                     <span class="string">&quot;myimg.width = maxwidth;&quot;</span></span><br><span class="line">                     <span class="string">&quot;myimg.style.width = maxwidth+&#x27;px&#x27;;&quot;</span></span><br><span class="line">                     <span class="string">&quot;myimg.height = myimg.height * (maxwidth/oldwidth);&quot;</span></span><br><span class="line">                      <span class="string">&quot;myimg.style.height = &#x27;auto&#x27;;&quot;</span></span><br><span class="line">                     <span class="string">&quot;&#125;&quot;</span></span><br><span class="line">                     <span class="string">&quot;&#125;&quot;</span></span><br><span class="line">                     <span class="string">&quot;&#125;\&quot;;&quot;</span></span><br><span class="line">                     <span class="string">&quot;document.getElementsByTagName(&#x27;head&#x27;)[0].appendChild(script);&quot;</span>,kScreenWidth<span class="number">-10</span>];</span><br><span class="line">    [webView stringByEvaluatingJavaScriptFromString:js];</span><br><span class="line">    [webView stringByEvaluatingJavaScriptFromString:<span class="string">@&quot;ResizeImages();&quot;</span>];</span><br><span class="line">```      </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">### &lt;font color = #a2c700&gt; C文件申明冲突 &lt;/font&gt;</span><br><span class="line"></span><br><span class="line">头件的中的<span class="meta">#<span class="keyword">ifndef</span>，这是一个很关键的东西。比如你有两个C文件，这两个C文件都<span class="keyword">include</span>了同一个头文件。而编译时，这两个C文件要一同编译成一个可运行文件，于是问题来了，大量的声明冲突。</span></span><br><span class="line"></span><br><span class="line">还是把头文件的内容都放在<span class="meta">#<span class="keyword">ifndef</span>和#<span class="keyword">endif</span>中吧。不管你的头文件会不会被多个文件引用，你都要加上这个。一般格式是这样的：</span></span><br><span class="line"></span><br><span class="line">```c</span><br><span class="line"><span class="meta">#<span class="keyword">ifndef</span> <span class="string">&lt;标识&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> <span class="string">&lt;标识&gt;</span></span></span><br><span class="line">......</span><br><span class="line">......</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+
+
+<p>&lt;标识&gt;在理论上来说可以是自由命名的，但每个头文件的这个“标识”都应该是唯一的。标识的命名规则一般是头文件名全大写，前后加下划线，并把文件名中的“.”也变成下划线，如：stdio.h</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifndef</span> _STDIO_H_</span></span><br><span class="line"><span class="meta">#<span class="keyword">define</span> _STDIO_H_</span></span><br><span class="line">......</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span>  </span></span><br></pre></td></tr></table></figure>
+
+<h3 id="Navigation-在-pop-和push-的时候奔溃"><a href="#Navigation-在-pop-和push-的时候奔溃" class="headerlink" title=" Navigation 在 pop 和push 的时候奔溃 "></a><font color = #a2c700> Navigation 在 pop 和push 的时候奔溃 </font></h3><p>一般是因为 delegate的问题</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)viewWillDisappear:(<span class="type">BOOL</span>)animated</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="variable language_">super</span> viewWillDisappear:animated];</span><br><span class="line">    <span class="keyword">if</span> ([<span class="keyword">self</span> isMovingFromParentViewController])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">if</span> (<span class="keyword">self</span>.navigationController.delegate == <span class="keyword">self</span>)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">self</span>.navigationController.delegate = <span class="literal">nil</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="pop回来后取消选中的cell"><a href="#pop回来后取消选中的cell" class="headerlink" title="  pop回来后取消选中的cell "></a><font color = #a2c700>  pop回来后取消选中的cell </font></h3><p>在 <code>viewWillAppear</code> 方法中加入：</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[<span class="keyword">self</span>.tableView deselectRowAtIndexPath:[<span class="keyword">self</span>.tableView indexPathForSelectedRow] animated:<span class="literal">YES</span>];                                                                                                       </span><br></pre></td></tr></table></figure>
+
+
+<h3 id="CollectionView的cell太少无法拖动出来下拉刷新"><a href="#CollectionView的cell太少无法拖动出来下拉刷新" class="headerlink" title=" CollectionView的cell太少无法拖动出来下拉刷新 "></a><font color = #a2c700> CollectionView的cell太少无法拖动出来下拉刷新 </font></h3><figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">self</span>.collectionView.alwaysBounceVertical = <span class="literal">YES</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="导入C文件发生冲突"><a href="#导入C文件发生冲突" class="headerlink" title=" 导入C文件发生冲突  "></a><font color = #a2c700> 导入C文件发生冲突  </font></h3><p>在.pch文件加入</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">ifdef</span> __OBJC__</span></span><br><span class="line">... oc的import</span><br><span class="line"><span class="meta">#<span class="keyword">endif</span></span></span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2023/12/21/keepScreenFluent/" rel="prev" title="iOS保持界面流畅的技巧">
+      <i class="fa fa-chevron-left"></i> iOS保持界面流畅的技巧
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/12/21/handleImageSomTip/" rel="next" title="iOS 处理图片的一些小 Tip">
+      iOS 处理图片的一些小 Tip <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS%E5%BC%80%E5%8F%91%E4%B8%AD%E5%A6%82%E4%BD%95%E6%A3%80%E6%B5%8B%E5%BD%93%E5%89%8D%E8%BF%90%E8%A1%8C%E5%95%86%E7%B1%BB%E5%9E%8B-%E7%A7%BB%E5%8A%A8%E3%80%81%E8%81%94%E9%80%9A%E3%80%81%E7%94%B5%E4%BF%A1"><span class="nav-number">1.</span> <span class="nav-text">iOS开发中如何检测当前运行商类型(移动、联通、电信) </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#iOS9-%E8%BF%9B%E8%A1%8C%E7%AC%AC%E4%B8%89%E6%96%B9%E8%B7%B3%E8%BD%AC"><span class="nav-number">2.</span> <span class="nav-text"> iOS9 进行第三方跳转 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%A4%E6%96%AD%E8%AE%BE%E5%A4%87%E7%9A%84%E5%9E%8B%E5%8F%B7"><span class="nav-number">3.</span> <span class="nav-text"> 判断设备的型号 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9A%90%E8%97%8F%E8%BF%94%E5%9B%9E%E6%8C%89%E9%92%AE%E7%9A%84%E6%96%87%E5%AD%97"><span class="nav-number">4.</span> <span class="nav-text"> 隐藏返回按钮的文字 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ios8%E7%B3%BB%E7%BB%9F-%E7%82%B9%E5%87%BB%E8%AE%BE%E7%BD%AE%E9%9A%90%E7%A7%81%E5%AE%9A%E4%BD%8D%E5%8A%9F%E8%83%BD%E7%9B%B4%E6%8E%A5%E5%B4%A9%E6%BA%83%E7%9A%84%E9%97%AE%E9%A2%98"><span class="nav-number">5.</span> <span class="nav-text"> ios8系统 点击设置隐私定位功能直接崩溃的问题 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%94%B9%E5%8F%98webView%E4%B8%8A%E7%9A%84%E5%9B%BE%E7%89%87%E5%A4%A7%E5%B0%8F"><span class="nav-number">6.</span> <span class="nav-text"> 改变webView上的图片大小 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Navigation-%E5%9C%A8-pop-%E5%92%8Cpush-%E7%9A%84%E6%97%B6%E5%80%99%E5%A5%94%E6%BA%83"><span class="nav-number">7.</span> <span class="nav-text"> Navigation 在 pop 和push 的时候奔溃 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pop%E5%9B%9E%E6%9D%A5%E5%90%8E%E5%8F%96%E6%B6%88%E9%80%89%E4%B8%AD%E7%9A%84cell"><span class="nav-number">8.</span> <span class="nav-text">  pop回来后取消选中的cell </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#CollectionView%E7%9A%84cell%E5%A4%AA%E5%B0%91%E6%97%A0%E6%B3%95%E6%8B%96%E5%8A%A8%E5%87%BA%E6%9D%A5%E4%B8%8B%E6%8B%89%E5%88%B7%E6%96%B0"><span class="nav-number">9.</span> <span class="nav-text"> CollectionView的cell太少无法拖动出来下拉刷新 </span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%BC%E5%85%A5C%E6%96%87%E4%BB%B6%E5%8F%91%E7%94%9F%E5%86%B2%E7%AA%81"><span class="nav-number">10.</span> <span class="nav-text"> 导入C文件发生冲突  </span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">qxy</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">14</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qxy</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
