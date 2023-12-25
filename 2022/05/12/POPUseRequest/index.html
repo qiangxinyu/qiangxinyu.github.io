@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 7.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"example.com","root":"/","scheme":"Muse","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="项目中使用的网络库为 Alamofire ，数据隐射库为 ObjectMapper ，由于项目中存在的网络库使用不够友好，维护扩展新的接口比较繁琐，所以抽空重写搭建了一个网络库的封装 基本框架方案的选择 旧的网络库框架使用了单例与扩展的模式，在使用中的形式为 API.a 、API.b 的形式，随着接口的增多，API 类下的方法日益增多，显得一团乱。所以接口的调用形式改为 Protocol ，哪里使">
+<meta property="og:type" content="article">
+<meta property="og:title" content="面向协议的网络库业务封装">
+<meta property="og:url" content="http://example.com/2022/05/12/POPUseRequest/index.html">
+<meta property="og:site_name" content="一艘小船">
+<meta property="og:description" content="项目中使用的网络库为 Alamofire ，数据隐射库为 ObjectMapper ，由于项目中存在的网络库使用不够友好，维护扩展新的接口比较繁琐，所以抽空重写搭建了一个网络库的封装 基本框架方案的选择 旧的网络库框架使用了单例与扩展的模式，在使用中的形式为 API.a 、API.b 的形式，随着接口的增多，API 类下的方法日益增多，显得一团乱。所以接口的调用形式改为 Protocol ，哪里使">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2022-05-12T07:32:00.000Z">
+<meta property="article:modified_time" content="2023-12-25T11:57:04.626Z">
+<meta property="article:author" content="qxy">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="http://example.com/2022/05/12/POPUseRequest/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>面向协议的网络库业务封装 | 一艘小船</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">一艘小船</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">说翻就翻</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/05/12/POPUseRequest/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          面向协议的网络库业务封装
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-05-12 15:32:00" itemprop="dateCreated datePublished" datetime="2022-05-12T15:32:00+08:00">2022-05-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-25 19:57:04" itemprop="dateModified" datetime="2023-12-25T19:57:04+08:00">2023-12-25</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>项目中使用的网络库为 <code>Alamofire</code> ，数据隐射库为 <code>ObjectMapper</code> ，由于项目中存在的网络库使用不够友好，维护扩展新的接口比较繁琐，所以抽空重写搭建了一个网络库的封装</p>
+<h3 id="基本框架方案的选择"><a href="#基本框架方案的选择" class="headerlink" title="基本框架方案的选择"></a>基本框架方案的选择</h3><p> 旧的网络库框架使用了单例与扩展的模式，在使用中的形式为 <code>API.a</code> 、<code>API.b</code> 的形式，随着接口的增多，<code>API </code>类下的方法日益增多，显得一团乱。所以接口的调用形式改为 <code>Protocol</code> ，哪里使用哪个模块的接口，就遵循对应模块的 API 协议，不再暴露所有API接口在整个项目中。</p>
+<p> 一般在业务调用接口的时候，希望处理数据的地方也是在当前位置（当然异步的回调放哪里都一样），这样的代码在后续的维护中更好找到业务逻辑，所以回调统一使用闭包，放弃 <code>Target Select</code> 模式。</p>
+<h3 id="基础请求-protocol-的创建"><a href="#基础请求-protocol-的创建" class="headerlink" title="基础请求 protocol 的创建"></a>基础请求 protocol 的创建</h3><p> 我们以最基础的 HTTP 请求举例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">protocol API &#123;</span><br><span class="line">    func request()</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>由于这是总的请求入口，那么需要传入各个请求需要使用的参数，这些又是跟业务相关的东西，那么应该封装在一起，这里传入的参数，只需要能获取到对应需要的各个值，不限定传入的参数类型，那么请求参数也设计成一个 <code>Protocol</code> </p>
+<p>然后超时时间，对于这个参数，可能同一个接口在不同位置所需的时间会不一致，所以作为一个保留参数，提供默认值（由于协议的声明不是设置默认值，所以放在 <code>extension</code> 中），现在代码看起来是这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">protocol API &#123;</span><br><span class="line">    func request(config: ApiConfigProtocol, timeoutInterval: TimeInterval)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们还需要继承数据映射在请求返回数据初步处理之后，那么还需要一个泛型，因为映射的方法也属于一个协议，所以我们需要泛型遵循此协议，请求返回的闭包，参考 <code>Alamofire</code> 的方式，也以返回一个对象的形式来实现串联闭包：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">protocol API &#123;</span><br><span class="line">    func request&lt;T: APIMappable&gt;(</span><br><span class="line">        config: ApiConfigProtocol,</span><br><span class="line">        timeoutInterval: TimeInterval) -&gt; Response&lt;T&gt;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>现在所有请求需要和返回的要素有了，我们先构建 <code>ApiConfigProtocol</code></p>
+<h3 id="构建-APIMappable"><a href="#构建-APIMappable" class="headerlink" title="构建 APIMappable"></a>构建 <code>APIMappable</code></h3><p>这里我们自定义一个 <code>protocol</code>，基于 <code>ObjectMapper</code> 的 <code>BaseMappable</code> 协议</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">protocol APIMappable: BaseMappable &#123;</span><br><span class="line">    init?(json: Any?)</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extension APIMappable &#123;</span><br><span class="line">    public init?(map: Map) &#123; self.init(json: nil) &#125;</span><br><span class="line">    </span><br><span class="line">    init?(json: Any?) &#123;</span><br><span class="line">        guard let JSON = json as? [String: Any],</span><br><span class="line">           let obj: Self = Mapper().map(JSON: JSON) else &#123;</span><br><span class="line">            return nil</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        self = obj</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extension Array: APIMappable, BaseMappable where Element: BaseMappable &#123;</span><br><span class="line">    public mutating func mapping(map: ObjectMapper.Map) &#123;&#125;</span><br><span class="line">    </span><br><span class="line">    init?(json: Any?) &#123;</span><br><span class="line">        if let JSONArray = json as? [[String: Any]] &#123;</span><br><span class="line">            let obj: [Element] = Mapper(context: nil).mapArray(JSONArray: JSONArray)</span><br><span class="line">            self = obj</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            return nil</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<h3 id="构建-ApiConfigProtocol"><a href="#构建-ApiConfigProtocol" class="headerlink" title="构建 ApiConfigProtocol"></a>构建 <code>ApiConfigProtocol</code></h3><p>域名与header一般来说比较固定，就直接在<code>extension</code>中返回默认值，它看起来像这样：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">protocol ApiConfigProtocol &#123;</span><br><span class="line">    /// 域名</span><br><span class="line">    var domain: String &#123;get&#125;</span><br><span class="line">    /// 路径</span><br><span class="line">    var path: String &#123;get&#125;</span><br><span class="line">    /// 请求方法</span><br><span class="line">    var method: HTTPMethod &#123;get&#125;</span><br><span class="line">    /// 请求头</span><br><span class="line">    var header: HTTPHeaders &#123; get &#125;</span><br><span class="line">    /// 请求参数</span><br><span class="line">    var parameters: [String: Any]? &#123; get &#125;</span><br><span class="line">    /// 参数编码</span><br><span class="line">    var encoder: ParameterEncoding &#123;get&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">extension ApiConfigProtocol &#123;</span><br><span class="line">    var domain: String &#123; &quot;https://xxxx.com&quot; &#125;</span><br><span class="line">    var header: HTTPHeaders &#123; defaultHeader() &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    func defaultHeader() -&gt; HTTPHeaders &#123;</span><br><span class="line">        var dic = [String: String]()</span><br><span class="line">        dic[&quot;token&quot;] = &quot;xxxx&quot;</span><br><span class="line">        return HTTPHeaders.init(dic)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>在实际使用中，对应的业务模块实现该协议，例如一个与服务系统相关的模块：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">enum APISystemConfig: ApiConfigProtocol &#123;</span><br><span class="line">    case sysTime</span><br><span class="line">    case sysVersion</span><br><span class="line">    </span><br><span class="line">    var path: String &#123;</span><br><span class="line">        switch self &#123;</span><br><span class="line">        case .sysTime: return &quot;/sysTime&quot;</span><br><span class="line">        case .sysVersion: return &quot;/sysVersion&quot;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    var header: HTTPHeaders &#123;</span><br><span class="line">        var defaultHeader = defaultHeader()</span><br><span class="line">        </span><br><span class="line">        switch self &#123;</span><br><span class="line">        case .sysTime:  return defaultHeader</span><br><span class="line">        case .sysVersion:</span><br><span class="line">            defaultHeader.add(name: &quot;platform&quot;, value: &quot;ios&quot;)</span><br><span class="line">            return defaultHeader</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    var method: HTTPMethod &#123;</span><br><span class="line">        switch self &#123;</span><br><span class="line">        case .sysTime: return .get</span><br><span class="line">        case .sysVersion: return .post</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    var parameters: [String : Any]? &#123;</span><br><span class="line">        switch self &#123;</span><br><span class="line">        case .sysTime: return [:]</span><br><span class="line">        case .sysVersion: return [&quot;appVersion&quot;: &quot;1.0.0&quot;]</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    var encoder: ParameterEncoding &#123;</span><br><span class="line">        switch self &#123;</span><br><span class="line">        case .sysTime, .sysVersion: return JSONEncoding.default</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="构建-Response"><a href="#构建-Response" class="headerlink" title="构建 Response"></a>构建 Response</h3><p>此类需要管理众多闭包，以便于接口返回后的处理：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">class Response&lt;T: APIMappable&gt; &#123;</span><br><span class="line">    init() &#123;&#125;</span><br><span class="line">    weak var request: DataRequest?</span><br><span class="line">    func cancel() &#123;</span><br><span class="line">        request?.cancel()</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    typealias modelBlock = (T) -&gt; Void</span><br><span class="line">    typealias errorBlock = (APIError) -&gt; Void</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    private var modelBlocks = [modelBlock?]()</span><br><span class="line">    private var errorBlocks = [errorBlock?]()</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">    fileprivate func handleModel(_ model: T) &#123;</span><br><span class="line">        modelBlocks.forEach &#123;$0?(model)&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fileprivate func handleError(_ error: APIError) &#123;</span><br><span class="line">        errorBlocks.forEach &#123;$0?(error)&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    @discardableResult</span><br><span class="line">    func model(_ completionHandler: modelBlock?) -&gt; Self &#123;</span><br><span class="line">        modelBlocks.append(completionHandler)</span><br><span class="line">        return self</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">  </span><br><span class="line">    @discardableResult</span><br><span class="line">    func error(_ completionHandler: errorBlock?) -&gt; Self &#123;</span><br><span class="line">        errorBlocks.append(completionHandler)</span><br><span class="line">        return self</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="搭建Model框架"><a href="#搭建Model框架" class="headerlink" title="搭建Model框架"></a>搭建Model框架</h3><p>假如我们的服务器数据为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;code&quot;: 200,</span><br><span class="line">    &quot;message&quot;: &quot;no message&quot;,</span><br><span class="line">    &quot;data&quot;: &#123;</span><br><span class="line">        &quot;time&quot;: 2942798372937</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>data</code>是我们想要的业务数据，<code>code</code> 和 <code>message</code> 是用来处理接口的返回逻辑的，我们的 Response Model为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class ResponseModel: APIMappable &#123;</span><br><span class="line">    var code = 0</span><br><span class="line">    var message = &quot;&quot;</span><br><span class="line">    var data: Any? = nil</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    func mapping(map: ObjectMapper.Map) &#123;</span><br><span class="line">        code &lt;- map[&quot;code&quot;]</span><br><span class="line">        message &lt;- map[&quot;message&quot;]</span><br><span class="line">        data &lt;- map[&quot;data&quot;]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class SysTimeModel: APIMappable &#123;</span><br><span class="line">    var time: TimeInterval = 0</span><br><span class="line">    func mapping(map: ObjectMapper.Map) &#123;</span><br><span class="line">        time &lt;- map[&quot;time&quot;]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="实现请求逻辑"><a href="#实现请求逻辑" class="headerlink" title="实现请求逻辑"></a>实现请求逻辑</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">extension API &#123;</span><br><span class="line">    func request&lt;T: APIMappable&gt;(</span><br><span class="line">        config: ApiConfigProtocol,</span><br><span class="line">        timeoutInterval: TimeInterval = 20) -&gt; Response&lt;T&gt; &#123;</span><br><span class="line">            let result = Response&lt;T&gt;()</span><br><span class="line">            </span><br><span class="line">            let request = AF.request(config.domain + config.path,</span><br><span class="line">                                     method: config.method,</span><br><span class="line">                                     parameters: config.parameters,</span><br><span class="line">                                     encoding: config.encoder,</span><br><span class="line">                                     headers: config.header</span><br><span class="line">            ) &#123;$0.timeoutInterval = timeoutInterval&#125;</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            request.responseData &#123; res in</span><br><span class="line">                switch res.result &#123;</span><br><span class="line">                case .success(let data):</span><br><span class="line">                    if let JSON = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments),</span><br><span class="line">                       let model = ResponseModel(json: JSON) &#123;</span><br><span class="line">                        </span><br><span class="line">                        switch model.code &#123;</span><br><span class="line">                        case 200:</span><br><span class="line">                            if let model = T.init(json: JSON) &#123;</span><br><span class="line">                                result.handleModel(model)</span><br><span class="line">                            &#125; else &#123;</span><br><span class="line">                                result.handleError(APIError(message: &quot;解析错误 \(model.message)&quot;))</span><br><span class="line">                            &#125;</span><br><span class="line">                        case 401:</span><br><span class="line">                            print(&quot;token失效&quot;)</span><br><span class="line">                            // loginOut()</span><br><span class="line">                        default:</span><br><span class="line">                            result.handleError(APIError(message: &quot;未知错误 \(model.message)&quot;))</span><br><span class="line">                        &#125;</span><br><span class="line">                        </span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        result.handleError(APIError(message: &quot;JSON解析错误&quot;))</span><br><span class="line">                    &#125;</span><br><span class="line">                    </span><br><span class="line">                case .failure(let error):</span><br><span class="line">                    result.handleError(APIError(message: error.localizedDescription))</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            result.request = request</span><br><span class="line">            </span><br><span class="line">            return result</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="封装业务"><a href="#封装业务" class="headerlink" title="封装业务"></a>封装业务</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">protocol SystemAPI: API &#123;&#125;</span><br><span class="line">extension SystemAPI &#123;</span><br><span class="line">    func getSysTime() -&gt; Response&lt;ResponseModel&gt; &#123;</span><br><span class="line">        return request(config: APISystemConfig.sysTime)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func getSysVer() -&gt; Response&lt;[ResponseModel]&gt; &#123;</span><br><span class="line">        return request(config: APISystemConfig.sysVersion)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">extension ViewController: SystemAPI &#123;</span><br><span class="line">    func getData() &#123;</span><br><span class="line">        </span><br><span class="line">        getSysTime()</span><br><span class="line">            .model &#123; model in</span><br><span class="line">                print(&quot;model&quot;, model.time)</span><br><span class="line">            &#125;</span><br><span class="line">            .model &#123; model in</span><br><span class="line">                print(&quot;this model is&quot;, model)</span><br><span class="line">            &#125;</span><br><span class="line">            .error &#123; err in</span><br><span class="line">                print(&quot;err&quot;, err.message)</span><br><span class="line">            &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        let requestTask = getSysVer()</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">        requestTask.model &#123; list in</span><br><span class="line">            list.forEach &#123;print(&quot;list model _&quot;, $0.time)&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        requestTask.error &#123; err in</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        requestTask.cancel()</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2017/10/23/POP/" rel="prev" title="面向协议编程">
+      <i class="fa fa-chevron-left"></i> 面向协议编程
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2023/04/12/1/" rel="next" title="加载大量试图的优化策略">
+      加载大量试图的优化策略 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A1%86%E6%9E%B6%E6%96%B9%E6%A1%88%E7%9A%84%E9%80%89%E6%8B%A9"><span class="nav-number">1.</span> <span class="nav-text">基本框架方案的选择</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E7%A1%80%E8%AF%B7%E6%B1%82-protocol-%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-number">2.</span> <span class="nav-text">基础请求 protocol 的创建</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-APIMappable"><span class="nav-number">3.</span> <span class="nav-text">构建 APIMappable</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-ApiConfigProtocol"><span class="nav-number">4.</span> <span class="nav-text">构建 ApiConfigProtocol</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9E%84%E5%BB%BA-Response"><span class="nav-number">5.</span> <span class="nav-text">构建 Response</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%90%AD%E5%BB%BAModel%E6%A1%86%E6%9E%B6"><span class="nav-number">6.</span> <span class="nav-text">搭建Model框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E7%8E%B0%E8%AF%B7%E6%B1%82%E9%80%BB%E8%BE%91"><span class="nav-number">7.</span> <span class="nav-text">实现请求逻辑</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%81%E8%A3%85%E4%B8%9A%E5%8A%A1"><span class="nav-number">8.</span> <span class="nav-text">封装业务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8"><span class="nav-number">9.</span> <span class="nav-text">使用</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">qxy</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2023</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">qxy</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://muse.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

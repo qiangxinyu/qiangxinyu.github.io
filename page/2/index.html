@@ -146,6 +146,316 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/01/21/UMWXNotCallBack/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/01/21/UMWXNotCallBack/" class="post-title-link" itemprop="url">友盟微信支付不回调</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-01-21 12:03:00" itemprop="dateCreated datePublished" datetime="2017-01-21T12:03:00+08:00">2017-01-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2017-02-11 10:23:00" itemprop="dateModified" datetime="2017-02-11T10:23:00+08:00">2017-02-11</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>这是友盟 <code>UMSocialSnsService.h</code> 里的一个处理回调的方法</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment"> Deprecated API</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment"> 处理app的URL方法</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment"> @param url 传入的url</span></span><br><span class="line"><span class="comment"> </span></span><br><span class="line"><span class="comment"> @return wxApiDelegate 实现微信代理对象</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">+(<span class="type">BOOL</span>)handleOpenURL:(<span class="built_in">NSURL</span> *)url wxApiDelegate:(<span class="type">id</span>&lt;WXApiDelegate&gt;)wxApiDelegate;</span><br></pre></td></tr></table></figure>
+
+<p>使用发现这个 <code>wxApiDelegate</code> 即使设置了也不会执行 <code>&lt;WXApiDelegate&gt;</code> 里的方法。</p>
+<p>所以在微信支付的时候需要进行判断，使用微信SDK的方法设置代理。</p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  AppDelegate 中 支付回调信息处理</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line">+ (<span class="type">BOOL</span>)payCommleteWithOpenURL:(<span class="built_in">NSURL</span> *)url</span><br><span class="line">&#123;</span><br><span class="line">    GPPayTool * payTool = [GPPayTool shareGPPayTool];</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> ([url.host isEqualToString:<span class="string">@&quot;uppayresult&quot;</span>]) &#123;</span><br><span class="line">        [payTool unionPayOpenURL:url];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ([url.host isEqualToString:<span class="string">@&quot;safepay&quot;</span>]) &#123;</span><br><span class="line">        [payTool aliPayOpenURL:url];</span><br><span class="line">    &#125; <span class="keyword">else</span> <span class="keyword">if</span> ([url.host isEqualToString:<span class="string">@&quot;pay&quot;</span>]) &#123;</span><br><span class="line">       <span class="keyword">return</span> [WXApi handleOpenURL:url delegate:payTool];</span><br><span class="line">    &#125;<span class="keyword">else</span> &#123;</span><br><span class="line">       <span class="keyword">return</span> [UMSocialSnsService handleOpenURL:url];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这里我直接判断 <code>host</code> 是否为 <code>pay</code>，可能会跟别的第三方回调重复，保险起见你应该打印一下 这个 <code>url</code> ，可以看到微信支付的 <code>url</code> 格式为 <code>wx000000000://pay/?code=031i50Wd2tYa3R0cL9Ud2bGYVd2i50WE&amp;state=</code>， <code>wx000000000</code> 这里是你的微信的 <code>AppId</code>，你应该判断是否等于 &#96;&#96;wx000000000:&#x2F;&#x2F;pay&#96;: </p>
+<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[url.absoluteString isEqualToString:<span class="string">@&quot;wx000000000://pay]&quot;</span></span><br></pre></td></tr></table></figure>
+
+<p>别学我。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2017/01/21/swiftExploreAndOptimization/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2017/01/21/swiftExploreAndOptimization/" class="post-title-link" itemprop="url">Swift 性能探索和优化分析</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2017-01-21 12:03:00" itemprop="dateCreated datePublished" datetime="2017-01-21T12:03:00+08:00">2017-01-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-21 20:38:48" itemprop="dateModified" datetime="2023-12-21T20:38:48+08:00">2023-12-21</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><a target="_blank" rel="noopener" href="https://onevcat.com/2016/02/swift-performance/">原文地址</a></p>
+<p>Apple 在推出 Swift 时就将其冠以先进，安全和高效的新一代编程语言之名。前两点在 Swift 的语法和语言特性中已经表现得淋漓尽致：像是尾随闭包，枚举关联值，可选值和强制的类型安全等都是 Swift 显而易见的优点。但是对于高效一点，就没有那么明显了。在 2014 年 WWDC 大会上 Apple 宣称 Swift 具有超越 Objective-C 的性能，甚至某些情况下可以媲美和超过 C。但是在 Swift 正式发布后，很多开发者发现似乎 Swift 性能并没有像宣传的那样优秀。甚至在 Swift 经过了一年半的演进的今天，稍有不慎就容易掉进语言性能的陷阱中。本文将分析一些使用 Swift 进行 iOS&#x2F;OS X 开发时性能上的考量和做法，同时，笔者结合自己这一年多来使用 Swift 进行开发的经验，也给出了一些对应办法。</p>
+<h2 id="为什么-Swift-的性能值得期待"><a href="#为什么-Swift-的性能值得期待" class="headerlink" title="为什么 Swift 的性能值得期待"></a>为什么 Swift 的性能值得期待</h2><p>Swift 具有一门高效语言所需要具备的绝大部分特点。与 Ruby 或者 Python 这样的解释型语言不需要再做什么对比了，相较于其前辈的 Objective-C，Swift 在编译期间就完成了方法的绑定，因此方法调用上不再是类似于 Smalltalk 的消息发送，而是直接获取方法地址并进行调用。虽然 Objective-C 对运行时查找方法的过程进行了缓存和大量的优化，但是不可否认 Swift 的调用方式会更加迅速和高效。</p>
+<p>另外，与 Objective-C 不同，Swift 是一门强类型的语言，这意味 Swift 的运行时和代码编译期间的类型是一致的，这样编译器可以得到足够的信息来在生成中间码和机器码时进行优化。虽然都使用 LLVM 工具链进行编译，但是 Swift 的编译过程相比于 Objective-C 要多一个环节 – 生成 Swift 中间代码 (Swift Intermediate Language，SIL)。SIL 中包含有很多根据类型假定的转换，这为之后进一步在更低层级优化提供了良好的基础，分析 SIL 也是我们探索 Swift 性能的有效方法。</p>
+<p>最后，Swift 具有良好的内存使用的策略和结构。Swift 标准库中绝大部分类型都是 struct，对值类型的使用范围之广，在近期的编程语言中可谓首屈一指。原本值类型不可变性的特点，往往导致对于值的使用和修改意味着创建新的对象，但是 Swift 巧妙地规避了不必要的值类型复制，而仅只在必要时进行内存分配。这使得 Swift 在享受不可变性带来的便利以及避免不必要的共享状态的同时，还能够保持性能上的优秀。</p>
+<h2 id="对性能进行测试"><a href="#对性能进行测试" class="headerlink" title="对性能进行测试"></a>对性能进行测试</h2><p>《计算机程序设计艺术》和 TeX 的作者高德纳曾经在论文中说过：</p>
+<blockquote>
+<p>过早的优化是万恶之源。</p>
+</blockquote>
+<p>和很多人理解的不同，这并不是说我们不应该在项目的早期就开始进行优化，而是指我们需要弄清代码中性能真正的问题和希望达到的目标后再开始进行优化。因此，我们需要知道性能问题到底出在哪儿。对程序性能的测试一定是优化的第一步。</p>
+<p>在 Cocoa 开发中，对于性能的测试有几种常见的方式。其中最简单是直接通过输出 log 来监测某一段程序运行所消耗的时间。在 Cocoa 中我们可以使用 <a target="_blank" rel="noopener" href="https://developer.apple.com/library/mac/documentation/Cocoa/Reference/CoreAnimation_functions/index.html#//apple_ref/c/func/CACurrentMediaTime">CACurrentMediaTime</a> 来获取精确的时间。这个方法将会调用 mach 底层的 mach_absolute_time()，它的返回是一个基于 <a target="_blank" rel="noopener" href="https://developer.apple.com/library/mac/qa/qa1398/_index.html">Mach absolute time unit</a> 的数字，我们通过在方法调用前后分别获取两次时刻，并计算它们的间隔，就可以了解方法的执行时间：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> start <span class="operator">=</span> <span class="type">CACurrentMediaTime</span>()</span><br><span class="line"><span class="comment">// ...</span></span><br><span class="line"><span class="keyword">let</span> end <span class="operator">=</span> <span class="type">CACurrentMediaTime</span>()</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;测量时间：<span class="subst">\(end <span class="operator">-</span> start)</span>&quot;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>为了方便使用，我们还可以将这段代码封装到一个方法中，这样我们就能在项目中需要测试性能的地方方便地使用它了：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">measure</span>(<span class="params">f</span>: ()-&gt;()) &#123;</span><br><span class="line">    <span class="keyword">let</span> start <span class="operator">=</span> <span class="type">CACurrentMediaTime</span>()</span><br><span class="line">    f()</span><br><span class="line">    <span class="keyword">let</span> end <span class="operator">=</span> <span class="type">CACurrentMediaTime</span>()</span><br><span class="line">    <span class="built_in">print</span>(<span class="string">&quot;测量时间：<span class="subst">\(end <span class="operator">-</span> start)</span>&quot;</span>)</span><br><span class="line">&#125;</span><br><span class="line">measure &#123;</span><br><span class="line">    doSomeHeavyWork()</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><code>CACurrentMediaTime</code> 和 log 的方法适合于我们对既有代码进行探索，另一种有效的方法是使用 Instruments 的 Time Profiler 来在更高层面寻找代码的性能弱点。将程序挂载到 Time Profiler 后，每一个方法调用的耗时都将被记录。</p>
+<p>当我们寻找到需要进行优化的代码路径后，为其建立一个单元测试来持续地检测代码的性能是很好的做法。在 Xcode 中默认的测试框架 XCTest 提供了检测并汇报性能的方法：<code>measureBlock</code>。通过将测试的代码块放到 <code>measureBlock</code> 中，Xcode 在测试时就会多次运行这段代码，并统计平均耗时。更方便的是，你可以设定一个基准，Xcode 会记录每次的耗时并在性能没有达到预期时进行提醒。这保证了随着项目开发，关键的代码路径不会发生性能上的退化。</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">testPerformance</span>() &#123;</span><br><span class="line">    measureBlock() &#123;</span><br><span class="line">        <span class="comment">// 需要性能测试的代码</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p><img src="/img/swiftExploreAndOptimization/test-measure.png" alt="measure"></p>
+<h2 id="优化手段，常见误用及对策"><a href="#优化手段，常见误用及对策" class="headerlink" title="优化手段，常见误用及对策"></a>优化手段，常见误用及对策</h2><h3 id="多线程、算法及数据结构优化"><a href="#多线程、算法及数据结构优化" class="headerlink" title="多线程、算法及数据结构优化"></a>多线程、算法及数据结构优化</h3><p>在确定了需要进行性能改善的代码后，一个最根本的优化方式是在程序设计层面进行改良。在移动客户端，对于影响了 UI 流畅度的代码，我们可以将其放到后台线程进行运行。Grand Central Dispatch (GCD) 或者 <code>NSOperation</code> 可以让我们方便地在不同线程中切换，而不太需要去担心线程调度的问题。一个使用 GCD 将繁重工作放到后台线程，然后在完成后回到主线程操作 UI 的典型例子是这样的：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> queue <span class="operator">=</span> dispatch_get_global_queue(<span class="type">QOS_CLASS_DEFAULT</span>, <span class="number">0</span>)</span><br><span class="line">    dispatch_async(queue) &#123;</span><br><span class="line">        <span class="comment">// 运行时间较长的代码，放到后台线程运行</span></span><br><span class="line">        dispatch_async(dispatch_get_main_queue()) &#123;</span><br><span class="line">            <span class="comment">// 结束后返回主线程操作 UI</span></span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>将工作放到其他线程虽然可以避免主线程阻塞，但它并不能减少这些代码实际的执行时间。进一步地，我们可以考虑改进算法和使用的数据结构来提高效率。根据实际项目中遇到的问题的不同，我们会有不同的解决方式，在这篇文章中，我们难以覆盖和深入去分析各种情况，所以这里我们只会提及一些共通的原则。</p>
+<p>对于重复的工作，合理地利用缓存的方式可以极大提高效率，这是在优化时可以优先考虑的方式。Cocoa 开发中 <code>NSCache</code> 是专门用来管理缓存的一个类，合理地使用和配置 <code>NSCache</code> 把开发者中从管理缓存存储和失效的工作中解放出来。关于 <code>NSCache</code> 的详细使用方法，可以参看 <code>NSHipster</code> 关于这方面的<a target="_blank" rel="noopener" href="http://nshipster.com/nscache/">文章</a>以及 Apple 的<a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/NSCache_Class/">相关文档</a>。</p>
+<p>在程序开发时，数据结构使用上的选择也是重要的一环。Swift 标准库提供了一些很基本的数据结构，比如 <code>Array</code>、<code>Dictionary</code> 和 <code>Set</code> 等。这些数据结构都是配合泛型的，在保证数据类型安全的同时，一般来说也能为我们提供足够的性能。关于这些数据的容器类型方法所对应的复杂度，Apple 都在标准库的文档或者注释中进行了标记。如果标准库所提供的类型和方法无法满足性能上的要求，或者没有符合业务需求的数据结构的话，那么考虑使用自己实现的数据结构也是可选项。</p>
+<p>如果项目中有很多数学计算方面的工作导致了效率问题的话，考虑并行计算能极大改善程序性能。iOS 和 OS X 都有针对数学或者图形计算等数字信号处理方面进行了专门优化的框架：<a target="_blank" rel="noopener" href="https://developer.apple.com/library/tvos/documentation/Accelerate/Reference/AccelerateFWRef/index.html">Accelerate.framework</a>，利用相关的 API，我们可以轻松快速地完成很多经典的数字或者图像处理问题。因为这个框架只提供一组 C API，所以在 Swift 中直接使用会有一定困难。如果你的项目中要处理的计算相对简单的话，也可以使用 <a target="_blank" rel="noopener" href="https://github.com/mattt/Surge">Surge</a>，它是一个基于 Accelerate 框架的 Swift 项目，让我们能在代码里从并行计算中获得难以置信的性能提升。</p>
+<h3 id="编译器优化"><a href="#编译器优化" class="headerlink" title="编译器优化"></a>编译器优化</h3><p>Swift 编译器十分智能，它能在编译期间帮助我们移除不需要的代码，或者将某些方法进行内联 (inline) 处理。编译器优化的强度可以在编译时通过参数进行控制，Xcode 工程默认情况下有 Debug 和 Release 两种编译配置，在 Debug 模式下，LLVM Code Generation 和 Swift Code Generation 都不开启优化，这能保证编译速度。而在 Release 模式下，LLVM 默认使用 “Fastest, Smallest [-Os]”，Swift Compiler 默认使用 “Fast [-O]”，作为优化级别。我们另外还有几个额外的优化级别可以选择，优化级别越高，编译器对于源码的改动幅度和开启的优化力度也就越大，同时编译期间消耗的时间也就越多。虽然绝大部分情况下没有问题，但是仍然需要当心的是，一些优化等级采用的是激进的优化策略，而禁用了一些检查。这可能在源码很复杂的情况下导致潜在的错误。如果你使用了很高的优化级别，请再三测试 Release 和 Debug 条件下程序运行的逻辑，以防止编译器优化所带来的问题。</p>
+<p>值得一提的是，Swift 编译器有一个很有用的优化等级：”Fast, Whole Module Optimization”，也即 <code>-O -whole-module-optimization</code>。在这个优化等级下，Swift 编译器将会同时考虑整个 module 中所有源码的情况，并将那些没有被继承和重载的类型和方法标记为 <code>final</code>，这将尽可能地避免动态派发的调用，或者甚至将方法进行内联处理以加速运行。开启这个额外的优化将会大幅增加编译时间，所以应该只在应用要发布的时候打开这个选项。</p>
+<p>虽然现在编译器在进行优化的时候已经足够智能了，但是在面对编写得非常复杂的情况时，很多本应实施的优化可能失效。因此保持代码的整洁、干净和简单，可以让编译器优化良好工作，以得到高效的机器码。</p>
+<h3 id="尽量使用-Swift-类型"><a href="#尽量使用-Swift-类型" class="headerlink" title="尽量使用 Swift 类型"></a>尽量使用 Swift 类型</h3><p>为了和 Objective-C 协同工作，很多 Swift 标准库类型和对应的 Cocoa 类型是可以隐式的类型转换的，比如 <code>Swift.Array</code> 与 <code>NSArray</code>，<code>Swift.String</code> 和 <code>NSString</code> 等。虽然我们不需要在语言层面做类型转换，但是这个过程却不是免费的。在转换次数很多的时候，这往往会成为性能的瓶颈。一个常见的 Swift 和 Objective-C 混用的例子是 JSON 解析。考虑以下代码：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> jsonData: <span class="type">NSData</span> <span class="operator">=</span> <span class="comment">//...</span></span><br><span class="line"><span class="keyword">let</span> jsonObject <span class="operator">=</span> <span class="keyword">try?</span> <span class="type">NSJSONSerialization</span></span><br><span class="line">        .<span class="type">JSONObjectWithData</span>(jsonData, options: []) <span class="keyword">as?</span> [<span class="type">String</span>: <span class="type">AnyObject</span>]</span><br></pre></td></tr></table></figure>
+
+<p>这是我们日常开发中很常见的代码，使用 <code>NSJSONSerialization</code> 将数据转换为 JSON 对象后，我们得到的是一个 NSObject 对象。在 Swift 中使用时，我们一般会先将其转换为 <code>[String: AnyObject]</code>，这个转换在一次性处理成千上万条 JSON 数据时会带来严重的性能退化。Swift 3 中我们可能可以基于 Swift 的 Foundation 框架来解决这个问题，但是现在，如果存在这样的情况，一种处理方式是避免使用 Swift 的字典类型，而使用 <code>NSDictionary</code>。另外，适当地使用 lazy 加载的方法，也是避免一次性进行过多的类型转换的好思路。</p>
+<p>尽可能避免混合地使用 Swift 类型和 <code>NSObject</code> 子类，会对性能的提高有所帮助。</p>
+<h3 id="避免无意义的-log，保持好的编码习惯"><a href="#避免无意义的-log，保持好的编码习惯" class="headerlink" title="避免无意义的 log，保持好的编码习惯"></a>避免无意义的 log，保持好的编码习惯</h3><p>在调试程序时，很多开发者喜欢用输出 log 的方式对代码的运行进行追踪，帮助理解。Swift 编译器并不会帮我们将 <code>print</code> 或者 <code>debugPrint</code> 删去，在最终 app 中它们会把内容输出到终端，造成性能的损失。我们当然可以在发布时用查找的方式将所有这些 log 输出语句删除或者注释掉，但是更好的方法是通过添加条件编译来将这些语句排除在 Release 版本外。在 Xcode 的 Build Setting 中，在 Other Swift flags 的 Debug 栏中加入 <code>-D DEBUG</code> 即可加入一个编译标识。</p>
+<p>之后我们就可以通过将 <code>print</code> 或者 <code>debugPrint</code> 包装一下：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">dPrint</span>(<span class="params">item</span>: <span class="keyword">Any</span>) &#123;</span><br><span class="line">    <span class="keyword">#if</span> <span class="type">DEBUG</span></span><br><span class="line">    <span class="built_in">print</span>(item)</span><br><span class="line">    <span class="keyword">#endif</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>这样，在 Release 版本中，<code>dPrint</code> 将会是一个空方法，所有对这个方法的调用都会被编译器剔除掉。需要注意的是，在这种封装下，如果你传入的 <code>items</code> 是一个表达式而不是直接的变量的话，这个表达式还是会被先执行求值的。如果这对性能也产生了可测的影响的话，我们最好用 <code>@autoclosure</code> 修饰参数来重新包装 <code>print</code>。这可以将求值运行推迟到方法内部，这样在 Release 时这个求值也会被一并去掉：</p>
+<figure class="highlight swift"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">func</span> <span class="title function_">dPrint</span>(<span class="keyword">@autoclosure</span> <span class="params">item</span>: () -&gt; <span class="keyword">Any</span>) &#123;</span><br><span class="line">    <span class="keyword">#if</span> <span class="type">DEBUG</span></span><br><span class="line">    <span class="built_in">print</span>(item())</span><br><span class="line">    <span class="keyword">#endif</span></span><br><span class="line">&#125;</span><br><span class="line">dPrint(resultFromHeavyWork())</span><br><span class="line"><span class="comment">// Release 版本中 resultFromHeavyWork() 不会被执行</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h2><p>Swift 还是一门很新的语言，并且处于高速发展中。因为现在 Swift 只用于 Cocoa 开发，因此它和 Cocoa 框架还有着千丝万缕的联系。很多时候由于这些原因，我们对于 Swift 性能的评估并不公正。这门语言本身设计就是以高性能为考量的，而随着 Swift 的开源和进一步的进化，以及配套框架的全面重写，相信在语言层面上我们能获得更好的性能和编译器的支持。</p>
+<p>最好的优化就是不用优化。在软件开发中，保证书写正确简洁的代码，在项目开始阶段就注意可能存在的性能缺陷，将可扩展性的考虑纳入软件构建中，按照实际需求进行优化，不要陷入为了优化而优化的怪圈，这些往往都可以让我们避免额外的优化时间，让我们的工作得更加愉快。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><ul>
+<li><a target="_blank" rel="noopener" href="http://llvm.org/devmtg/2015-10/slides/GroffLattner-SILHighLevelIR.pdf">Swift Intermediate Language</a></li>
+<li><a target="_blank" rel="noopener" href="http://nshipster.com/nscache/">NSCache - NSHipster</a></li>
+<li><a target="_blank" rel="noopener" href="https://developer.apple.com/library/ios/documentation/Cocoa/Reference/NSCache_Class/">NSCache 文档</a></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/mattt/Surge">Surge</a></li>
+</ul>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2016/12/21/swfitService/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2016/12/21/swfitService/" class="post-title-link" itemprop="url">使用 Swift 搭建服务器</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2016-12-21 11:04:00" itemprop="dateCreated datePublished" datetime="2016-12-21T11:04:00+08:00">2016-12-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-21 20:51:45" itemprop="dateModified" datetime="2023-12-21T20:51:45+08:00">2023-12-21</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p><a target="_blank" rel="noopener" href="http://www.cocoachina.com/swift/20160318/15712.html">原文地址</a></p>
+<p>自从苹果官方发布了一个 Swift 的 Linux 开源版本之后，服务端 Swift 终于迎来了一个令人激动的前景。我的好奇心终于无法克制，是时候尝试一下服务端 Swift 了！</p>
+<p>除了用过几个 Baas 以外，我没有任何后端编程经验，但幸运的是开源社区已经提供了现成的框架。我试了一下 <a target="_blank" rel="noopener" href="https://twitter.com/tanner0101">Tanner Nelson</a> 推荐的 <a target="_blank" rel="noopener" href="https://github.com/qutheory/vapor">Vapor</a> 框架。它的使用非常简单，非常适合我当前的任务，在这篇文档中还会使用到 Heroku。我决定使用 Heroku 的原因是我们的后端团队在使用它，它对于前端来说非常友好。</p>
+<p>写到这里的时候，为了解决 Heroku 框架运行中的几个小问题，我专门提交了一个 <a target="_blank" rel="noopener" href="https://github.com/qutheory/vapor/pull/25">pull request</a> 。如果代码还没被合并的话，请设置你的包管理器从 <a target="_blank" rel="noopener" href="https://github.com/loganwright/vapor">这里</a> 下载。</p>
+<h3 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h3><p>要继续本教程，首先，你需要一个 <a target="_blank" rel="noopener" href="https://signup.heroku.com/?c=70130000001x9jFAAQ">Heroku</a> 账号 ，并安装好 <a target="_blank" rel="noopener" href="https://swift.org/download/">Swift Development Snapshot</a> 。写到这里的时候，在它的正式版中还未包含 swift 包管理器。因此为了使用这个工具，你必须下载开发版的 snapshot。</p>
+<h4 id="开始"><a href="#开始" class="headerlink" title="开始"></a>开始</h4><p>我们的目标是创建一个简单的 Swift 服务器并运行在 Heroku 上。这不需要在 linux 环境下进行，就像是你在使用本地服务器。你只消创建一个本地的 Xcode 项目，对项目进行一些设置，然后就可以在 <a target="_blank" rel="noopener" href="https://swift.org/package-manager/">Swift 包管理器</a> 中运行它。整过过程分为 4 个步骤：</p>
+<p>####### 将 main.swift 拷贝根目录下的 Sources 目录</p>
+<p><a href = "/img/swfitService/swiftService1.png"><img src = "/img/swfitService/swiftService1.png" width = 720 height = 598 alt = "swiftService1.png"/></a></p>
+<p>####### 创建一个 Package.swift 文件</p>
+<p><a href = "/img/swfitService/swiftService2.png"><img src = "/img/swfitService/swiftService2.png" width = 720 height = 218 alt = "swiftService2.png"/></a></p>
+<p>####### 将 .build 目录添加到 import paths </p>
+<p>要使用自动补全和语法加亮功能，需要将 Swift 包管理器的 build 目录提交到 import paths 中。注意，在 import paths 的 Debug 中设置的 debug 目录，而 Release 项则输入 release 目录。</p>
+<p><a href = "/img/swfitService/swiftService3.png"><img src = "/img/swfitService/swiftService3.png" width = 720 height = 334 alt = "swiftService3.png"/></a></p>
+<p>####### 用 toolchain 运行 Xcode</p>
+<p>如果你使用 Xcode 7.3，你可以用 Xcode &gt; Toolchains 菜单开启一个Xcode 实例，用于打开 swift snapshot。因为我们不能在 Xcode 中进行编译，我们只能以命令行的方式进行编译。</p>
+<p><a href = "/img/swfitService/swiftServie4.png"><img src = "/img/swfitService/swiftService4.png" width = 594 height = 16 alt = "swiftService4.png"/></a></p>
+<h4 id="编写服务器"><a href="#编写服务器" class="headerlink" title="编写服务器"></a>编写服务器</h4><p>令我高兴的是，为了进行概念验证，我需要编写的代码其实只有寥寥数行。我启动和运行服务器的代码甚至不到 10 行。</p>
+<p><a href = "/img/swfitService/swiftServie5.png"><img src = "/img/swfitService/swiftService5.png" width = 720 height = 239 alt = "swiftService5.png"/></a></p>
+<p>要启动服务器，只需在终端中输入一句命令，：</p>
+<p><a href = "/img/swfitService/swiftService6.png"><img src = "/img/swfitService/swiftService6.png" width = 720 height = 126 alt = "swiftService6.png"/></a></p>
+<p>好了，让我们打开浏览器。我的浏览器安装了 json 插件，你的画面或许会有不同。</p>
+<p><a href = "/img/swfitService/swiftService7.png"><img src = "/img/swfitService/swiftService7.png" width = 556 height = 240 alt = "swiftService7.png"/></a></p>
+<h4 id="迁移到云上"><a href="#迁移到云上" class="headerlink" title="迁移到云上"></a>迁移到云上</h4><p>服务器在本地顺利运行起来了，但如果放到云端则更好。我迫不及待地想将 App 在云上跑起来。对于我来说这是一个全新的挑战，幸运的是，我得到了 <a target="_blank" rel="noopener" href="https://twitter.com/vincenttoms">Vincent Toms</a> 的悉心指导。</p>
+<p>Heroku 的安装是一件非常愉悦的体验，几分钟后我就创建了一个 Heroku App，接下来我就要上传我的项目了。</p>
+<p>####### 出错啦</p>
+<p>这只是今天的诸多错误中的一个。我已经预计到事情不可能一帆风顺，因此我查看了 Vapor 的文档，最终发现问题出在所谓的 <a target="_blank" rel="noopener" href="https://devcenter.heroku.com/articles/buildpacks">buildpacks</a> 上。Heorku 提供了一些标准的 buildpacks，但完全没有针对 Swift 的 buildpacks。无奈之下求救于开源社区，刚好看到 Kyle Fuller 的 <a target="_blank" rel="noopener" href="https://github.com/kylef/heroku-buildpack-swift">buildpack</a> 。集成它就简单得多了。</p>
+<p><a href = "/img/swfitService/swiftService8.png"><img src = "/img/swfitService/swiftService8.png" width = 720 height = 85 alt = "swiftService8.png"/></a></p>
+<p>用这个 buildpack 启动后，App 成功加载，接下来就是访问它的 URL。</p>
+<p>####### 再次出错</p>
+<p><a href = "/img/swfitService/swiftService9.png"><img src = "/img/swfitService/swiftService9.png" width = 720 height = 147 alt = "swiftService9.png"/></a></p>
+<p>事情不会那么顺利的，是吧？经过 google 一番，仔细查看了一些例子，我发现我还差一个 Procfile。浏览一下这个文件的内容，你就能明白这个文件是干什么用的了。</p>
+<p><a href = "/img/swfitService/swiftService10.png"><img src = "/img/swfitService/swiftService10.png" width = 664 height = 170 alt = "swiftService10.png"/></a></p>
+<p>buildpack 创建了可执行文件，但 Heroku 并不知道。通过 Procfile，我们告诉 Heroku 去运行 SwiftServerIO 可执行文件。上传这个 Procfile。</p>
+<p>####### 仍然出错</p>
+<p>Heroku 编译的 2 分支仿佛变得无比漫长。我重新打开了浏览器，发现仍然报错。</p>
+<p><a href = "/img/swfitService/swiftService11.png"><img src = "/img/swfitService/swiftService11.png" width = 720 height = 153 alt = "swiftService11.png"/></a></p>
+<p>我以为 Heroku 可能还未启动完成（实际不是），因此我又等了一小会，终于发现出错了。可执行文件生成了， process file 也就绪，一定是别的什么地方出问题了。再次 google，一直到我最终发现我需要设置 App 的规模(<a target="_blank" rel="noopener" href="https://devcenter.heroku.com/articles/scaling#cli">scale up</a>)。这要使用到 Heroku 的 toolbelt 中的一个简单命令。</p>
+<p>heroku ps:scale web&#x3D;1</p>
+<p>Heroku 在免费情况下只有一个 dyno（Heroku 计费单位，10~50 个请求&#x2F;秒）。但对于我们的简单服务器来说，这也够了。因此，在我们将 scale web 设置为 1 个 dyno 之后，再次用浏览器查看。</p>
+<p>成功了！</p>
+<p><a href = "/img/swfitService/swiftService13.png"><img src = "/img/swfitService/swiftService13.png" width = 168 height = 166 alt = "swiftService13.png" /></a></p>
+<p>成功了！服务器启动，出现了万能的 hello world！经过一番欢呼雀跃之后，让我们真正来问一声好吧！</p>
+<p>####### 响应请求</p>
+<p>在 main.swfit 文件中添加一小段代码，让服务器在问好的同时能够因人而异。就微微偷一下懒，新加一个路由，让服务器根据输入输出不同的问候语。</p>
+<p><a href = "/img/swfitService/swiftService14.png"><img src = "/img/swfitService/swiftService14.png" width = 720 height = 296 alt = "swiftService14.png" /></a></p>
+<p>一切正常，但根据一般规律，我仍然做好了出错的心理准备。提交修改，push 代码到 Heroku。</p>
+<p>####### Say Hello!</p>
+<p><a href = "/img/swfitService/swiftService15.png"><img src = "/img/swfitService/swiftService15.png" width = 413 height = 151 alt = "swiftService15.png" /></a></p>
+<p>大约一份多钟的编译之后，在浏览器中访问 URL，服务器返回了问候语。<a target="_blank" rel="noopener" href="http://swift-server-io.herokuapp.com/hello/reader">你可以在这里查看效果</a> 。</p>
+<p>接下来是什么？</p>
+<p>可以说，服务端 Swift 的今天离不开社区强大支持。对于我来说，能够从云端获取 JSON 是一个令人兴奋的开始，我已经迫不及待地想看看接下来还会发生什么。</p>
+<p>当然在此之前，我不得不和我在 <a target="_blank" rel="noopener" href="http://intrepid.io/">Intrepid Pursuits</a> 的同事们一起，继续编写一个有一个 iOS App。如果你想了解我的最新动态，请在访问我的 <a target="_blank" rel="noopener" href="https://github.com/loganwright">Github</a> 或者 <a target="_blank" rel="noopener" href="https://twitter.com/logmaestro">Twitter</a>。</p>
+<p><a target="_blank" rel="noopener" href="http://www.swiftserver.io/hello/server-side-swift">服务端 Swift</a> </p>
+<p>附言</p>
+<p>在 <a target="_blank" rel="noopener" href="https://github.com/loganwright/vapor">这里</a> 下载源代码。</p>
+<p>在 <a target="_blank" rel="noopener" href="https://github.com/LoganWright/swift-server-io/tree/master/Journal">Journal</a> 文件夹中，是 step-by-step 指南。</p>
+
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
     <link itemprop="mainEntityOfPage" href="http://example.com/2016/10/28/iOSUseFFmpeg/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
@@ -1361,331 +1671,6 @@ Architectures in the fat file: libavcodec.a are: armv7 i386 x86_64 arm64 
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2016/05/04/MorePullDown/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/05/04/MorePullDown/" class="post-title-link" itemprop="url">多个下拉按钮的处理</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2016-05-04 22:30:00" itemprop="dateCreated datePublished" datetime="2016-05-04T22:30:00+08:00">2016-05-04</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-21 20:51:08" itemprop="dateModified" datetime="2023-12-21T20:51:08+08:00">2023-12-21</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p> 实现的效果如下</p>
-<p><a href = "/img/MorePullDown/root.gif"> <img src = "/img/MorePullDown/root.gif" width = 360 height = 240 alt = "root.gif"/> </a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/qiangxinyu/MorePullDown">项目代码</a></p>
-<p>页面很简单，4个按钮、一张图片、一个 <code>TableView</code> 和一个半透明 <code>View</code>。</p>
-<p>开始撸代码。</p>
-<h3 id="先来写按钮"><a href="#先来写按钮" class="headerlink" title="先来写按钮"></a>先来写按钮</h3><p>按钮包含了一个 <code>UILabel</code> 和一个 <code>UIImageView</code> ,点击的时候 <code>UIImageView</code> 翻转。</p>
-<p>先看 <code>XYButton.h</code></p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="string">&lt;UIKit/UIKit.h&gt;</span></span></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">XYButton</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">void</span>(^ clickCityBtn_block_xyButton)(XYButton * view);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYButton</span> : <span class="title">UIView</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>)<span class="built_in">UILabel</span> * titleLabel;</span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>)<span class="built_in">UIImageView</span> * imageView;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)setTitle:(<span class="built_in">NSString</span> *)title;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  是否 是 显示模式  YES  显示</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">assign</span>)<span class="type">BOOL</span> isShow;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>)clickCityBtn_block_xyButton clickCityBtn_block_xyButton;</span><br><span class="line">- (<span class="type">void</span>)clickCityBtn_block_xyButton:(<span class="type">void</span>(^)(XYButton * view))clickCityBtn_block_xyButton;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
-
-<p><code>block</code> 用来进行点击后的回调， <code>isShow</code> 用来标记状态。</p>
-<p>点击事件通过 <code>touchesEnded:withEvent:</code> 来处理</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)touchesEnded</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">self</span>.isShow = !<span class="keyword">self</span>.isShow;</span><br><span class="line">    [<span class="built_in">UIView</span> animateWithDuration:kHomeCityAnimate_time animations:^&#123;</span><br><span class="line">        <span class="keyword">self</span>.imageView.transform = <span class="built_in">CGAffineTransformRotate</span>(<span class="keyword">self</span>.imageView.transform, M_PI);</span><br><span class="line">    &#125;];</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">- (<span class="type">void</span>)touchesEnded:(<span class="built_in">NSSet</span>&lt;<span class="built_in">UITouch</span> *&gt; *)touches withEvent:(<span class="built_in">UIEvent</span> *)event</span><br><span class="line">&#123;</span><br><span class="line">    [<span class="keyword">self</span> touchesEnded];</span><br><span class="line">    <span class="keyword">self</span>.clickCityBtn_block_xyButton ? <span class="keyword">self</span>.clickCityBtn_block_xyButton(<span class="keyword">self</span>) : <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>按钮上面的字会有长有短，为了好看，需要计算长度进行居中：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)setTitle:(<span class="built_in">NSString</span> *)title</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">self</span>.titleLabel.text = title;</span><br><span class="line">    <span class="built_in">CGFloat</span> width = [title boundingRectWithSize:<span class="built_in">CGSizeMake</span>(<span class="number">222</span>, <span class="number">20</span>)</span><br><span class="line">    				 	options:<span class="built_in">NSStringDrawingUsesLineFragmentOrigin</span> </span><br><span class="line">    				     attributes:@&#123;<span class="built_in">NSFontAttributeName</span>:[<span class="built_in">UIFont</span> systemFontOfSize:<span class="number">9</span>]&#125;</span><br><span class="line">    				      	context:<span class="literal">nil</span>].size.width;</span><br><span class="line">    <span class="comment">//图片的宽度是12，所以label的宽度不能超过 width - 12</span></span><br><span class="line">    width = (width &gt; <span class="keyword">self</span>.width - <span class="number">12</span>) ? (<span class="keyword">self</span>.width - <span class="number">12</span>) : width;</span><br><span class="line">    <span class="keyword">self</span>.titleLabel.width = width;</span><br><span class="line">    <span class="keyword">self</span>.titleLabel.mj_x  = <span class="keyword">self</span>.width / <span class="number">2</span> - (width + <span class="number">12</span> + <span class="number">2</span>) / <span class="number">2</span>;</span><br><span class="line">    <span class="keyword">self</span>.imageView.mj_x = <span class="built_in">CGRectGetMaxX</span>(<span class="keyword">self</span>.titleLabel.frame) + <span class="number">2</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>至此按钮已经完成</p>
-<h3 id="放4个按钮的-View"><a href="#放4个按钮的-View" class="headerlink" title="放4个按钮的 View"></a>放4个按钮的 View</h3><p>为了方便控制，4个按钮需要封装到一个 <code>View</code> 中。</p>
-<p>照例先看 <code>XYNearDriverSchoolSelectView.h</code></p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#import <span class="string">&lt;UIKit/UIKit.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@class</span> <span class="title">XYButton</span>;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">typedef</span> <span class="type">void</span> (^clickSelectView_block)(XYButton * btn);</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">XYNearDriverSchoolSelectView</span> : <span class="title">UIView</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">copy</span>)clickSelectView_block clickSelectView_block;</span><br><span class="line">- (<span class="type">void</span>)clickSelectView_blockWithBlock:(<span class="type">void</span>(^)(XYButton * btn))clickSelectView_block;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
-
-<p>只有一个 <code>block</code> 进行按钮被点击后的回调。</p>
-<p>截下来创建4个按钮</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSInteger</span> width = (<span class="built_in">NSInteger</span>)((<span class="keyword">self</span>.width - <span class="number">3</span>) / <span class="number">4</span>);</span><br><span class="line"><span class="built_in">NSArray</span> * titleArray = @[<span class="string">@&quot;默认排序&quot;</span>, <span class="string">@&quot;价格&quot;</span>, <span class="string">@&quot;距离&quot;</span>, <span class="string">@&quot;报名人数&quot;</span>];</span><br><span class="line">WeakSelf(weakSelf);</span><br><span class="line"></span><br><span class="line"><span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; titleArray.count ; i ++) &#123;</span><br><span class="line">     XYButton * btn = [[XYButton alloc] </span><br><span class="line">    		 	initWithFrame:<span class="built_in">CGRectMake</span>((width + <span class="number">1</span>) * i, <span class="number">1</span>, width, <span class="keyword">self</span>.height - <span class="number">1</span>)];</span><br><span class="line">     [btn setTitle:titleArray[i]];</span><br><span class="line">     btn.tag = <span class="number">100000</span> + i;</span><br><span class="line">     [<span class="keyword">self</span> addSubview:btn];</span><br><span class="line">     </span><br><span class="line">     [btn clickCityBtn_block_xyButton:^(XYButton *view) &#123;</span><br><span class="line">         weakSelf.clickSelectView_block ? weakSelf.clickSelectView_block(view) : <span class="number">0</span> ;</span><br><span class="line">     &#125;];</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<h3 id="控制器"><a href="#控制器" class="headerlink" title="控制器"></a>控制器</h3><p> 首先看属性</p>
- <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"> <span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>)XYNearDriverSchoolSelectView * selectView;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">strong</span>)XYNearDriverSchoolSelectTableView * selectTableView;</span><br><span class="line"></span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  上一次点击的 Btn</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>)XYButton * oldBtn;</span><br><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> *  处于 显示 模式的btn</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">@property</span> (<span class="keyword">nonatomic</span>, <span class="keyword">weak</span>)XYButton * showBtn;</span><br></pre></td></tr></table></figure>
-<p> 然后是 <code>ViewDidLoad</code> </p>
- <figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"> - (<span class="type">void</span>)viewDidLoad &#123;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.view.backgroundColor = kDefaultBackgroudColor;</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//这是页面的内容</span></span><br><span class="line">    <span class="built_in">UIImageView</span> * imageView = [[<span class="built_in">UIImageView</span> alloc] initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, </span><br><span class="line">   							 <span class="built_in">CGRectGetMaxY</span>(<span class="keyword">self</span>.selectView.frame) + <span class="number">1</span>,</span><br><span class="line">     							kScreenWidth, </span><br><span class="line">    kScreenHeight -  <span class="built_in">CGRectGetMaxY</span>(<span class="keyword">self</span>.selectView.frame) - <span class="number">1</span> -kNavigationBar_Height)];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    imageView.image = kImage(<span class="string">@&quot;image&quot;</span>);</span><br><span class="line">    imageView.backgroundColor = kWhiteColor;</span><br><span class="line">    imageView.contentMode = <span class="built_in">UIViewContentModeScaleAspectFit</span>;</span><br><span class="line">    [<span class="keyword">self</span>.view addSubview:imageView];</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    <span class="comment">//半透明的 View</span></span><br><span class="line">    [<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.selectTableView.backgroudView];</span><br><span class="line">    [<span class="keyword">self</span>.selectTableView.backgroudView clickView:^(<span class="built_in">UIView</span> *view) &#123;</span><br><span class="line">        [<span class="keyword">self</span>.showBtn touchesEnded:[<span class="built_in">NSSet</span> set] withEvent:<span class="literal">nil</span>];</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    <span class="comment">//TableView</span></span><br><span class="line">    [<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.selectTableView];</span><br><span class="line"></span><br><span class="line">    [<span class="variable language_">super</span> viewDidLoad];</span><br><span class="line">    <span class="comment">// Do any additional setup after loading the view from its nib.</span></span><br><span class="line">    </span><br><span class="line">    <span class="comment">//放4个按钮的 View</span></span><br><span class="line">    [<span class="keyword">self</span>.view addSubview:<span class="keyword">self</span>.selectView];</span><br><span class="line"></span><br><span class="line">   </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-<p><code>selectTableView</code> 的初始化</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">- (XYNearDriverSchoolSelectTableView *)selectTableView</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_selectTableView) &#123;</span><br><span class="line">        _selectTableView = [[XYNearDriverSchoolSelectTableView alloc] </span><br><span class="line">        initWithFrame:<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, kScreenWidth, <span class="number">1</span>)];</span><br><span class="line">        <span class="comment">/**</span></span><br><span class="line"><span class="comment">         *  点击cell 的回调</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        [_selectTableView didSelectRowWithBlock:^(XYNearDriverSchoolSelectTableView </span><br><span class="line">        *tableView, <span class="built_in">NSIndexPath</span> *indexPath) &#123;</span><br><span class="line">            </span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _selectTableView;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-
-
-
-
-<p><code>selectView</code> 的初始化</p>
-<p>不想看代码的直接看下面</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">- (XYNearDriverSchoolSelectView *)selectView</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> (!_selectView) &#123;</span><br><span class="line">        _selectView = [[XYNearDriverSchoolSelectView alloc] initWithFrame:</span><br><span class="line">        					<span class="built_in">CGRectMake</span>(<span class="number">0</span>, <span class="number">0</span>, kScreenWidth, <span class="number">30</span>)];</span><br><span class="line">        </span><br><span class="line">        WeakSelf(weakSelf);</span><br><span class="line">        </span><br><span class="line">        <span class="built_in">NSMutableArray</span> * groupArray = @[].mutableCopy;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; <span class="number">4</span> ; i ++) &#123;</span><br><span class="line">            <span class="built_in">NSMutableArray</span> * array = @[].mutableCopy;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; (arc4random()% <span class="number">40</span>) + <span class="number">1</span>; i ++) &#123;</span><br><span class="line">                [array addObject:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@&quot;%d&quot;</span>,(arc4random()% <span class="number">40</span>)]];</span><br><span class="line">            &#125;</span><br><span class="line">            [groupArray addObject:array];</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        [_selectView clickSelectView_blockWithBlock:^(XYButton *btn) &#123;</span><br><span class="line">           </span><br><span class="line">            <span class="keyword">if</span> (btn.isShow) &#123;</span><br><span class="line">                <span class="built_in">NSLog</span>(<span class="string">@&quot; -- %@&quot;</span>,btn.titleLabel.text);</span><br><span class="line">                <span class="keyword">self</span>.showBtn = btn;</span><br><span class="line">                <span class="keyword">self</span>.selectTableView.backgroudView.hidden = <span class="literal">NO</span>;</span><br><span class="line">                weakSelf.selectTableView.groupArray = groupArray[btn.tag - <span class="number">100000</span>];</span><br><span class="line">            &#125;</span><br><span class="line">           </span><br><span class="line">            <span class="keyword">if</span> (<span class="keyword">self</span>.oldBtn != btn &amp;&amp; <span class="keyword">self</span>.oldBtn.isShow) &#123;</span><br><span class="line">                [<span class="keyword">self</span>.oldBtn touchesEnded:[<span class="built_in">NSSet</span> set] withEvent:<span class="literal">nil</span>];</span><br><span class="line">                dispatch_after(dispatch_time(DISPATCH_TIME_NOW, </span><br><span class="line">                (int64_t)(kHomeCityAnimate_time / <span class="number">2</span> * <span class="built_in">NSEC_PER_SEC</span>)), dispatch_get_main_queue(),</span><br><span class="line">                 ^&#123;</span><br><span class="line">                    [weakSelf clickSelectViewWithBth:btn];</span><br><span class="line">                &#125;);</span><br><span class="line">            &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                [weakSelf clickSelectViewWithBth:btn];</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">        &#125;];</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> _selectView;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>这里初始化完成 <code>selectView</code> 后，处理按钮的点击方法，4个按钮对应4个列表，我们这里只随机4组字符串:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">NSMutableArray</span> * groupArray = @[].mutableCopy;</span><br><span class="line">        <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; <span class="number">4</span> ; i ++) &#123;</span><br><span class="line">            <span class="built_in">NSMutableArray</span> * array = @[].mutableCopy;</span><br><span class="line">            <span class="keyword">for</span> (<span class="type">int</span> i = <span class="number">0</span> ; i &lt; (arc4random()% <span class="number">40</span>) + <span class="number">1</span>; i ++) &#123;</span><br><span class="line">                [array addObject:[<span class="built_in">NSString</span> stringWithFormat:<span class="string">@&quot;%d&quot;</span>,(arc4random()% <span class="number">40</span>)]];</span><br><span class="line">            &#125;</span><br><span class="line">            [groupArray addObject:array];</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
-<p>然后开始处理点击事件：</p>
-<p>首先判断按钮的 <code>isShow</code> ,这里的获取到的 <code>isShow</code> 是更新后的，因为在按钮的 <code>touchesEnded:withEvent:</code> 先给 <code>isShow</code> 赋值，然后旋转 <code>imageView</code> 最后才进行的回调，所以 <code>isShow</code> 如果是 <code>YES</code>,那么就是处于下拉状态:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> (btn.isShow) &#123;</span><br><span class="line">     <span class="built_in">NSLog</span>(<span class="string">@&quot; -- %@&quot;</span>,btn.titleLabel.text);</span><br><span class="line">     <span class="keyword">self</span>.showBtn = btn;</span><br><span class="line">     <span class="keyword">self</span>.selectTableView.backgroudView.hidden = <span class="literal">NO</span>;</span><br><span class="line">     weakSelf.selectTableView.groupArray = groupArray[btn.tag - <span class="number">100000</span>];</span><br><span class="line"> &#125;</span><br></pre></td></tr></table></figure>
-<p>在这里面给 <code>self.showBtn</code> 赋值，把黑色半透明View的hidden置为 <code>NO</code>,再通过 <code>tag</code> 取到对应的数据。</p>
-<p>然后进行判断点击的是否是同一个按钮:</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//如果点击的不是同一个</span></span><br><span class="line"><span class="keyword">if</span> (<span class="keyword">self</span>.oldBtn != btn &amp;&amp; <span class="keyword">self</span>.oldBtn.isShow) &#123;</span><br><span class="line">	 [<span class="keyword">self</span>.oldBtn touchesEnded:[<span class="built_in">NSSet</span> set] withEvent:<span class="literal">nil</span>];</span><br><span class="line">	 dispatch_after(dispatch_time(DISPATCH_TIME_NOW, </span><br><span class="line">				 (int64_t)(kHomeCityAnimate_time / <span class="number">2</span> * <span class="built_in">NSEC_PER_SEC</span>)),</span><br><span class="line">	 			 dispatch_get_main_queue(), ^&#123;</span><br><span class="line">	     [weakSelf clickSelectViewWithBth:btn];</span><br><span class="line">	 &#125;);</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	 [weakSelf clickSelectViewWithBth:btn];</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<p>如果点击的不是同一个按钮，那么先把 <code>oldBtn</code> 手动点击一下，让 <code>TableView</code> 缩回去，然后在 <code>kHomeCityAnimate_time / 2</code> 秒之后调用 <code>clickSelectViewWithBth:</code>,如果点击的同一个按钮，直接调用 <code>clickSelectViewWithBth:</code></p>
-<p>再来说说 <code>clickSelectViewWithBth:</code> 方法</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="type">void</span>)clickSelectViewWithBth:(XYButton *)btn</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">NSInteger</span> y = <span class="built_in">CGRectGetMaxY</span>(<span class="keyword">self</span>.selectView.frame) + <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">if</span> (!btn.isShow) &#123;</span><br><span class="line">        y = - <span class="keyword">self</span>.selectTableView.height;</span><br><span class="line">    &#125;</span><br><span class="line">    [<span class="built_in">UIView</span> animateWithDuration:kHomeCityAnimate_time animations:^&#123;</span><br><span class="line">        <span class="keyword">self</span>.selectTableView.mj_y = y;</span><br><span class="line">    &#125;];</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.oldBtn = btn;</span><br><span class="line">    </span><br><span class="line">    <span class="keyword">self</span>.selectTableView.backgroudView.hidden = !<span class="keyword">self</span>.showBtn.isShow;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>依据按钮的状态来决定 <code>TableView</code> 的位置，每次完成后都把 <code>oldBtn</code> 指向该按钮,然后 </p>
-<p><code>self.selectTableView.backgroudView.hidden = !self.showBtn.isShow;</code> </p>
-<p>是为了防止点击了不同的按钮的时候，上一个按钮会把 <code>TableView</code> 往回缩，这时候黑色半透明View会消失，所以加入了一个 <code>showBtn</code> ，就是当前处于显示状态的按钮，如果处于显示状态的按钮的 <code>isShow</code> 为 <code>NO</code>，那么说明所有按钮都不在显示状态，那么黑色半透明View应该消失。</p>
-<p><font color = #cd4c56> *第一次写这样的博客，写的有点乱，时间也有限，亲们有哪里看不懂的可以留言* </font></p>
-
-
-
-
-
-
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2016/03/20/rightSlipBackFailure/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/03/20/rightSlipBackFailure/" class="post-title-link" itemprop="url">右滑返回 失效</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2016-03-20 15:34:00" itemprop="dateCreated datePublished" datetime="2016-03-20T15:34:00+08:00">2016-03-20</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-21 20:51:21" itemprop="dateModified" datetime="2023-12-21T20:51:21+08:00">2023-12-21</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>ios7开始 苹果增加了页面 右滑返回的效果；具体的是以 <code>UINavigationController</code> 为容器的 <code>ViewController</code>间右滑切换页面。代码里的设置是：</p>
-<p><code>self.navigationController.interactivePopGestureRecognizer.enabled = YES;（default is YES）</code> 可以看到苹果给 <code>navigationController</code> 添加了一个手势（具体为 <code>UIScreenEdgePanGestureRecognizer</code>（边缘手势，同样是ios7以后才有的）），就是利用这个手势实现的 ios7的侧滑返回。</p>
-<p>问题1：</p>
-<p>然而事情并非我们想的那么简单。</p>
-<ol>
-<li>当我们用系统的 <code>UINavigationController</code> ，并且也是利用系统的 <code>navigateBar</code> 的时候，是完全没有问题的</li>
-<li>但是当我们没有用系统的 <code>navigateBar</code> 或者自定义了返回按钮的时候，这个时候 右滑返回是失效的。</li>
-</ol>
-<p>解决（问题1）办法：</p>
-<p>对于这种失效的情况，考虑到 <code>interactivePopGestureRecognizer</code> 也有 <code>delegate</code> 属性，替换默认的<br><code>self.navigationController.interactivePopGestureRecognizer.delegate</code>来配置右滑返回的表现也是可行的。<br>我们可以在主<code>NavigationController</code>中设置一下：</p>
-<p><code>self.navigationController.interactivePopGestureRecognizer.delegate =(id)self</code></p>
-<p>问题2：</p>
-<p>但是出现很多问题，比如说在 <code>rootViewController</code> 的时候这个手势也可以响应，导致整个程序页面不响应；<code>push</code> 了多层后，快速的触发两次手势，也会错乱</p>
-<p>解决（问题2）办法：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@interface</span> <span class="title">NavRootViewController</span> : <span class="title">UINavigationController</span></span></span><br><span class="line"><span class="keyword">@property</span>(<span class="keyword">nonatomic</span>,<span class="keyword">weak</span>) <span class="built_in">UIViewController</span>* currentShowVC;</span><br><span class="line"><span class="keyword">@end</span></span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">NavRootViewController</span></span></span><br><span class="line">-(<span class="type">id</span>)initWithRootViewController:(<span class="built_in">UIViewController</span> *)rootViewController</span><br><span class="line">&#123;</span><br><span class="line">	NavRootViewController* nvc = [<span class="variable language_">super</span> initWithRootViewController:rootViewController];</span><br><span class="line">	<span class="keyword">self</span>.interactivePopGestureRecognizer.delegate = <span class="keyword">self</span>;</span><br><span class="line">	nvc.delegate = <span class="keyword">self</span>;</span><br><span class="line">	<span class="keyword">return</span> nvc;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="type">void</span>)navigationController:(<span class="built_in">UINavigationController</span> *)navigationController </span><br><span class="line">willShowViewController:(<span class="built_in">UIViewController</span> *)viewController animated:(<span class="type">BOOL</span>)animated</span><br><span class="line">&#123;&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="type">void</span>)navigationController:(<span class="built_in">UINavigationController</span> *)navigationController </span><br><span class="line">didShowViewController:(<span class="built_in">UIViewController</span> *)viewController animated:(<span class="type">BOOL</span>)animated</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">if</span> (navigationController.viewControllers.count == <span class="number">1</span>) &#123;</span><br><span class="line">	<span class="keyword">self</span>.currentShowVC = Nil;</span><br><span class="line">&#125; <span class="keyword">else</span> &#123;</span><br><span class="line">	<span class="keyword">self</span>.currentShowVC = viewController;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">-(<span class="type">BOOL</span>)gestureRecognizerShouldBegin:(<span class="built_in">UIGestureRecognizer</span> *)gestureRecognizer</span><br><span class="line">&#123;</span><br><span class="line"><span class="keyword">if</span> (gestureRecognizer == <span class="keyword">self</span>.interactivePopGestureRecognizer) &#123;</span><br><span class="line">	<span class="keyword">return</span> (<span class="keyword">self</span>.currentShowVC == <span class="keyword">self</span>.topViewController); <span class="comment">//the most important</span></span><br><span class="line">&#125;</span><br><span class="line">	<span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">@end</span></span><br></pre></td></tr></table></figure>
-
-<p>借鉴了别人的方法：具体是通过 获取当前 <code>pushView</code> 栈里的当前显示的VC,根据这个VC来决定 是否开启手势（如果currentShowVC 是当前显示的，则开启手势；如果 currentShowVC为nil,则代表在主页面，关闭手势）</p>
-<p>注：</p>
-<p>当时试了一种方法 就是滑动的时候来回设置 <code>interactivePopGestureRecognizer的delegate；</code> 发现 会有crash，原因就是 因为 我把 当前显示的VC设置为了这个手势的 <code>delegate</code> ，但当这个VC消失的时候，这个 <code>delegate</code> 便被释放了，导致crash</p>
-<p>至此，觉得ios7上的右滑返回大功告成了，心里正happy，妈蛋，发现了一个可耻的bug：<br>UIScrollView 上 右滑返回的手势失灵了，靠！！！！！！</p>
-<p>问题三：<br>UIScrollView上手势失灵：<br>经研究，发现是UIScrollView上已经添加了 <code>panGestureRecognizer</code>（滑动）手势</p>
-<p><a href = "/img/rightSlipBackFailure/rightSlipBackFailure.jpg"> <img src = "/img/rightSlipBackFailure/rightSlipBackFailure.jpg" width = 690 height = 77 alt = "rightSlipBackFailure"/></a></p>
-<p>解决（问题三）办法：</p>
-<p>参考：<a target="_blank" rel="noopener" href="http://www.cnblogs.com/lexingyu/p/3702742.html">http://www.cnblogs.com/lexingyu/p/3702742.html</a></p>
-<p>【解决方案】</p>
-<p>苹果以UIGestureRecognizerDelegate的形式，支持多个UIGestureRecognizer共存。其中的一个方法是：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// called when the recognition of one of gestureRecognizer or otherGestureRecognizer would be </span></span><br><span class="line">blocked by the other</span><br><span class="line"><span class="comment">// return YES to allow both to recognize simultaneously. the default implementation returns NO </span></span><br><span class="line">(by <span class="keyword">default</span> no two gestures can be recognized simultaneously)</span><br><span class="line"><span class="comment">//</span></span><br><span class="line"><span class="comment">// note: returning YES is guaranteed to allow simultaneous recognition. returning NO is not </span></span><br><span class="line">guaranteed to prevent simultaneous recognition, as the other gesture<span class="string">&#x27;s delegate may return YES</span></span><br><span class="line"><span class="string"></span></span><br><span class="line"><span class="string">- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer </span></span><br><span class="line"><span class="string">shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer;</span></span><br></pre></td></tr></table></figure>
-
-<p>一句话总结就是此方法返回YES时，手势事件会一直往下传递，不论当前层次是否对该事件进行响应。</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">@implementation</span> <span class="title">UIScrollView</span> (<span class="title">AllowPanGestureEventPass</span>)</span></span><br><span class="line"></span><br><span class="line">- (<span class="type">BOOL</span>)gestureRecognizer:(<span class="built_in">UIGestureRecognizer</span> *)gestureRecognizer </span><br><span class="line">  shouldRecognizeSimultaneouslyWithGestureRecognizer:(<span class="built_in">UIGestureRecognizer</span> *)otherGestureRecognizer</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">if</span> ([gestureRecognizer isKindOfClass:[<span class="built_in">UIPanGestureRecognizer</span> <span class="keyword">class</span>]]    </span><br><span class="line">        &amp;&amp; [otherGestureRecognizer isKindOfClass:[<span class="built_in">UIScreenEdgePanGestureRecognizer</span> <span class="keyword">class</span>]])</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="literal">YES</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">return</span>  <span class="literal">NO</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-<p>事实上，对UIGestureRecognizer来说，它们对事件的接收顺序和对事件的响应是可以分开设置的，即存在接收链和响应链。接收链如上文所述，和UIView绑定，由UIView的层次决定接收顺序。</p>
-<p>而响应链在apple君的定义下，逻辑出奇的简单，只有一个方法可以设置多个gestureRecognizer的响应关系：</p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// create a relationship with another gesture recognizer that will prevent this gesture&#x27;s </span></span><br><span class="line">actions from being called until otherGestureRecognizer transitions to </span><br><span class="line"><span class="built_in">UIGestureRecognizerStateFailed</span> <span class="comment">// if otherGestureRecognizer transitions to </span></span><br><span class="line"><span class="built_in">UIGestureRecognizerStateRecognized</span> or <span class="built_in">UIGestureRecognizerStateBegan</span> then <span class="variable language_">this</span> recognizer will </span><br><span class="line">instead transition to <span class="built_in">UIGestureRecognizerStateFailed</span> <span class="comment">// example usage: a single ap may </span></span><br><span class="line">require a <span class="type">double</span> tap to fail</span><br><span class="line">- (<span class="type">void</span>)requireGestureRecognizerToFail:(<span class="built_in">UIGestureRecognizer</span> *)otherGestureRecognizer;</span><br></pre></td></tr></table></figure>
-
-<p>每个UIGesturerecognizer都是一个有限状态机，上述方法会在两个gestureRecognizer间建立一个依托于state的依赖关系，当被依赖的gestureRecognizer.state &#x3D; failed时，另一个gestureRecognizer才能对手势进行响应。</p>
-<p>所以，只需要</p>
-<p><code>[_scrollView.panGestureRecognizer requireGestureRecognizerToFail:screenEdgePanGestureRecognizer];</code></p>
-<figure class="highlight objectivec"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">- (<span class="built_in">UIScreenEdgePanGestureRecognizer</span> *)screenEdgePanGestureRecognizer</span><br><span class="line">&#123;</span><br><span class="line">    <span class="built_in">UIScreenEdgePanGestureRecognizer</span> *screenEdgePanGestureRecognizer = <span class="literal">nil</span>;</span><br><span class="line">    <span class="keyword">if</span> (<span class="keyword">self</span>.view.gestureRecognizers.count &gt; <span class="number">0</span>)</span><br><span class="line">    &#123;</span><br><span class="line">        <span class="keyword">for</span> (<span class="built_in">UIGestureRecognizer</span> *recognizer <span class="keyword">in</span> <span class="keyword">self</span>.view.gestureRecognizers)</span><br><span class="line">        &#123;</span><br><span class="line">            <span class="keyword">if</span> ([recognizer isKindOfClass:[<span class="built_in">UIScreenEdgePanGestureRecognizer</span> <span class="keyword">class</span>]])</span><br><span class="line">            &#123;</span><br><span class="line">                screenEdgePanGestureRecognizer = (<span class="built_in">UIScreenEdgePanGestureRecognizer</span> *)recognizer;</span><br><span class="line">                <span class="keyword">break</span>;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">return</span> screenEdgePanGestureRecognizer;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2016/03/11/useMarkdownSomeTip/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2016/03/11/useMarkdownSomeTip/" class="post-title-link" itemprop="url">使用 markdown 的小tip</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2016-03-11 17:42:00" itemprop="dateCreated datePublished" datetime="2016-03-11T17:42:00+08:00">2016-03-11</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-21 20:52:04" itemprop="dateModified" datetime="2023-12-21T20:52:04+08:00">2023-12-21</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <h1 id="非常重要的一点"><a href="#非常重要的一点" class="headerlink" title="非常重要的一点"></a>非常重要的一点</h1><p > <font color = red size = 5> 文件夹 和 文件 的名字千万不要有汉字，24小时的血与泪告诉你们，千万不要有汉字，我就是因为有个空文件夹，名字叫 新建文件夹 因为是空的 我也没管它，结果 hexo 部署不上去了啊 ,在网上怎么都找不到解决的办法。 </font> </p>
-
-
-<h3 id="字体"><a href="#字体" class="headerlink" title="字体"></a>字体</h3><p>设置了字体的颜色，必须在这段 添加上 p 标签， 否则 markdown 无法生成 p 标签，会影响到下面的布局。</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">p</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">font</span> <span class="attr">color</span>=<span class="string">#a2c700</span>&gt;</span> JPEG <span class="tag">&lt;/<span class="name">font</span>&gt;</span>  </span><br><span class="line">	是目前最常见的图片格式，它诞生于 1992 年，是一个很古老的格式。它只支持有损压缩，</span><br><span class="line">	其压缩算法可以精确控制压缩比，以图像质量换得存储空间。由于它太过常见，</span><br><span class="line">	以至于许多移动设备的 CPU 都支持针对它的硬编码与硬解码。</span><br><span class="line"><span class="tag">&lt;/<span class="name">p</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-
-<h3 id="使用图片"><a href="#使用图片" class="headerlink" title="使用图片"></a>使用图片</h3><p>要让图片可以点击，需要添加 html 的 a 标签</p>
-<figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">a</span> <span class="attr">href</span> = <span class="string">&quot;/img/handleImageSomTip/image_baseline.gif&quot;</span>&gt;</span></span><br><span class="line">	<span class="tag">&lt;<span class="name">img</span> <span class="attr">src</span> = <span class="string">&quot;/img/handleImageSomTip/image_baseline.gif&quot;</span></span></span><br><span class="line"><span class="tag">	 <span class="attr">width</span> = <span class="string">160</span> <span class="attr">height</span> = <span class="string">160</span> <span class="attr">alt</span> = <span class="string">&quot;image_baseline.gif&quot;</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">a</span>&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="生成目录"><a href="#生成目录" class="headerlink" title="生成目录"></a>生成目录</h3><p>在内容前面加上这段代码</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&lt;link rel=<span class="string">&quot;stylesheet&quot;</span> href=<span class="string">&quot;http://yandex.st/highlightjs/6.2/styles/googlecode.min.css&quot;</span>&gt;</span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;http://code.jquery.com/jquery-1.7.2.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;http://yandex.st/highlightjs/6.2/highlight.min.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span>&gt;</span>hljs.initHighlightingOnLoad();<span class="tag">&lt;/<span class="name">script</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"><span class="tag">&lt;<span class="name">script</span> <span class="attr">type</span>=<span class="string">&quot;text/javascript&quot;</span>&gt;</span><span class="language-javascript"></span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml"> $(<span class="variable language_">document</span>).<span class="title function_">ready</span>(<span class="keyword">function</span>(<span class="params"></span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">      $(<span class="string">&quot;h2,h3,h4,h5,h6&quot;</span>).<span class="title function_">each</span>(<span class="keyword">function</span>(<span class="params">i,item</span>)&#123;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        <span class="keyword">var</span> tag = $(item).<span class="title function_">get</span>(<span class="number">0</span>).<span class="property">localName</span>;</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        $(item).<span class="title function_">attr</span>(<span class="string">&quot;id&quot;</span>,<span class="string">&quot;wow&quot;</span>+i);</span></span></span><br><span class="line"><span class="language-javascript"><span class="language-xml">        $(<span class="string">&quot;#category&quot;</span>).<span class="title function_">append</span>(<span class="string">&#x27;&lt;a class=&quot;new&#x27;</span>+tag+<span class="string">&#x27;&quot; href=&quot;#wow&#x27;</span>+i+<span class="string">&#x27;&quot;&gt;&#x27;</span>+$(<span class="variable language_">this</span>).<span class="title function_">text</span>()+<span class="string">&#x27;&lt;/a&gt;&lt;/br&gt;</span></span></span><span class="string">&#x27;);</span></span><br><span class="line"><span class="string">        $(&quot;.newh2&quot;).css(&quot;margin-left&quot;,0);</span></span><br><span class="line"><span class="string">        $(&quot;.newh3&quot;).css(&quot;margin-left&quot;,20);</span></span><br><span class="line"><span class="string">        $(&quot;.newh4&quot;).css(&quot;margin-left&quot;,40);</span></span><br><span class="line"><span class="string">        $(&quot;.newh5&quot;).css(&quot;margin-left&quot;,60);</span></span><br><span class="line"><span class="string">        $(&quot;.newh6&quot;).css(&quot;margin-left&quot;,80);</span></span><br><span class="line"><span class="string">      &#125;);</span></span><br><span class="line"><span class="string"> &#125;);</span></span><br><span class="line"><span class="string">&lt;/script&gt;</span></span><br><span class="line"><span class="string">&lt;div id=&quot;category&quot;&gt;&lt;/div&gt;</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="添加评论区"><a href="#添加评论区" class="headerlink" title="添加评论区"></a>添加评论区</h3><p>我使用了 <code>Disqus</code> ,在国内速度会慢一点，但是为了逼格，我还是用了它，国内可以用 <a target="_blank" rel="noopener" href="http://duoshuo.com/">多说</a>。</p>
-<p>废话不多说，首先得去 <a target="_blank" rel="noopener" href="https://disqus.com/">Disqus</a>Disqus] 注册一个账号,有一个邮箱就行，收到邮件后验证一下 </p>
-<p><a href = "/img/userMarkdownSomeTip/signUpDisqus.png"><img src = "/img/userMarkdownSomeTip/signUpDisqus.png" width = 394 height = 537 alt = "signUpDisqus.png"/></a></p>
-<p>登陆进来以后再右上角找到设置,点击 <code>Add Disqus To Site</code> </p>
-<p><a href = "/img/userMarkdownSomeTip/addDisqusToSite.png"><img src = "/img/userMarkdownSomeTip/addDisqusToSite.png" width = 305 height = 315 alt = "addDisqusToSite.png"/></a></p>
-<p>进入后点击 <code>Start Using Engage</code> ,然后设置 <code>Site</code> </p>
-<p><a href = "/img/userMarkdownSomeTip/setUpDisqusNewSite.png"><img src = "/img/userMarkdownSomeTip/setUpDisqusNewSite.png" width = 804 height = 524 alt = "setUpDisqusNewSite.png"/></a></p>
-<p><code>siteName</code> 就填你的 <code>github.io</code> 地址，下面的URL会自动生成，选择一个类别，点击 Next，然后会有两个按钮 <code>My site is part of a larger organization (我的网站是一个更大的组织的一部分)</code> 和 <code>My site is just a personal site (我的网站只是个人网站)</code>, 然后填写2个问题，就进入了管理页面，</p>
-<p><a href = "/img/userMarkdownSomeTip/siteManager.png"><img src = "/img/userMarkdownSomeTip/siteManager.png" width = 1090 height = 250 alt = "siteManager.png"/></a></p>
-<p>点击 <code>General</code> </p>
-<p><a href = "/img/userMarkdownSomeTip/settingGeneral.png"><img src = "/img/userMarkdownSomeTip/settingGeneral.png" width = 815 height = 834 alt = "settingGeneral.png"/></a></p>
-<p><code>Shortname</code> 一会要用到，<code>Website Name</code> 会在评论区的顶部显示， <code>Website URL</code> 你博客的网址，必须填对。其他的设置不填也可以。</p>
-<p>我使用的是 <code>hexo</code> 搭建的博客，进入到博客根目录，找到 <code>_config.yml</code> 文件，在里面添加</p>
-<pre><code># Disque
-disqus_shortname: 刚才的那个 Shortname
-</code></pre>
-<p>如果有这个字段，直接修改值就可以了。 </p>
-<p>然后就可以提交到 github 刷新页面，评论框就出来啦。	</p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1755,7 +1740,7 @@ disqus_shortname: 刚才的那个 Shortname
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">24</span>
+          <span class="site-state-item-count">27</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
