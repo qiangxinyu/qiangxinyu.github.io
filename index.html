@@ -146,7 +146,7 @@
   
   
   <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2023/04/12/1/">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2023/04/12/LoadMoreView/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.gif">
@@ -160,7 +160,7 @@
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
           
-            <a href="/2023/04/12/1/" class="post-title-link" itemprop="url">加载大量试图的优化策略</a>
+            <a href="/2023/04/12/LoadMoreView/" class="post-title-link" itemprop="url">加载大量View的优化策略</a>
         </h2>
 
         <div class="post-meta">
@@ -177,7 +177,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-25 14:41:40" itemprop="dateModified" datetime="2023-12-25T14:41:40+08:00">2023-12-25</time>
+                <time title="Modified: 2023-12-26 15:53:56" itemprop="dateModified" datetime="2023-12-26T15:53:56+08:00">2023-12-26</time>
               </span>
 
           
@@ -193,8 +193,15 @@
       
           <p>在项目的实际运行中，发现有用户创建了大量视图，多达4000多，在进入项目的时候一次性创建不仅会消耗大量内存，还会卡顿，所以需要对这部分进行优化。</p>
 <p>优化的方向分为</p>
-<p>###1、 加载策略优化</p>
-<p>项目中的视图并不是同时全部可见的，有很多初始状态是隐藏，所以在加载的时候遇到是隐藏状态的，全部加入延时队列，</p>
+<h3 id="1、加载策略优化"><a href="#1、加载策略优化" class="headerlink" title="1、加载策略优化"></a>1、加载策略优化</h3><p>项目中的 <code>View</code> 并不是同时全部可见的，有很多初始状态是隐藏，所以在加载的时候遇到是隐藏状态的，全部加入延时队列</p>
+<p>即使如此，第一批需要初始化的 <code>View</code> 依然很多，由于与 <code>Layer</code> 相关的操作只能在主线程进行，所以尽量把需要计算的操作提前计算缓存。</p>
+<p>然后分批次初始化 <code>View</code> ，虽然有一定耗时，但是配合加载动画可以有效避免卡死带来的影响。</p>
+<h3 id="2、绘制层优化"><a href="#2、绘制层优化" class="headerlink" title="2、绘制层优化"></a>2、绘制层优化</h3><p>由于大部分的控件都是不会被添加点击事件的，也不存在动态添加时间，所以初始化的时候没有事件的都使用 Layer 进行显示，可以极大的缩减内存占用与初始化速度</p>
+<h3 id="3、控件的存储"><a href="#3、控件的存储" class="headerlink" title="3、控件的存储"></a>3、控件的存储</h3><p>在项目中控件之间有很多层，事件的交互通过对应的 ID 来存储，所以直接使用 <code>Dictionary</code>，它本质是一个散列表，所以存取操作的时间复杂度基本处于 <code>O(1)</code> 级别，内部的桶内只存储控件的指针，一个只有8字节，所以不会占用多少内存。</p>
+<h3 id="4、控件的复用"><a href="#4、控件的复用" class="headerlink" title="4、控件的复用"></a>4、控件的复用</h3><p>在一个项目详情页，会有多个场景与页，控件只属于某一个场景下的某一页，这样在进行切页操作的时候，如果将之前的控件全部释放，再创建新的，那么会造成很大的性能浪费，所以在首页加载完毕后，所有控件都进行缓存，切页后，控件全部从屏幕移除，从缓存中取对应类型的控件进行新的model赋值操作，进行复用，这样可以节省下释放内存与分配内存所消耗的内存，缺点是会造成一定的内存浪费，但是运行效率优化，基本都是空间换时间。</p>
+<h3 id="5、透明度-图片-圆角"><a href="#5、透明度-图片-圆角" class="headerlink" title="5、透明度 图片 圆角"></a>5、透明度 图片 圆角</h3><p>因为项目底下是 Unity 的 3D 页面，所以上面的试图除了用户主动设置不透明色，否则都是透明、半透明的，所以这透明上没法像普通列表页这种做优化。</p>
+<p>图片都是网络图片，下载到分辨率超出 4K 的图片，进行压缩，如果图片控件设有圆角，直接将图片进行裁剪，这部分操作都处于子线程，最终将处理完解码后的图片在主线程进行绘制。</p>
+<h3 id="后续的优化"><a href="#后续的优化" class="headerlink" title="后续的优化"></a>后续的优化</h3><p>虽然现在已经不会把 UI 卡死，但是首次进入项目大批量的创建控件，还是会消耗 1 - 4 秒的时间，内存占用也比较高，所以接下来准备将大量没有动画的 layer 进行合并，最终可能会  十几个、几十上百个 Layer 合并成一个大的 Layer。</p>
 
       
     </div>
