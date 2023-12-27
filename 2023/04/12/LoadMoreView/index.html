@@ -28,7 +28,7 @@
 <meta property="og:description" content="在项目的实际运行中，发现有用户创建了大量视图，多达4000多，在进入项目的时候一次性创建不仅会消耗大量内存，还会卡顿，所以需要对这部分进行优化。 优化的方向分为 1、加载策略优化项目中的 View 并不是同时全部可见的，有很多初始状态是隐藏，所以在加载的时候遇到是隐藏状态的，全部加入延时队列 即使如此，第一批需要初始化的 View 依然很多，由于与 Layer 相关的操作只能在主线程进行，所以尽量">
 <meta property="og:locale" content="en_US">
 <meta property="article:published_time" content="2023-04-12T07:32:00.000Z">
-<meta property="article:modified_time" content="2023-12-26T07:53:56.571Z">
+<meta property="article:modified_time" content="2023-04-12T07:32:00.000Z">
 <meta property="article:author" content="qxy">
 <meta name="twitter:card" content="summary">
 
@@ -176,13 +176,6 @@
 
               <time title="Created: 2023-04-12 15:32:00" itemprop="dateCreated datePublished" datetime="2023-04-12T15:32:00+08:00">2023-04-12</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-26 15:53:56" itemprop="dateModified" datetime="2023-12-26T15:53:56+08:00">2023-12-26</time>
-              </span>
 
           
 
@@ -297,7 +290,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>

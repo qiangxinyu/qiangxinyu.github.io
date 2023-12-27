@@ -172,13 +172,6 @@
 
               <time title="Created: 2023-04-12 15:32:00" itemprop="dateCreated datePublished" datetime="2023-04-12T15:32:00+08:00">2023-04-12</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-26 15:53:56" itemprop="dateModified" datetime="2023-12-26T15:53:56+08:00">2023-12-26</time>
-              </span>
 
           
 
@@ -247,13 +240,6 @@
 
               <time title="Created: 2022-05-12 15:32:00" itemprop="dateCreated datePublished" datetime="2022-05-12T15:32:00+08:00">2022-05-12</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-25 20:45:11" itemprop="dateModified" datetime="2023-12-25T20:45:11+08:00">2023-12-25</time>
-              </span>
 
           
 
@@ -293,7 +279,7 @@
 
 
 <h3 id="构建-Response"><a href="#构建-Response" class="headerlink" title="构建 Response"></a>构建 Response</h3><p>此类需要管理众多闭包，以便于接口返回后的处理：</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">class Response&lt;T: APIMappable&gt; &#123;</span><br><span class="line">    init() &#123;&#125;</span><br><span class="line">    weak var request: DataRequest?</span><br><span class="line">    func cancel() &#123;</span><br><span class="line">        request?.cancel()</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    typealias modelBlock = (T) -&gt; Void</span><br><span class="line">    typealias errorBlock = (APIError) -&gt; Void</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    private var modelBlocks = [modelBlock?]()</span><br><span class="line">    private var errorBlocks = [errorBlock?]()</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">    fileprivate func handleModel(_ model: T) &#123;</span><br><span class="line">        modelBlocks.forEach &#123;$0?(model)&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fileprivate func handleError(_ error: APIError) &#123;</span><br><span class="line">        errorBlocks.forEach &#123;$0?(error)&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    @discardableResult</span><br><span class="line">    func model(_ completionHandler: modelBlock?) -&gt; Self &#123;</span><br><span class="line">        modelBlocks.append(completionHandler)</span><br><span class="line">        return self</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">  </span><br><span class="line">    @discardableResult</span><br><span class="line">    func error(_ completionHandler: errorBlock?) -&gt; Self &#123;</span><br><span class="line">        errorBlocks.append(completionHandler)</span><br><span class="line">        return self</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">class Response&lt;T: APIMappable&gt; &#123;</span><br><span class="line">    init() &#123;&#125;</span><br><span class="line">    weak var request: DataRequest?</span><br><span class="line">    func cancel() &#123;</span><br><span class="line">        request?.cancel()</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    typealias successBlock = (T) -&gt; Void</span><br><span class="line">    typealias errorBlock = (APIError) -&gt; Void</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    private var successBlocks = [successBlock?]()</span><br><span class="line">    private var errorBlocks = [errorBlock?]()</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">    fileprivate func postSuccess(_ model: T) &#123;</span><br><span class="line">        successBlocks.forEach &#123;$0?(model)&#125;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    fileprivate func postError(_ error: APIError) &#123;</span><br><span class="line">        errorBlocks.forEach &#123;$0?(error)&#125;</span><br><span class="line">    &#125;</span><br><span class="line">  </span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    @discardableResult</span><br><span class="line">    func success(_ completionHandler: successBlock?) -&gt; Self &#123;</span><br><span class="line">        modelBlocks.append(completionHandler)</span><br><span class="line">        return self</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">  </span><br><span class="line">    @discardableResult</span><br><span class="line">    func error(_ completionHandler: errorBlock?) -&gt; Self &#123;</span><br><span class="line">        errorBlocks.append(completionHandler)</span><br><span class="line">        return self</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="搭建Model框架"><a href="#搭建Model框架" class="headerlink" title="搭建Model框架"></a>搭建Model框架</h3><p>假如我们的服务器数据为</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;code&quot;: 200,</span><br><span class="line">    &quot;message&quot;: &quot;no message&quot;,</span><br><span class="line">    &quot;data&quot;: &#123;</span><br><span class="line">        &quot;time&quot;: 2942798372937</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
@@ -301,12 +287,132 @@
 <p><code>data</code>是我们想要的业务数据，<code>code</code> 和 <code>message</code> 是用来处理接口的返回逻辑的，我们的 Response Model为：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">class ResponseModel: APIMappable &#123;</span><br><span class="line">    var code = 0</span><br><span class="line">    var message = &quot;&quot;</span><br><span class="line">    var data: Any? = nil</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    func mapping(map: ObjectMapper.Map) &#123;</span><br><span class="line">        code &lt;- map[&quot;code&quot;]</span><br><span class="line">        message &lt;- map[&quot;message&quot;]</span><br><span class="line">        data &lt;- map[&quot;data&quot;]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">class SysTimeModel: APIMappable &#123;</span><br><span class="line">    var time: TimeInterval = 0</span><br><span class="line">    func mapping(map: ObjectMapper.Map) &#123;</span><br><span class="line">        time &lt;- map[&quot;time&quot;]</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
-<h3 id="实现请求逻辑"><a href="#实现请求逻辑" class="headerlink" title="实现请求逻辑"></a>实现请求逻辑</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">extension API &#123;</span><br><span class="line">    func request&lt;T: APIMappable&gt;(</span><br><span class="line">        config: ApiConfigProtocol,</span><br><span class="line">        timeoutInterval: TimeInterval = 20) -&gt; Response&lt;T&gt; &#123;</span><br><span class="line">            let result = Response&lt;T&gt;()</span><br><span class="line">            </span><br><span class="line">            let request = AF.request(config.domain + config.path,</span><br><span class="line">                                     method: config.method,</span><br><span class="line">                                     parameters: config.parameters,</span><br><span class="line">                                     encoding: config.encoder,</span><br><span class="line">                                     headers: config.header</span><br><span class="line">            ) &#123;$0.timeoutInterval = timeoutInterval&#125;</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            request.responseData &#123; res in</span><br><span class="line">                switch res.result &#123;</span><br><span class="line">                case .success(let data):</span><br><span class="line">                    if let JSON = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments),</span><br><span class="line">                       let model = ResponseModel(json: JSON) &#123;</span><br><span class="line">                        </span><br><span class="line">                        switch model.code &#123;</span><br><span class="line">                        case 200:</span><br><span class="line">                            if let model = T.init(json: JSON) &#123;</span><br><span class="line">                                result.handleModel(model)</span><br><span class="line">                            &#125; else &#123;</span><br><span class="line">                                result.handleError(APIError(message: &quot;解析错误 \(model.message)&quot;))</span><br><span class="line">                            &#125;</span><br><span class="line">                        case 401:</span><br><span class="line">                            print(&quot;token失效&quot;)</span><br><span class="line">                            // loginOut()</span><br><span class="line">                        default:</span><br><span class="line">                            result.handleError(APIError(message: &quot;未知错误 \(model.message)&quot;))</span><br><span class="line">                        &#125;</span><br><span class="line">                        </span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        result.handleError(APIError(message: &quot;JSON解析错误&quot;))</span><br><span class="line">                    &#125;</span><br><span class="line">                    </span><br><span class="line">                case .failure(let error):</span><br><span class="line">                    result.handleError(APIError(message: error.localizedDescription))</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            result.request = request</span><br><span class="line">            </span><br><span class="line">            return result</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="实现请求逻辑"><a href="#实现请求逻辑" class="headerlink" title="实现请求逻辑"></a>实现请求逻辑</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line">extension API &#123;</span><br><span class="line">    func request&lt;T: APIMappable&gt;(</span><br><span class="line">        config: ApiConfigProtocol,</span><br><span class="line">        timeoutInterval: TimeInterval = 20) -&gt; Response&lt;T&gt; &#123;</span><br><span class="line">            let result = Response&lt;T&gt;()</span><br><span class="line">            </span><br><span class="line">            let request = AF.request(config.domain + config.path,</span><br><span class="line">                                     method: config.method,</span><br><span class="line">                                     parameters: config.parameters,</span><br><span class="line">                                     encoding: config.encoder,</span><br><span class="line">                                     headers: config.header</span><br><span class="line">            ) &#123;$0.timeoutInterval = timeoutInterval&#125;</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            request.responseData &#123; res in</span><br><span class="line">                switch res.result &#123;</span><br><span class="line">                case .success(let data):</span><br><span class="line">                    if let JSON = try? JSONSerialization.jsonObject(with: data, options: JSONSerialization.ReadingOptions.allowFragments),</span><br><span class="line">                       let model = ResponseModel(json: JSON) &#123;</span><br><span class="line">                        </span><br><span class="line">                        switch model.code &#123;</span><br><span class="line">                        case 200:</span><br><span class="line">                            if let model = T.init(json: JSON) &#123;</span><br><span class="line">                                result.postSuccess(model)</span><br><span class="line">                            &#125; else &#123;</span><br><span class="line">                                result.postError(APIError(message: &quot;解析错误 \(model.message)&quot;))</span><br><span class="line">                            &#125;</span><br><span class="line">                        case 401:</span><br><span class="line">                            print(&quot;token失效&quot;)</span><br><span class="line">                            // loginOut()</span><br><span class="line">                        default:</span><br><span class="line">                            result.postError(APIError(message: &quot;未知错误 \(model.message)&quot;))</span><br><span class="line">                        &#125;</span><br><span class="line">                        </span><br><span class="line">                    &#125; else &#123;</span><br><span class="line">                        result.postError(APIError(message: &quot;JSON解析错误&quot;))</span><br><span class="line">                    &#125;</span><br><span class="line">                    </span><br><span class="line">                case .failure(let error):</span><br><span class="line">                    result.postError(APIError(message: error.localizedDescription))</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">            </span><br><span class="line">            result.request = request</span><br><span class="line">            </span><br><span class="line">            return result</span><br><span class="line">        &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
 <h3 id="封装业务"><a href="#封装业务" class="headerlink" title="封装业务"></a>封装业务</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">protocol SystemAPI: API &#123;&#125;</span><br><span class="line">extension SystemAPI &#123;</span><br><span class="line">    func getSysTime() -&gt; Response&lt;ResponseModel&gt; &#123;</span><br><span class="line">        return request(config: APISystemConfig.sysTime)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func getSysVersion() -&gt; Response&lt;[ResponseModel]&gt; &#123;</span><br><span class="line">        return request(config: APISystemConfig.sysVersion)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
 
-<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">extension ViewController: SystemAPI &#123;</span><br><span class="line">    func getData() &#123;</span><br><span class="line">        </span><br><span class="line">        getSysTime()</span><br><span class="line">            .model &#123; model in</span><br><span class="line">                print(&quot;model&quot;, model.time)</span><br><span class="line">            &#125;</span><br><span class="line">            .model &#123; model in</span><br><span class="line">                print(&quot;this model is&quot;, model)</span><br><span class="line">            &#125;</span><br><span class="line">            .error &#123; err in</span><br><span class="line">                print(&quot;err&quot;, err.message)</span><br><span class="line">            &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        let getSysVersionTask = getSysVersion()</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">        getSysVersionTask.model &#123; list in</span><br><span class="line">            list.forEach &#123;print(&quot;list model _&quot;, $0.time)&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        getSysVersionTask.error &#123; err in</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        getSysVersionTask.cancel()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line">extension ViewController: SystemAPI &#123;</span><br><span class="line">    func getData() &#123;</span><br><span class="line">        </span><br><span class="line">        getSysTime()</span><br><span class="line">            .success &#123; model in</span><br><span class="line">                print(&quot;model&quot;, model.time)</span><br><span class="line">            &#125;</span><br><span class="line">            .success &#123; model in</span><br><span class="line">                print(&quot;this model is&quot;, model)</span><br><span class="line">            &#125;</span><br><span class="line">            .error &#123; err in</span><br><span class="line">                print(&quot;err&quot;, err.message)</span><br><span class="line">            &#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        let getSysVersionTask = getSysVersion()</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">        getSysVersionTask.success &#123; list in</span><br><span class="line">            list.forEach &#123;print(&quot;list model _&quot;, $0.time)&#125;</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        getSysVersionTask.error &#123; err in</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        getSysVersionTask.cancel()</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/09/12/OOM/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2021/09/12/OOM/" class="post-title-link" itemprop="url">iOS中的 OOM 问题</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2021-09-12 09:23:00" itemprop="dateCreated datePublished" datetime="2021-09-12T09:23:00+08:00">2021-09-12</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-27 17:07:36" itemprop="dateModified" datetime="2023-12-27T17:07:36+08:00">2023-12-27</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>OOM 也就是 <code>Out of Memory Crash</code>，是由于内存不足的崩溃</p>
+<p>iOS在内存不足时会给 App 发出警告，对应 App 进行适当处理，如果处理后还是不足，那么就会结束进程</p>
+<p>OOM 可以分为 <code>Foreground OOM / Background OOM</code> 两类，其中 <code>FOOM</code> 是由于应用在前台占用过多的内存而被系统杀死，而 <code>BOOM</code> 则是 App 处于后台时，由于前台有别的活动占用大量内存，为了保证前台程序的正常运行，而且后台内存清理后仍然不足，会根据优先级去杀死一些后台进程。</p>
+<h3 id="1、iOS内存构成"><a href="#1、iOS内存构成" class="headerlink" title="1、iOS内存构成"></a>1、iOS内存构成</h3><p>内存的分配由系统管理，一般以页为单位，在 iOS 系统中，一页的大小是 <code>16KB</code>，所以在 iOS 中一个 App 所占用内存大小为 <code>页数 * 16KB</code></p>
+<p>这些页可以分为3类</p>
+<h4 id="净页-（净内存）-Clean"><a href="#净页-（净内存）-Clean" class="headerlink" title="净页 （净内存） Clean"></a>净页 （净内存） <code>Clean</code></h4><p>这部分内存大概有 </p>
+<ul>
+<li>app 的二进制可执行文件</li>
+<li>framework 中的 _DATA_CONST 段</li>
+<li>文件映射的内存</li>
+<li>未写入数据的内存</li>
+</ul>
+<p>前三类都是一些只读的类型，在内存紧张时，这部分内容如果不处于使用中，那么随时可以回收，对应的资源需要使用时，再进行分配读取进内存</p>
+<p>未写入数据的内存比如分配一个容量为 20000的 Int 类型数组 <code>int * array = malloc(20000 * sizeof(int))</code>，系统会分配几页内存给数组，但是没有写入数据，这时候这部分内存都属于净内存</p>
+<p>如果给数组加入数据 <code>array[0] = 10</code>，那么第一页内存将会变成脏页，如果写入数据 <code>array[19999] = 20</code> ，那么最后一页也会变成脏页，但是中间的页依然是净页</p>
+<h4 id="脏页（脏内存）Dirty"><a href="#脏页（脏内存）Dirty" class="headerlink" title="脏页（脏内存）Dirty"></a>脏页（脏内存）<code>Dirty</code></h4><p>是指被 App写入数据的内存，包括 <code>图片解码的缓冲区</code> <code>大部分分配的堆内存</code> <code>Frameworks 中使用runtime方法交换使用的内存</code></p>
+<h4 id="压缩内存-compression"><a href="#压缩内存-compression" class="headerlink" title="压缩内存 compression"></a>压缩内存 <code>compression</code></h4><p>当内存不足的时候，系统会按照一定策略来腾出更多空间供使用，比较常见的做法是将一部分低优先级的数据挪到磁盘上，之后当再次访问到这块数据的时候，系统会负责将它重新搬回内存空间中。然后对于移动设备而言，频繁对磁盘进行IO操作会降低存储设备的寿命。所以从iOS7开始，系统开始采用压缩内存的方式来释放内存空间。</p>
+<p>在iOS中当内存紧张时能够将最近未使用过的脏内存占用压缩至原有大小的一半以下，并且能够在需要时解压复用。在节省内存的同时提高系统的响应速度，缺点就是增加 cpu 的运算，以时间换空间。</p>
+<p>在开发中，我们只需要关心脏内存与压缩内存，净内存系统会自动回收与加载，不会影响 App 内存</p>
+<h3 id="2、OOM-常见原因"><a href="#2、OOM-常见原因" class="headerlink" title="2、OOM 常见原因"></a>2、OOM 常见原因</h3><h4 id="使用内存（缓存）过大"><a href="#使用内存（缓存）过大" class="headerlink" title="使用内存（缓存）过大"></a>使用内存（缓存）过大</h4><p>在平时的开发中，我们经常会把需要反复使用的数据进行缓存，避免 cpu 进行重复计算，包括各种计算结果的缓存以及单例、全局对象的使用。</p>
+<p>还有一些不恰当的操作，比如有终止条件有漏洞的递归函数。</p>
+<p>图像的不恰当使用是一个很大的原因，图像的解码与渲染会占用大量内存，在同时使用大量高清晰度图片的时候，累计内存使用会很高</p>
+<p>例如</p>
+<p><img src="/img/OOM/image_info.jpg"></p>
+<p>照片是<code>2880 x 1750</code>像素，色彩空间是 RGB，具有 DisplayP3 颜色配置文件。此颜色配置文件每像素占用 16 位。因此，使用这样的照片<code>UIImage(named:)</code> 大约需要<code>2880 x 1750 x 8 bytes ≈ 38.45 MB</code></p>
+<p><img src="/img/OOM/image_load_UIImage.jpg"></p>
+<h4 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h4><p>循环引用的最终结果是造成内存泄漏，导致到程序结束之前都无法释放，随着运行时间的增加，泄漏累计会使 App 占用内存越来越大，最终崩溃</p>
+<p>还有比如使用 UIWebView 的内存泄漏问题等</p>
+<h3 id="3、避免-OOM"><a href="#3、避免-OOM" class="headerlink" title="3、避免 OOM"></a>3、避免 OOM</h3><h4 id="谨慎使用缓存"><a href="#谨慎使用缓存" class="headerlink" title="谨慎使用缓存"></a>谨慎使用缓存</h4><p>  如果不需要实现自定义缓存，Apple 建议使用NSCache，因为它内部实现了智能机制，可以在系统内存不足时清除缓存</p>
+<p> 如果应用程序需要更复杂的缓存实现，请注意为可以持久保存的数据量设置明确的限制，并实现一些逻辑来清除旧对象，以便永远不会超出此限制。</p>
+<p> 例如使用 <code>Alamofire</code> 我们可以给图片下载添加缓存限制：</p>
+ <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> private func setupAlamofireCache() &#123;</span><br><span class="line">    let imageCache = AutoPurgingImageCache(</span><br><span class="line">        memoryCapacity: 30_000_000,</span><br><span class="line">        preferredMemoryUsageAfterPurge: 15_000_000</span><br><span class="line">    )</span><br><span class="line">	</span><br><span class="line">    UIImageView.af_sharedImageDownloader = AlamofireImage.ImageDownloader(maximumActiveDownloads: 12,</span><br><span class="line">	                                                                          imageCache: imageCache)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h4 id="加载图片时要小心"><a href="#加载图片时要小心" class="headerlink" title="加载图片时要小心"></a>加载图片时要小心</h4><p>如果应用需要显示大量大型高分辨率图像，用于在屏幕上渲染它们的图像缓冲区可能会产生较高的内存消耗。</p>
+<p>除了让服务器在数据中提供多种尺寸的图片以外，在程序中合适使用工具也可以显著降低内存占用</p>
+<p>图片的颜色配置文件，会影响用于表示内存中图像的每个像素的位数。sRGB 使用 8 位，显示 p3 使用 16 位。这可能会产生接近一倍的差距</p>
+<p>在进行图片处理时，最好使用 <code>ImageIO</code> 库，抛弃老旧的 <code>UIGraphicsBeginImageContextWithOptions</code> ，<code>UIGraphicsRenderer</code> 自动识别需要使用的色彩空间，并在必要时利用 Display P3 配置文件</p>
+<p>我们拿到图像的 URL 后，通过<code>UIGraphicsRenderer</code>进行图像的处理：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line">public extension UIGraphicsRenderer &#123;</span><br><span class="line">    </span><br><span class="line">    static func renderImagesAt(url: URL, size: CGSize, scale: CGFloat = 1) throws -&gt; UIImage &#123;</span><br><span class="line">        let renderer = UIGraphicsImageRenderer(size: size)</span><br><span class="line">	</span><br><span class="line">        let options: [NSString: Any] = [</span><br><span class="line">            kCGImageSourceThumbnailMaxPixelSize: max(size.width * scale, size.height * scale),</span><br><span class="line">            kCGImageSourceCreateThumbnailFromImageAlways: true</span><br><span class="line">        ]</span><br><span class="line">	</span><br><span class="line">        let thumbnail = try &#123;</span><br><span class="line">            guard let imageSource = CGImageSourceCreateWithURL(url as CFURL, nil) else &#123; throw RenderingError.unableToCreateImageSource &#125;</span><br><span class="line">            guard let scaledImage = CGImageSourceCreateThumbnailAtIndex(imageSource, 0, options as CFDictionary) else &#123;  throw RenderingError.unableToCreateThumbnail &#125;</span><br><span class="line">            return scaledImage</span><br><span class="line">        &#125;()</span><br><span class="line">	</span><br><span class="line">        let rect = CGRect(x: 0,</span><br><span class="line">                          y: -size.height,</span><br><span class="line">                          width: size.width,</span><br><span class="line">                          height: size.height)</span><br><span class="line">	</span><br><span class="line">        let resizedImage = renderer.image &#123; ctx in</span><br><span class="line">            </span><br><span class="line">            let context = ctx.cgContext</span><br><span class="line">            context.scaleBy(x: 1, y: -1)</span><br><span class="line">            context.draw(thumbnail, in: rect)</span><br><span class="line">        &#125;</span><br><span class="line">	</span><br><span class="line">        return resizedImage</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+<p>在业务中使用</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">let size = CGSize(width: 100, height: 100)</span><br><span class="line">        </span><br><span class="line">let iv = UIImageView(frame: .init(x: 100, y: 400, width: 100, height: 100))</span><br><span class="line">view.addSubview(iv)</span><br><span class="line">    </span><br><span class="line">let imagePath = Bundle.main.path(forResource: &quot;image&quot;, ofType: &quot;jpg&quot;)!</span><br><span class="line">let imageUrl = URL(fileURLWithPath: imagePath)</span><br><span class="line">    </span><br><span class="line">//iv.image = UIImage(contentsOfFile: imagePath)</span><br><span class="line">    </span><br><span class="line">if let image = try? UIGraphicsRenderer.renderImagesAt(url: imageUrl, size: size, scale: 4) &#123;</span><br><span class="line">    iv.image = image</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这里 <code>scale</code> 使用4会更接近我们原先看到的图片，但是内存占用大幅下降</p>
+<p><img src="/img/OOM/image_load_imageio.jpg"></p>
+<p>当然这样的处理会增加 CPU 的工作量，这个方法在使用 <code>UIImage(contentsOfFile:)</code>进行图片加载时，执行消耗大概在 <code>0.03s</code>，而使用 <code>ImageIO</code>对图片增加了下采样处理，导致此方法耗时 <code>0.09s</code>。</p>
+<h4 id="对没有使用中的资源进行释放"><a href="#对没有使用中的资源进行释放" class="headerlink" title="对没有使用中的资源进行释放"></a>对没有使用中的资源进行释放</h4><p>尤其是在App进入后台后，如果尽量降低App内存，那么会增加不被系统杀死的概率。</p>
+<h4 id="消除内存泄漏"><a href="#消除内存泄漏" class="headerlink" title="消除内存泄漏"></a>消除内存泄漏</h4><p>在开发阶段注意循环引用并使用 Xcode 和 Instruments 来定位内存泄漏。</p>
+<p>一些循环引用很隐蔽，比如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">class TestLeak &#123;</span><br><span class="line">    deinit &#123;</span><br><span class="line">        print(&quot;\(self) deinit&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">    var fun: (() -&gt; Void)? = nil</span><br><span class="line">    </span><br><span class="line">    func setFun() &#123;</span><br><span class="line">        fun = fun2</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func setFun1() &#123;</span><br><span class="line">        fun = TestLeak.fun3</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    func fun2() &#123;</span><br><span class="line">        print(&quot;fun2&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    class func fun3() &#123;</span><br><span class="line">        print(&quot;fun3&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在调用 <code>setFun</code> 给 <code>fun</code> 赋值后，因为 <code>fun2</code> 是实例方法，所以<code>fun</code>会隐式的去捕获 <code>self</code>，以防止 <code>fun2</code> 被释放，而给 <code>fun</code> 赋值 <code>fun3</code> 并不会出现循环引用的问题。</p>
+<p>使用 <code>Xcode</code> 的 <code>Memory Graph</code> 可以监测到内存泄漏</p>
+<p><img src="/img/OOM/memory_leak.jpg"></p>
+<h4 id="在出现内存警告时候，进行清理"><a href="#在出现内存警告时候，进行清理" class="headerlink" title="在出现内存警告时候，进行清理"></a>在出现内存警告时候，进行清理</h4><p>内存警告会通过 <code>applicationDidReceiveMemoryWarning</code> 、<code>didReceiveMemoryWarning</code> 与 <code>UIApplicationDidReceiveMemoryWarningNotification</code> 通知来告诉 App，所以在需要处理的位置来实现这些回调</p>
+<p>释放尽可能多的内存，让应用程序有机会继续运行，卸载不可见的视图控制器，释放图像，模型文件，任何你能想到的东西</p>
+<p>但是不要去轻易去释放基于 <code>Dictionary</code> <code>Array</code> 缓存的数据，因为内存压缩的存在，在收到内存警告之前，这些内存会被压缩，再使用的时候再解压，所以如果去释放内部的数据，会在使用前被解压缩，这会与想做的事情相违背，可以看下这个<a target="_blank" rel="noopener" href="https://developer.apple.com/videos/play/wwdc2018/416/">2018 WWDC</a></p>
+
       
     </div>
 
@@ -435,13 +541,6 @@
 
               <time title="Created: 2017-05-05 16:12:00" itemprop="dateCreated datePublished" datetime="2017-05-05T16:12:00+08:00">2017-05-05</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-21 21:20:19" itemprop="dateModified" datetime="2023-12-21T21:20:19+08:00">2023-12-21</time>
-              </span>
 
           
 
@@ -546,13 +645,6 @@
 
               <time title="Created: 2017-05-03 11:23:00" itemprop="dateCreated datePublished" datetime="2017-05-03T11:23:00+08:00">2017-05-03</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-21 21:19:47" itemprop="dateModified" datetime="2023-12-21T21:19:47+08:00">2023-12-21</time>
-              </span>
 
           
 
@@ -665,13 +757,6 @@
 
               <time title="Created: 2017-04-24 12:08:00" itemprop="dateCreated datePublished" datetime="2017-04-24T12:08:00+08:00">2017-04-24</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-21 21:19:20" itemprop="dateModified" datetime="2023-12-21T21:19:20+08:00">2023-12-21</time>
-              </span>
 
           
 
@@ -810,13 +895,6 @@
 
               <time title="Created: 2017-04-18 18:41:00" itemprop="dateCreated datePublished" datetime="2017-04-18T18:41:00+08:00">2017-04-18</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-21 21:18:42" itemprop="dateModified" datetime="2023-12-21T21:18:42+08:00">2023-12-21</time>
-              </span>
 
           
 
@@ -969,13 +1047,6 @@
 
               <time title="Created: 2017-04-17 18:16:00" itemprop="dateCreated datePublished" datetime="2017-04-17T18:16:00+08:00">2017-04-17</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-21 21:17:54" itemprop="dateModified" datetime="2023-12-21T21:17:54+08:00">2023-12-21</time>
-              </span>
 
           
 
@@ -1090,13 +1161,6 @@
 
               <time title="Created: 2017-04-14 17:05:00" itemprop="dateCreated datePublished" datetime="2017-04-14T17:05:00+08:00">2017-04-14</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-21 21:17:20" itemprop="dateModified" datetime="2023-12-21T21:17:20+08:00">2023-12-21</time>
-              </span>
 
           
 
@@ -1164,91 +1228,6 @@
 <h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p><a target="_blank" rel="noopener" href="https://github.com/fbsamples/f8app">f8app</a></p>
 <p><a target="_blank" rel="noopener" href="http://reactnative.cn/docs/0.43/getting-started.html">React Native中文网</a></p>
 <p><a target="_blank" rel="noopener" href="https://github.com/facebook/react-native/issues/6613">https://github.com/facebook/react-native/issues/6613</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2017/01/21/AndroidAddBaiduMap/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/01/21/AndroidAddBaiduMap/" class="post-title-link" itemprop="url">Android 添加百度地图的问题</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2017-01-21 12:03:00" itemprop="dateCreated datePublished" datetime="2017-01-21T12:03:00+08:00">2017-01-21</time>
-            </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2017-04-13 18:45:00" itemprop="dateModified" datetime="2017-04-13T18:45:00+08:00">2017-04-13</time>
-              </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p>好久没写东西了，一直在忙着学 <code>React native</code>。</p>
-<p>今天给 <code>Android</code> 导入<code>百度地图</code> 的时候遇见定位监听不回调的问题，记录一下。</p>
-<p>电脑系统：Mac OS 10.12.4</p>
-<p>IDE： Android Studio 2.1.2</p>
-<p>JRE: 1.8.0_121-b13 x86_64</p>
-<p>手机：Mi-4c   </p>
-<p>Android Version:  5.1.1LMY47V</p>
-<h4 id="1-确定-百度key-设置正确"><a href="#1-确定-百度key-设置正确" class="headerlink" title="1.确定 百度key 设置正确"></a>1.确定 <code>百度key</code> 设置正确</h4><p><code>meta-data </code> 要放在 <code>application</code> 里面。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;application&gt;  </span><br><span class="line">    &lt;meta-data  </span><br><span class="line">        android:name=&quot;com.baidu.lbsapi.API_KEY&quot;  </span><br><span class="line">        android:value=&quot;开发者 key&quot; /&gt;  </span><br><span class="line">&lt;/application&gt;</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="2-确定权限都添加"><a href="#2-确定权限都添加" class="headerlink" title="2.确定权限都添加"></a>2.确定权限都添加</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=&quot;android.permission.INTERNET&quot;/&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.SYSTEM_ALERT_WINDOW&quot;/&gt;</span><br><span class="line">&lt;!-- 这个权限用于进行网络定位--&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.ACCESS_COARSE_LOCATION&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">&lt;!-- 这个权限用于访问GPS定位--&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.ACCESS_FINE_LOCATION&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">&lt;!-- 用于访问wifi网络信息，wifi信息会用于进行网络定位--&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.ACCESS_WIFI_STATE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">&lt;!-- 获取运营商信息，用于支持提供运营商信息相关的接口--&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.ACCESS_NETWORK_STATE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">&lt;!-- 这个权限用于获取wifi的获取权限，wifi信息会用来进行网络定位--&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.CHANGE_WIFI_STATE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">&lt;!-- 用于读取手机当前的状态--&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.READ_PHONE_STATE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">&lt;!-- 写入扩展存储，向扩展卡写入数据，用于写入离线定位数据--&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.WRITE_EXTERNAL_STORAGE&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line">&lt;!-- 访问网络，网络定位需要上网--&gt;</span><br><span class="line">&lt;!-- SD卡读取权限，用户写入离线定位数据--&gt;</span><br><span class="line">&lt;uses-permission android:name=&quot;android.permission.MOUNT_UNMOUNT_FILESYSTEMS&quot;&gt;&lt;/uses-permission&gt;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-<h4 id="3-需要设置-service"><a href="#3-需要设置-service" class="headerlink" title="3. 需要设置 service"></a>3. 需要设置 <code>service</code></h4><p> 也放在 <code>application</code> 里面，后面的版本号与导入的 <code>百度SDK</code> 版本号一致。</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;service android:name=&quot;com.baidu.location.f&quot; android:enabled=&quot;true&quot; android:process=&quot;:remote&quot;&gt;</span><br><span class="line">	  &lt;intent-filter&gt;</span><br><span class="line">	       &lt;action android:name=&quot;com.baidu.location.service_v4.3&quot; &gt;</span><br><span class="line">	        &lt;/action&gt;</span><br><span class="line">	  &lt;/intent-filter&gt;</span><br><span class="line">&lt;/service&gt;</span><br><span class="line">	       </span><br></pre></td></tr></table></figure>
-
-
-<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a target="_blank" rel="noopener" href="http://lbsyun.baidu.com/index.php?title=androidsdk">百度官方文档</a></p>
-<p><a target="_blank" rel="noopener" href="http://bbs.lbsyun.baidu.com/forum.php?mod=viewthread&tid=10847">http://bbs.lbsyun.baidu.com/forum.php?mod=viewthread&tid=10847</a></p>
-<p><a target="_blank" rel="noopener" href="http://bbs.csdn.net/topics/390803526">http://bbs.csdn.net/topics/390803526</a></p>
 
       
     </div>
@@ -1333,7 +1312,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">27</span>
+          <span class="site-state-item-count">28</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
