@@ -271,7 +271,7 @@
                   <i class="far fa-calendar-check"></i>
                 </span>
                 <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-29 18:05:21" itemprop="dateModified" datetime="2023-12-29T18:05:21+08:00">2023-12-29</time>
+                <time title="Modified: 2023-12-29 18:33:01" itemprop="dateModified" datetime="2023-12-29T18:33:01+08:00">2023-12-29</time>
               </span>
 
           
@@ -309,7 +309,7 @@
 <p>图像的不恰当使用是一个很大的原因，图像的解码与渲染会占用大量内存，在同时使用大量高清晰度图片的时候，累计内存使用会很高</p>
 <p>例如</p>
 <p><img src="/img/OOM/image_info.jpg"></p>
-<p>照片是<code>2880 x 1750</code>像素，色彩空间是 RGB，具有 DisplayP3 颜色配置文件。此颜色配置文件每像素占用 16 位。因此，使用这样的照片<code>UIImage(named:)</code> 大约需要<code>2880 x 1750 x 8 bytes ≈ 38.45 MB</code></p>
+<p>照片是<code>2880 x 1750</code>像素，色彩空间是 RGB，具有 DisplayP3 颜色配置文件（在这里的 MBP 屏幕上，彩色LCD默认就是 P3）。此颜色配置文件每像素占用 16 位。因此，使用这样的照片<code>UIImage(named:)</code> 大约需要<code>2880 x 1750 x 8 bytes ≈ 38.45 MB</code></p>
 <p><img src="/img/OOM/image_load_UIImage.jpg"></p>
 <h4 id="循环引用"><a href="#循环引用" class="headerlink" title="循环引用"></a>循环引用</h4><p>循环引用的最终结果是造成内存泄漏，导致到程序结束之前都无法释放，随着运行时间的增加，泄漏累计会使 App 占用内存越来越大，最终崩溃</p>
 <p>还有比如使用 UIWebView 的内存泄漏问题等</p>
