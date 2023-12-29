@@ -172,13 +172,6 @@
 
               <time title="Created: 2023-08-01 15:45:00" itemprop="dateCreated datePublished" datetime="2023-08-01T15:45:00+08:00">2023-08-01</time>
             </span>
-              <span class="post-meta-item">
-                <span class="post-meta-item-icon">
-                  <i class="far fa-calendar-check"></i>
-                </span>
-                <span class="post-meta-item-text">Edited on</span>
-                <time title="Modified: 2023-12-28 20:50:47" itemprop="dateModified" datetime="2023-12-28T20:50:47+08:00">2023-12-28</time>
-              </span>
 
           
 
@@ -273,6 +266,13 @@
 
               <time title="Created: 2023-07-23 16:32:00" itemprop="dateCreated datePublished" datetime="2023-07-23T16:32:00+08:00">2023-07-23</time>
             </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-29 18:05:21" itemprop="dateModified" datetime="2023-12-29T18:05:21+08:00">2023-12-29</time>
+              </span>
 
           
 
@@ -410,6 +410,82 @@
 <p>图片都是网络图片，下载到分辨率超出 4K 的图片，进行压缩，如果图片控件设有圆角，直接将图片进行裁剪，这部分操作都处于子线程，最终将处理完解码后的图片在主线程进行绘制。</p>
 <h3 id="后续的优化"><a href="#后续的优化" class="headerlink" title="后续的优化"></a>后续的优化</h3><p>虽然现在已经不会把 UI 卡死，但是首次进入项目大批量的创建控件，还是会消耗 1 - 4 秒的时间，内存占用也比较高，所以接下来准备将大量没有动画的 layer 进行合并，最终可能会  十几个、几十上百个 Layer 合并成一个大的 Layer。</p>
 
+      
+    </div>
+
+    
+    
+    
+      <footer class="post-footer">
+        <div class="post-eof"></div>
+      </footer>
+  </article>
+  
+  
+  
+
+      
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2022/12/21/ANR/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="qxy">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="一艘小船">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          
+            <a href="/2022/12/21/ANR/" class="post-title-link" itemprop="url">iOS ANR</a>
+        </h2>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2022-12-21 14:58:00" itemprop="dateCreated datePublished" datetime="2022-12-21T14:58:00+08:00">2022-12-21</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2023-12-29 18:06:50" itemprop="dateModified" datetime="2023-12-29T18:06:50+08:00">2023-12-29</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+          <p>ANR(Application Not Responding)应用程序无相应，就是我们常说的卡顿。直接原因可以是主线程阻塞，无法在规定时间内完成画面的渲染以及事件的响应。在开发过程中，遇到的造成主线程阻塞的原因可能是：</p>
+<ul>
+<li>主线程在进行大量I&#x2F;O操作：为了方便代码编写，直接在主线程去写入大量数据；</li>
+<li>主线程在进行大量计算：代码编写不合理，主线程进行复杂计算；</li>
+<li>大量UI绘制：界面过于复杂，UI绘制需要大量时间；</li>
+<li>主线程在等锁：主线程需要获得锁A，但是当前某个子线程持有这个锁A，导致主线程不得不等待子线程完成任务。</li>
+</ul>
+<p>针对这些问题，如果我们能够捕获得到卡顿当时应用的主线程堆栈，那么问题就迎刃而解了。有了堆栈，就可以知道主线程在什么函数哪一行代码卡住了，是在等什么锁，还是在进行I&#x2F;O操作，或者是进行复杂计算。有了堆栈，就可以对问题进行针对性解决。</p>
+<h3 id="监测原理"><a href="#监测原理" class="headerlink" title="监测原理"></a>监测原理</h3><p>页面的绘制以及事件的处理，都是由主线程的 Runloop 来控制，Runloop 在一个循环的各个重要阶段都会给注册的 <code>Observer</code> 发送通知，可以注册对应的通知来获取一次循环 各个阶段的耗时，一次循环的耗时超过阈值，就会出现掉帧 卡顿。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">let beginObserver = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, CFRunLoopActivity.allActivities.rawValue, true, .min) &#123; observer, activity in</span><br><span class="line">    switch activity &#123;</span><br><span class="line">    case .entry:</span><br><span class="line">        print(&quot;entry&quot;)</span><br><span class="line">    case .beforeSources:</span><br><span class="line">        print(&quot;source&quot;)</span><br><span class="line">    case .beforeTimers:</span><br><span class="line">        print(&quot;timer&quot;)</span><br><span class="line">    case .afterWaiting:</span><br><span class="line">        gettimeofday(&amp;self.tvStart, nil)</span><br><span class="line">        print(&quot;awake&quot;)</span><br><span class="line">    case .beforeWaiting:</span><br><span class="line">        print(&quot;sleep&quot;)</span><br><span class="line">    default:</span><br><span class="line">        print(&quot;def&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">let endObserver = CFRunLoopObserverCreateWithHandler(kCFAllocatorDefault, CFRunLoopActivity.allActivities.rawValue, true, .max) &#123; observer, activity in</span><br><span class="line">    switch activity &#123;</span><br><span class="line">    case .entry:</span><br><span class="line">        print(&quot;2 entry&quot;)</span><br><span class="line">    case .beforeSources:</span><br><span class="line">        print(&quot;2 source&quot;)</span><br><span class="line">    case .beforeTimers:</span><br><span class="line">        print(&quot;2 timer&quot;)</span><br><span class="line">    case .afterWaiting:</span><br><span class="line">        print(&quot;2 awake&quot;)</span><br><span class="line">    case .beforeWaiting:</span><br><span class="line">        </span><br><span class="line">        // check</span><br><span class="line">        var tvCur = timeval()</span><br><span class="line">        gettimeofday(&amp;tvCur, nil)</span><br><span class="line">        let duration = self.getDuration(tvStart: self.tvStart, tvEnd: tvCur)</span><br><span class="line">        print(&quot;2 sleep&quot;, duration)</span><br><span class="line">    default:</span><br><span class="line">        print(&quot;2 def&quot;)</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">    </span><br><span class="line">CFRunLoopAddObserver(CFRunLoopGetCurrent(), beginObserver, .commonModes)</span><br><span class="line">CFRunLoopAddObserver(CFRunLoopGetCurrent(), endObserver, .commonModes)</span><br></pre></td></tr></table></figure>
+
+<p>打印结果，可以看到每次从唤醒到休眠消耗的时间，单位是微妙：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">awake</span><br><span class="line">2 awake</span><br><span class="line">timer</span><br><span class="line">2 timer</span><br><span class="line">source</span><br><span class="line">2 source</span><br><span class="line">sleep</span><br><span class="line">2 sleep 6739</span><br><span class="line">awake</span><br><span class="line">2 awake</span><br><span class="line">timer</span><br><span class="line">2 timer</span><br><span class="line">source</span><br><span class="line">2 source</span><br><span class="line">sleep</span><br><span class="line">2 sleep 189</span><br><span class="line">awake</span><br><span class="line">2 awake</span><br><span class="line">timer</span><br><span class="line">2 timer</span><br><span class="line">source</span><br><span class="line">2 source</span><br><span class="line">sleep</span><br><span class="line">2 sleep 2057</span><br><span class="line">awake</span><br><span class="line">2 awake</span><br><span class="line">timer</span><br><span class="line">2 timer</span><br><span class="line">source</span><br><span class="line">2 source</span><br><span class="line">sleep</span><br><span class="line">2 sleep 169</span><br><span class="line"></span><br></pre></td></tr></table></figure>
       
     </div>
 
@@ -1111,120 +1187,6 @@
   
   
 
-      
-  
-  
-  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="en">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2017/04/17/RN_2/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="qxy">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="一艘小船">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          
-            <a href="/2017/04/17/RN_2/" class="post-title-link" itemprop="url">React Native (二)：StatusBar 、 NavigationBar 与 TabBar</a>
-        </h2>
-
-        <div class="post-meta">
-            <span class="post-meta-item">
-              <span class="post-meta-item-icon">
-                <i class="far fa-calendar"></i>
-              </span>
-              <span class="post-meta-item-text">Posted on</span>
-
-              <time title="Created: 2017-04-17 18:16:00" itemprop="dateCreated datePublished" datetime="2017-04-17T18:16:00+08:00">2017-04-17</time>
-            </span>
-
-          
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-          <p><a href="/2017/04/14/RN_1/">React Native (一)：基础</a></p>
-<p><a href="/2017/04/17/RN_2/">React Native (二)：StatusBar 、 NavigationBar 与 TabBar</a></p>
-<p><a href="/2017/04/18/RN_3/">React Native (三)：自定义视图</a></p>
-<p><a href="/2017/04/24/RN_4/">React Native (四)：加载新闻列表</a></p>
-<p><a href="/2017/05/03/RN_5/">React Native (五)：上下拉刷新加载</a></p>
-<p><a href="/2017/05/05/RN_6/">React Native (六)：加载所有分类与详情页</a></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/qiangxinyu/ReactNativeExample/tree/master/ReactNative2">项目地址</a></p>
-<h2 id="React-Native-App-的视图结构"><a href="#React-Native-App-的视图结构" class="headerlink" title="React Native App 的视图结构"></a>React Native App 的视图结构</h2><p>首先把 <code>setup.js</code> 的 <code>Root</code> 以及 布局 的代码改一下：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">class</span> <span class="title class_">Root</span> <span class="keyword">extends</span> <span class="title class_ inherited__">React.Component</span> &#123;</span><br><span class="line">    <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            <span class="language-xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;styles.container&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">					</span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> styles = <span class="title class_">StyleSheet</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">container</span>: &#123;</span><br><span class="line">        <span class="attr">flex</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attr">backgroundColor</span>: <span class="string">&#x27;white&#x27;</span>,</span><br><span class="line">    &#125;,</span><br><span class="line"></span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
-
-
-
-
-<p><code>React Native</code> 的所有界面都是在一个主视图上，这里的这个 <code>&lt;View&gt;</code> 跟 <code>iOS</code> 中的 <code>Window</code> 是同样的，这里跟 <code>Android</code> 不太一样。</p>
-<p>当然运行在 <code>iOS</code> 和 <code>Android</code> 中还是以 <code>ViewController</code> 和 <code>Activity</code> 展示的。</p>
-<h2 id="StatusBar"><a href="#StatusBar" class="headerlink" title="StatusBar"></a>StatusBar</h2><p><code>iOS</code> 和 <code>Android</code> 的 <code>StatusBar</code> 是差不多的，都是顶部那高度 20 的部分，用来显示信号、电量等系统的信息。</p>
-<p>在 <code>setup.js</code> 中加入 <code>StatusBar</code>：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    <span class="title class_">StyleSheet</span>,</span><br><span class="line">    <span class="title class_">Text</span>,</span><br><span class="line">    <span class="title class_">View</span>,</span><br><span class="line">    <span class="title class_">StatusBar</span></span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">class</span> <span class="title class_">Root</span> <span class="keyword">extends</span> <span class="title class_ inherited__">React.Component</span> &#123;</span><br><span class="line">    <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            <span class="language-xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;styles.container&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">StatusBar</span> </span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">barStyle</span>=<span class="string">&#123;</span>&#x27;<span class="attr">light-content</span>&#x27;&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">backgroundColor</span>=<span class="string">&#123;</span>&#x27;#<span class="attr">000000</span>&#x27;&#125;</span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                /&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">        );</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><code>StatusBar</code> 的配置可以看<a target="_blank" rel="noopener" href="http://reactnative.cn/docs/0.43/statusbar.html#content">这里</a>，注意有些属性只针对特定平台。</p>
-<p>这样可以设置整个 <code>App</code> 中 <code>StatusBar</code> 的样式，如果有某个页面 <code>A</code> 的 <code>StatusBar</code> 需要特殊处理，那么就在 <code>A</code> 页面加入 <code>StatusBar</code> 进行设置。</p>
-<h2 id="Navigator"><a href="#Navigator" class="headerlink" title="Navigator"></a>Navigator</h2><p>我们需要用 <code>Navigator</code> 来让整个 <code>App</code> 可以在页面之间跳转。</p>
-<p><code>Navigator</code> 和 <code>iOS</code> 的一样，都是对页面进行 <code>push</code> 和 <code>pop</code> ，跟 <code>Android</code> 的 <code>NavigationView</code> 不是一个东西。</p>
-<p>官方文档在<a target="_blank" rel="noopener" href="http://reactnative.cn/docs/0.43/navigator.html#content">这里</a></p>
-<p>现在在 <code>App</code> 文件夹内创建一个新的文件 <code>App.js</code> ：</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&#x27;use strict&#x27;</span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    <span class="title class_">StyleSheet</span>,</span><br><span class="line">    <span class="title class_">View</span>,</span><br><span class="line">    <span class="title class_">Text</span></span><br><span class="line"></span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span>;</span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> <span class="title class_">App</span> <span class="keyword">extends</span> <span class="title class_ inherited__">React.Component</span> &#123;</span><br><span class="line"></span><br><span class="line">    <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            <span class="language-xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;styles.view&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">		<span class="tag">&lt;<span class="name">Text</span>&gt;</span>main<span class="tag">&lt;/<span class="name">Text</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> styles = <span class="title class_">StyleSheet</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">view</span>: &#123;</span><br><span class="line">        <span class="attr">flex</span>: <span class="number">1</span>,</span><br><span class="line">        <span class="attr">backgroundColor</span>: <span class="string">&#x27;white&#x27;</span>,</span><br><span class="line">        <span class="attr">alignItems</span>: <span class="string">&#x27;center&#x27;</span>,</span><br><span class="line">        <span class="attr">justifyContent</span>: <span class="string">&#x27;center&#x27;</span></span><br><span class="line"></span><br><span class="line">    &#125;,</span><br><span class="line">&#125;);</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-
-
-<p>然后在 <code>setup</code> 内 <code>StatusBar</code> 下面加入 <code>Navigator</code> :</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">App</span> <span class="keyword">from</span> <span class="string">&#x27;./App&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;<span class="title class_">Navigator</span></span><br><span class="line">    initialRoute=&#123;&#123; <span class="attr">component</span>: <span class="title class_">App</span> &#125;&#125;</span><br><span class="line"></span><br><span class="line">    style=&#123;&#123;<span class="attr">flex</span>:<span class="number">1</span>&#125;&#125;</span><br><span class="line">    renderScene=&#123;<span class="function">(<span class="params">route, navigator</span>) =&gt;</span> &#123;</span><br><span class="line">        <span class="title class_">BackAndroid</span>.<span class="title function_">addEventListener</span>(<span class="string">&#x27;hardwareBackPress&#x27;</span>, <span class="keyword">function</span>(<span class="params"></span>) &#123;</span><br><span class="line">            <span class="keyword">if</span>(navigator == <span class="literal">null</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="keyword">if</span>(navigator.<span class="title function_">getCurrentRoutes</span>().<span class="property">length</span> === <span class="number">1</span>)&#123;</span><br><span class="line">                <span class="keyword">return</span> <span class="literal">false</span>;</span><br><span class="line">            &#125;</span><br><span class="line">            navigator.<span class="title function_">pop</span>();</span><br><span class="line">            <span class="keyword">return</span> <span class="literal">true</span>;</span><br><span class="line">        &#125;);</span><br><span class="line"></span><br><span class="line">        <span class="keyword">let</span> <span class="title class_">Component</span> = route.<span class="property">component</span>;</span><br><span class="line">        <span class="keyword">return</span> <span class="language-xml"><span class="tag">&lt;<span class="name">Component</span> &#123;<span class="attr">...route.params</span>&#125; <span class="attr">navigator</span>=<span class="string">&#123;navigator&#125;/</span>&gt;</span></span></span><br><span class="line">        <span class="comment">//  上面的route.params 是为了方便后续界面间传递参数用的</span></span><br><span class="line">    &#125;&#125;</span><br><span class="line">/&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>其中 <code>initialRoute</code> 设置了 <code>component</code> ，是最底层的第一个页面。</p>
-<p>然后 <code>renderScene</code> 控制 <code>push</code> 的时候做哪些操作，这里的 <code>BackAndroid.addEventListener</code> 是监听了 <code>Android</code> 的物理返回按键。</p>
-<p>现在运行可以看见页面中间有个 <code>main</code> ：</p>
-<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/main.png?raw=true"></p>
-<p>你可能会发现为什么没 <code>NavigationBar</code> 呢，我们后面再加。</p>
-<h2 id="tab-navigator"><a href="#tab-navigator" class="headerlink" title="tab-navigator"></a>tab-navigator</h2><p>官方并没有 <code>TabBar</code> ，我们使用一个第三方 <a target="_blank" rel="noopener" href="https://github.com/expo/react-native-tab-navigator">react-native-tab-navigator</a></p>
-<p>在项目根目录执行命令</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install react-native-tab-navigator --save</span><br></pre></td></tr></table></figure>
-
-<p>安装完成后在 <code>App.js</code> 加入 <code>TabNavigator</code>:</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">const home_key = &#x27;home&#x27;</span><br><span class="line">const satin_key = &#x27;satin&#x27;</span><br><span class="line">const setting_key = &#x27;setting&#x27;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">import Home from &#x27;./Home/Home&#x27;</span><br><span class="line">import Satin from &#x27;./Satin/Satin&#x27;</span><br><span class="line">import Setting from &#x27;./Setting/Setting&#x27;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">&lt;TabNavigator&gt;</span><br><span class="line">	&lt;TabNavigator.Item</span><br><span class="line">	    selected=&#123;this.state.selectedTab === home_key&#125;</span><br><span class="line">	    title=&quot;首页&quot;</span><br><span class="line">	    titleStyle=&#123;styles.tabText&#125;</span><br><span class="line">	    selectedTitleStyle=&#123;styles.selectedTabText&#125;</span><br><span class="line">	    renderIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/home_unselect.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    renderSelectedIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/home_select.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    onPress=&#123;() =&gt; this.setState(&#123; selectedTab: home_key &#125;)&#125;&gt;</span><br><span class="line">	</span><br><span class="line">	    &lt;Home navigator=&#123;this.props.navigator&#125;/&gt;</span><br><span class="line">	&lt;/TabNavigator.Item&gt;</span><br><span class="line">	&lt;TabNavigator.Item</span><br><span class="line">	    selected=&#123;this.state.selectedTab === satin_key&#125;</span><br><span class="line">	    title=&quot;段子&quot;</span><br><span class="line">	    titleStyle=&#123;styles.tabText&#125;</span><br><span class="line">	    selectedTitleStyle=&#123;styles.selectedTabText&#125;</span><br><span class="line">	    renderIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/activity_unselect.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    renderSelectedIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/activity_select.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    onPress=&#123;() =&gt; this.setState(&#123; selectedTab: satin_key &#125;)&#125;&gt;</span><br><span class="line">	</span><br><span class="line">	    &lt;Satin navigator=&#123;this.props.navigator&#125;/&gt;</span><br><span class="line">	&lt;/TabNavigator.Item&gt;</span><br><span class="line">	&lt;TabNavigator.Item</span><br><span class="line">	    selected=&#123;this.state.selectedTab === setting_key&#125;</span><br><span class="line">	    title=&quot;我的&quot;</span><br><span class="line">	    titleStyle=&#123;styles.tabText&#125;</span><br><span class="line">	    selectedTitleStyle=&#123;styles.selectedTabText&#125;</span><br><span class="line">	    renderIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/my_unselect.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    renderSelectedIcon=&#123;() =&gt; &lt;Image style=&#123;styles.icon&#125; source=&#123;require(&quot;./Images/root/my_select.png&quot;)&#125; /&gt;&#125;</span><br><span class="line">	    onPress=&#123;() =&gt; this.setState(&#123; selectedTab: setting_key &#125;)&#125;&gt;</span><br><span class="line">	</span><br><span class="line">	    &lt;Setting navigator=&#123;this.props.navigator&#125;/&gt;</span><br><span class="line">	&lt;/TabNavigator.Item&gt;</span><br><span class="line">&lt;/TabNavigator&gt;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>配置也比较易懂。</p>
-<p>另外创建 3 个文件 <code>Home.js</code> 、 <code>Satin.js</code> 和 <code>Setting.js</code> </p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    <span class="title class_">View</span>,</span><br><span class="line">    <span class="title class_">StyleSheet</span></span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> <span class="title class_">Satin</span> <span class="keyword">extends</span> <span class="title class_ inherited__">React.Component</span> &#123;</span><br><span class="line">    <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            <span class="language-xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;styles.view&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml"></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> styles = <span class="title class_">StyleSheet</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">view</span>: &#123;</span><br><span class="line">        <span class="attr">flex</span>:<span class="number">1</span>,</span><br><span class="line">        <span class="attr">backgroundColor</span>: <span class="string">&#x27;orange&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p>可以给每个设置不同的颜色，这样点击界面切换也很明显。</p>
-<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/tab.png?raw=true"></p>
-<p>具体的代码可以看 <a target="_blank" rel="noopener" href="https://github.com/qiangxinyu/ReactNativeExample/tree/master/ReactNative2">项目</a></p>
-<h2 id="NavigationBar"><a href="#NavigationBar" class="headerlink" title="NavigationBar"></a>NavigationBar</h2><p>同意官方也没有提供 <code>NavigationBar</code>，我们需要自定义一个。</p>
-<p>然后在 <code>Home.js</code> 、  <code>Satin.js</code> 和 <code>Setting.js</code> 加入</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">React</span> <span class="keyword">from</span> <span class="string">&#x27;react&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> &#123;</span><br><span class="line">    <span class="title class_">View</span>,</span><br><span class="line">    <span class="title class_">StyleSheet</span></span><br><span class="line">&#125; <span class="keyword">from</span> <span class="string">&#x27;react-native&#x27;</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> <span class="title class_">NavigationBar</span> <span class="keyword">from</span> <span class="string">&#x27;../Custom/NavBarCommon&#x27;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">class</span> <span class="title class_">Home</span> <span class="keyword">extends</span> <span class="title class_ inherited__">React.Component</span> &#123;</span><br><span class="line">    <span class="title function_">render</span>(<span class="params"></span>) &#123;</span><br><span class="line">        <span class="keyword">return</span> (</span><br><span class="line">            <span class="language-xml"><span class="tag">&lt;<span class="name">View</span> <span class="attr">style</span>=<span class="string">&#123;styles.view&#125;</span>&gt;</span></span></span><br><span class="line"><span class="language-xml">                <span class="tag">&lt;<span class="name">NavigationBar</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">title</span>=<span class="string">&quot;首页&quot;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                    <span class="attr">unLeftImage</span>=<span class="string">&#123;true&#125;</span></span></span></span><br><span class="line"><span class="tag"><span class="language-xml">                /&gt;</span></span></span><br><span class="line"><span class="language-xml"></span></span><br><span class="line"><span class="language-xml">            <span class="tag">&lt;/<span class="name">View</span>&gt;</span></span></span><br><span class="line">        )</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> styles = <span class="title class_">StyleSheet</span>.<span class="title function_">create</span>(&#123;</span><br><span class="line">    <span class="attr">view</span>: &#123;</span><br><span class="line">        <span class="attr">flex</span>:<span class="number">1</span>,</span><br><span class="line">        <span class="attr">backgroundColor</span>: <span class="string">&#x27;white&#x27;</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<p><img src="https://github.com/qiangxinyu/ReactNativeExample/blob/master/ReactNative2/navibar.png?raw=true" alt="navibar"></p>
-<p><a target="_blank" rel="noopener" href="https://github.com/qiangxinyu/ReactNativeExample/tree/master/ReactNative2">项目地址</a></p>
-
-      
-    </div>
-
-    
-    
-    
-      <footer class="post-footer">
-        <div class="post-eof"></div>
-      </footer>
-  </article>
-  
-  
-  
-
 
   
   <nav class="pagination">
@@ -1294,7 +1256,7 @@
       <div class="site-state-item site-state-posts">
           <a href="/archives/">
         
-          <span class="site-state-item-count">29</span>
+          <span class="site-state-item-count">30</span>
           <span class="site-state-item-name">posts</span>
         </a>
       </div>
